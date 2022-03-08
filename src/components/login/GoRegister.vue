@@ -6,7 +6,7 @@
   <q-btn
     size="lg"
     class="bg-white text-dark q-ma-lg"
-    style="width: 50%"
+    style="width: 30%"
     label="Register an Account"
     to="/register"
   />
@@ -16,6 +16,6 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: 'LoginRightSide',
+  name: 'GoRegister',
 });
 </script>

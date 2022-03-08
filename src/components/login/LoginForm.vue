@@ -2,7 +2,7 @@
   <div class="text-h2 text-dark q-mb-xl">Login</div>
 
   <q-form class="q-gutter-md column" style="width: 50%">
-    <q-input outlined v-model="nickname" label="Nickname/e-mail" />
+    <q-input outlined v-model="nickname" label="Nickname/E-mail" />
     <q-input
       v-model="password"
       outlined
@@ -33,19 +33,22 @@
     color="primary"
     class="q-mt-md"
     style="width: 50%"
+    to="/"
   />
-  <a href="/register" style="text-decoration: none">
-    <p class="lt-md text-dark q-mt-md cursor-pointer">
-      Don't have an Account? Create one!
-    </p>
-  </a>
+  <q-btn
+    no-caps
+    flat
+    class="lt-md q-mt-sm text-subtitle1 text-dark"
+    label="Don't have an Account? Create one!"
+    to="/register"
+  />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: 'LoginLeftSide',
+  name: 'LoginForm',
   data() {
     return {
       nickname: '',

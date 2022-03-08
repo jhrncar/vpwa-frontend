@@ -8,7 +8,7 @@
 
         <q-btn round dense flat icon="search" />
         <q-btn dense flat round icon="people" @click="toggleRightDrawer" />
-        <q-btn round dense flat icon="logout" />
+        <q-btn round dense flat icon="logout" to="/login" />
       </q-toolbar>
     </q-header>
 
@@ -50,6 +50,8 @@
 import { ref } from 'vue';
 
 export default {
+  name: 'MainLayout',
+
   setup() {
     const leftDrawerOpen = ref(false);
     const rightDrawerOpen = ref(false);

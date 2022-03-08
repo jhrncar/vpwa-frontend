@@ -41,18 +41,21 @@
     class="q-mt-lg"
     style="width: 50%"
   />
-  <a href="/login" style="text-decoration: none">
-    <p class="lt-md text-dark q-pt-md cursor-pointer">
-      Already have an Account? Login!
-    </p>
-  </a>
+  <q-btn
+    no-caps
+    flat
+    class="lt-md q-mt-sm text-subtitle1 text-dark"
+    color="dark"
+    label="Already have an Account? Login!"
+    to="/login"
+  />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: 'RegisterLeftSide',
+  name: 'RegisterForm',
   data() {
     return {
       nickname: '',
