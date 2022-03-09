@@ -6,7 +6,7 @@
   <q-btn
     size="lg"
     class="bg-white text-dark q-ma-lg"
-    style="width: 30%"
+    style="width: 40%"
     label="Register an Account"
     to="/register"
   />
