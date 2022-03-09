@@ -22,7 +22,7 @@
       class="bg-primary"
       width="250"
     >
-      <!-- drawer content -->
+      <Channels></Channels>
     </q-drawer>
 
     <q-drawer
@@ -33,7 +33,7 @@
       class="bg-primary"
       width="250"
     >
-      <!-- drawer content -->
+      <Users></Users>
     </q-drawer>
 
     <q-page-container>
@@ -45,6 +45,8 @@
 <script>
 import { ref } from 'vue';
 import Availability from 'src/components/availability.vue';
+import Channels from 'src/components/channels.vue';
+import Users from 'src/components/users.vue';
 
 export default {
   name: 'MainLayout',
@@ -63,7 +65,7 @@ export default {
     };
   },
 
-  components: { Availability },
+  components: { Availability, Channels, Users },
 };
 </script>
 <style></style>

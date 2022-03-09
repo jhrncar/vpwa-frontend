@@ -9,12 +9,12 @@
           <q-item-label>Online</q-item-label>
         </q-item-section>
       </q-item>
-      <q-item clickable v-close-popup @click="onSelection('Nerušiť')">
+      <q-item clickable v-close-popup @click="onSelection('dnd')">
         <q-item-section avatar>
-          <q-avatar icon="fiber_manual_record" class="Nerušiť" />
+          <q-avatar icon="fiber_manual_record" class="dnd" />
         </q-item-section>
         <q-item-section label>
-          <q-item-label>Nerušiť</q-item-label>
+          <q-item-label>DND</q-item-label>
         </q-item-section>
       </q-item>
       <q-item clickable v-close-popup @click="onSelection('offline')">
@@ -49,7 +49,7 @@ export default defineComponent({
 .online {
   color: #3acc2d;
 }
-.Nerušiť {
+.dnd {
   color: #a72608;
 }
 .offline {
