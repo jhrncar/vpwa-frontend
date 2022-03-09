@@ -31,6 +31,7 @@
       side="right"
       bordered
       class="bg-primary"
+      width="250"
     >
       <!-- drawer content -->
     </q-drawer>
