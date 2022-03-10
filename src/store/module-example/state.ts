@@ -1,10 +1,10 @@
-export interface ExampleStateInterface {
-  prop: boolean;
+export interface ChannelInterface {
+  channel: string;
 }
 
-function state(): ExampleStateInterface {
+function state(): ChannelInterface {
   return {
-    prop: false,
+    channel: '',
   };
 }
 
