@@ -36,6 +36,7 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   name: 'Channels',
   data() {
+    // channeli sa loaduju z databazy
     return {
       publicChannels: [
         { label: '# Channel1', value: '1' },
@@ -60,5 +61,6 @@ export default defineComponent({
       //load new channel
     },
   },
+  //beforeMount(){} asi? a tu sa budu gettovat z databazy channely
 });
 </script>
