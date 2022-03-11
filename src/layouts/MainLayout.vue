@@ -44,9 +44,9 @@
 
 <script>
 import { ref } from 'vue';
-import Availability from 'src/components/availability.vue';
-import Channels from 'src/components/channels.vue';
-import Users from 'src/components/users.vue';
+import Availability from 'src/components/Availability.vue';
+import Channels from 'src/components/Channels.vue';
+import Users from 'src/components/Users.vue';
 
 export default {
   name: 'MainLayout',

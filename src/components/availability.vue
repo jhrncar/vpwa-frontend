@@ -1,25 +1,38 @@
 <template>
-  <q-btn-dropdown :class="stat" flat icon="fiber_manual_record" :label="label">
-    <q-list>
-      <q-item clickable v-close-popup @click="onSelection('text-positive')">
+  <q-btn-dropdown flat class="text-white q-pa-xs">
+    <template v-slot:label>
+      <div class="row items-center no-wrap">
+        <q-icon left name="fiber_manual_record" :color="stat" />
+        <div>{{ label }}</div>
+      </div>
+    </template>
+
+    <q-list class="bg-dark text-white">
+      <q-item clickable v-close-popup @click="onSelection('positive')">
         <q-item-section avatar>
-          <q-avatar icon="fiber_manual_record" class="text-positive" />
+          <q-icon name="fiber_manual_record" class="text-positive" size="xs" />
         </q-item-section>
         <q-item-section label>
           <q-item-label>Online</q-item-label>
         </q-item-section>
       </q-item>
-      <q-item clickable v-close-popup @click="onSelection('text-negative')">
+
+      <q-separator color="grey-8" />
+
+      <q-item clickable v-close-popup @click="onSelection('negative')">
         <q-item-section avatar>
-          <q-avatar icon="fiber_manual_record" class="text-negative" />
+          <q-icon name="fiber_manual_record" class="text-negative" size="xs" />
         </q-item-section>
         <q-item-section label>
           <q-item-label>DND</q-item-label>
         </q-item-section>
       </q-item>
-      <q-item clickable v-close-popup @click="onSelection('text-dark')">
+
+      <q-separator color="grey-8" />
+
+      <q-item clickable v-close-popup @click="onSelection('grey')">
         <q-item-section avatar>
-          <q-avatar icon="fiber_manual_record" class="text-dark" />
+          <q-icon name="fiber_manual_record" class="text-grey" size="xs" />
         </q-item-section>
         <q-item-section label>
           <q-item-label>Offline</q-item-label>
@@ -35,18 +48,18 @@ export default defineComponent({
   name: 'Availability',
   data() {
     return {
-      stat: 'text-dark',
+      stat: 'grey',
       label: 'Offline',
     };
   },
   methods: {
     onSelection(state: string) {
       this.stat = state;
-      if (state == 'text-positive') {
+      if (state == 'positive') {
         this.label = 'Online';
-      } else if (state == 'text-negative') {
+      } else if (state == 'negative') {
         this.label = 'DND';
-      } else if (state == 'text-dark') {
+      } else if (state == 'dark') {
         this.label = 'Offline';
       }
     },

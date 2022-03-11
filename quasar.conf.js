@@ -91,10 +91,11 @@ module.exports = configure(function (ctx) {
           primary: '#00897B',
           secondary: '#00695C',
           dark: '#424242',
+          grey: '#ACAAA160',
           negative: '#A72608',
           positive: '#3ACC2D',
-          warning: '#FFBC42'
-        }
+          warning: '#FFBC42',
+        },
       },
 
       // iconSet: 'material-icons', // Quasar icon set
