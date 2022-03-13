@@ -1,5 +1,5 @@
 <template>
-  <q-btn-dropdown flat class="text-white q-pa-xs">
+  <q-btn-dropdown flat class="text-white q-pr-xs">
     <template v-slot:label>
       <div class="row items-center no-wrap">
         <q-icon left name="fiber_manual_record" :color="stat" />

@@ -1,13 +1,12 @@
 <template>
   <q-layout view="hHh LpR lFr">
     <q-header elevated class="bg-secondary text-white">
-      <q-toolbar>
+      <q-toolbar class="justify-between">
         <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
 
-        <q-toolbar-title> Prismarine </q-toolbar-title>
-        <div style="justify-content: space-between; display: flex; gap: 20px">
+        <q-toolbar-title class="gt-xs"> Prismarine </q-toolbar-title>
+        <div style="justify-content: space-between; display: flex; gap: 5px">
           <Availability></Availability>
-          <q-btn round flat icon="search" />
           <q-btn flat round icon="people" @click="toggleRightDrawer" />
           <q-btn round flat icon="logout" to="/login" />
         </div>
