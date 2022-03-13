@@ -3,7 +3,7 @@
     <q-header elevated class="bg-secondary text-white">
       <q-toolbar>
         <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
-
+        <h1>{{}}</h1>
         <q-toolbar-title> Prismarine </q-toolbar-title>
         <div style="justify-content: space-between; display: flex; gap: 20px">
           <Availability></Availability>
@@ -63,6 +63,13 @@ export default {
         rightDrawerOpen.value = !rightDrawerOpen.value;
       },
     };
+  },
+  computed: {
+    selectedChannel: {
+      get() {
+        return this.$store.state.MainStore.selectedChannel;
+      },
+    },
   },
 
   components: { Availability, Channels, Users },

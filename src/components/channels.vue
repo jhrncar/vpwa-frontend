@@ -54,6 +54,7 @@ export default defineComponent({
   watch: {
     selectedChannel(newChannel) {
       console.log(newChannel);
+      this.$store.commit('MainStore/updateChannel', newChannel);
     },
   },
   methods: {
