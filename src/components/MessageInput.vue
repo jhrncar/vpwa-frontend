@@ -1,5 +1,5 @@
 <template>
-  <q-input outlined v-model="text" placeholder="Message...">
+  <q-input outlined v-model="text" bg-color="grey-2" placeholder="Message...">
     <template v-slot:append>
       <q-icon
         v-if="text !== ''"
