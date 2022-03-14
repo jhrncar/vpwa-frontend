@@ -1,9 +1,9 @@
 <template>
-  <div class="text-h2 text-dark text-center q-mb-xl">Register</div>
+  <div class="text-h2 text-dark q-mb-xl">Register</div>
   <q-form class="q-gutter-md column" style="width: 50%">
     <q-input outlined v-model="nickname" label="Nickname" />
     <q-input outlined type="email" v-model="email" label="E-mail" />
-    <q-input outlined v-model="fullname" label="Fullname" />
+    <q-input outlined v-model="fullname" label="Full name" />
     <q-input
       v-model="password"
       outlined
@@ -22,7 +22,7 @@
       v-model="passwordAgain"
       outlined
       :type="isPwd ? 'password' : 'text'"
-      label="Retype password"
+      label="Confirm password"
     >
       <template v-slot:append>
         <q-icon
@@ -46,9 +46,11 @@
     flat
     class="lt-md q-mt-sm text-subtitle1 text-dark"
     color="dark"
-    label="Already have an Account? Login!"
     to="/login"
-  />
+    ><p>
+      Already have an Account? <span class="text-primary"> Login</span>
+    </p></q-btn
+  >
 </template>
 
 <script lang="ts">

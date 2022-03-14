@@ -17,7 +17,6 @@
       show-if-above
       v-model="leftDrawerOpen"
       side="left"
-      bordered
       class="bg-primary"
       width="250"
     >
@@ -28,7 +27,6 @@
       show-if-above
       v-model="rightDrawerOpen"
       side="right"
-      bordered
       class="bg-primary"
       width="250"
     >

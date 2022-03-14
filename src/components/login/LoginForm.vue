@@ -39,9 +39,11 @@
     no-caps
     flat
     class="lt-md q-mt-sm text-subtitle1 text-dark"
-    label="Don't have an Account? Create one!"
     to="/register"
-  />
+    ><p>
+      Don't have an Account? <span class="text-primary">Register</span>
+    </p></q-btn
+  >
 </template>
 
 <script lang="ts">

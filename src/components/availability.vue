@@ -1,5 +1,5 @@
 <template>
-  <q-btn-dropdown flat class="text-white q-pr-xs">
+  <q-btn-dropdown no-caps flat class="text-white q-pr-xs">
     <template v-slot:label>
       <div class="row items-center no-wrap">
         <q-icon left name="fiber_manual_record" :color="stat" />
@@ -7,7 +7,7 @@
       </div>
     </template>
 
-    <q-list class="bg-dark text-white">
+    <q-list separator class="bg-dark text-white">
       <q-item clickable v-close-popup @click="onSelection('positive')">
         <q-item-section avatar>
           <q-icon name="fiber_manual_record" class="text-positive" size="xs" />
@@ -17,8 +17,6 @@
         </q-item-section>
       </q-item>
 
-      <q-separator color="grey-8" />
-
       <q-item clickable v-close-popup @click="onSelection('negative')">
         <q-item-section avatar>
           <q-icon name="fiber_manual_record" class="text-negative" size="xs" />
@@ -27,8 +25,6 @@
           <q-item-label>DND</q-item-label>
         </q-item-section>
       </q-item>
-
-      <q-separator color="grey-8" />
 
       <q-item clickable v-close-popup @click="onSelection('grey')">
         <q-item-section avatar>
@@ -59,7 +55,7 @@ export default defineComponent({
         this.label = 'Online';
       } else if (state == 'negative') {
         this.label = 'DND';
-      } else if (state == 'dark') {
+      } else if (state == 'grey') {
         this.label = 'Offline';
       }
     },
