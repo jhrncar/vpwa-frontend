@@ -1,8 +1,15 @@
 <template>
-  <q-layout view="hHh LpR lFr">
+  <q-layout view="lHh LpR lfr">
     <q-header elevated class="bg-secondary text-white">
       <q-toolbar class="justify-between">
-        <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
+        <q-btn
+          dense
+          flat
+          round
+          icon="menu"
+          class="lt-md"
+          @click="toggleLeftDrawer"
+        />
 
         <q-toolbar-title class="gt-xs"> Prismarine </q-toolbar-title>
         <div style="justify-content: space-between; display: flex; gap: 5px">
@@ -14,6 +21,7 @@
     </q-header>
 
     <q-drawer
+      breakpoint="1023"
       show-if-above
       v-model="leftDrawerOpen"
       side="left"
@@ -24,7 +32,6 @@
     </q-drawer>
 
     <q-drawer
-      show-if-above
       v-model="rightDrawerOpen"
       side="right"
       class="bg-primary"
@@ -47,6 +54,9 @@ import Users from 'src/components/Users.vue';
 
 export default {
   name: 'MainLayout',
+
+  components: { Availability, Channels, Users },
+
   setup() {
     const leftDrawerOpen = ref(false);
     const rightDrawerOpen = ref(false);
@@ -61,8 +71,6 @@ export default {
       },
     };
   },
-
-  components: { Availability, Channels, Users },
 };
 </script>
 <style></style>

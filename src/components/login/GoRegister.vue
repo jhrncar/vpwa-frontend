@@ -1,6 +1,6 @@
 <template>
   <div class="text-h2 text-white q-ma-md">Register</div>
-  <div class="text-h5 text-white q-ma-md">Don't have an Account? Register</div>
+  <div class="text-h5 text-white q-ma-md">Don't have an Account?</div>
   <q-btn
     size="lg"
     class="bg-white text-dark q-ma-lg"

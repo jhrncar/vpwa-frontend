@@ -17,18 +17,18 @@
   <h5 style="font-size: 32px; text-align: center" class="text-white q-mb-lg">
     Private channels
   </h5>
-  <q-list>
-    <q-btn-toggle
-      unelevated
-      no-wrap
-      class="full-width"
-      style="flex-direction: column"
-      toggle-color="dark"
-      toggle-text-color="white"
-      v-model="selectedChannel"
-      :options="privateChannels"
-    />
-  </q-list>
+
+  <q-btn-toggle
+    align="left"
+    unelevated
+    no-wrap
+    class="full-width"
+    style="flex-direction: column"
+    toggle-color="dark"
+    toggle-text-color="white"
+    v-model="selectedChannel"
+    :options="privateChannels"
+  />
 </template>
 <script>
 import { defineComponent } from 'vue';
