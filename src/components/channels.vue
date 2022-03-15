@@ -1,36 +1,56 @@
 <template>
-  <h5 style="font-size: 32px; text-align: center" class="text-white q-mb-lg">
+  <h5
+    style="font-size: 32px; text-align: center"
+    class="text-white q-mb-lg q-mt-lg"
+  >
     Public channels
   </h5>
-
-  <q-btn-toggle
-    unelevated
-    no-wrap
-    class="full-width"
-    style="flex-direction: column"
-    toggle-color="dark"
-    toggle-text-color="white"
-    v-model="selectedChannel"
-    :options="publicChannels"
-  />
-
-  <h5 style="font-size: 32px; text-align: center" class="text-white q-mb-lg">
+  <q-list>
+    <q-item v-for="channel in publicChannels" :key="channel.id" dense>
+      <q-btn
+        class="full-width"
+        dense
+        :class="{
+          'bg-dark': selectedChannel == channel.id ? true : false,
+          'text-white': selectedChannel == channel.id ? true : false,
+          'text-dark': selectedChannel == channel.id ? false : true,
+        }"
+        unelevated
+        no-caps
+        align="left"
+        @click="handleSelect(channel.id)"
+      >
+        {{ channel.label }}
+      </q-btn>
+    </q-item>
+  </q-list>
+  <h5
+    style="font-size: 32px; text-align: center"
+    class="text-white q-mb-lg q-mt-lg"
+  >
     Private channels
   </h5>
   <q-list>
-    <q-btn-toggle
-      unelevated
-      no-wrap
-      class="full-width"
-      style="flex-direction: column"
-      toggle-color="dark"
-      toggle-text-color="white"
-      v-model="selectedChannel"
-      :options="privateChannels"
-    />
+    <q-item v-for="channel in privateChannels" :key="channel.id" dense>
+      <q-btn
+        dense
+        class="full-width"
+        :class="{
+          'bg-dark': selectedChannel == channel.id ? true : false,
+          'text-white': selectedChannel == channel.id ? true : false,
+          'text-dark': selectedChannel == channel.id ? false : true,
+        }"
+        no-caps
+        unelevated
+        align="left"
+        @click="handleSelect(channel.id)"
+      >
+        {{ channel.label }}
+      </q-btn>
+    </q-item>
   </q-list>
 </template>
-<script>
+<script lang="ts">
 import { defineComponent } from 'vue';
 
 export default defineComponent({
@@ -39,27 +59,29 @@ export default defineComponent({
     // channeli sa loaduju z databazy
     return {
       publicChannels: [
-        { label: '# Channel1', value: '1' },
-        { label: '# Channel2', value: '2' },
-        { label: '# Channel3', value: '3' },
+        { label: '# Channel1', id: '1' },
+        { label: '# Channel2', id: '2' },
+        { label: '# Channel3', id: '3' },
       ],
       privateChannels: [
-        { label: '# Channel1', value: '4' },
-        { label: '# Chanel2', value: '5' },
-        { label: '# Chanel3', value: '6' },
+        { label: '# Channel1', id: '4' },
+        { label: '# Chanel2', id: '5' },
+        { label: '# Chanel3', id: '6' },
       ],
-      selectedChannel: null, //TODO treba to dat do storu asi
+      selectedChannel: '', //TODO treba to dat do storu asi
     };
   },
   watch: {
     selectedChannel(newChannel) {
       console.log(newChannel);
-      //this.$store.commit('MainStore/updateChannel', newChannel);
     },
   },
   methods: {
     getNewChannel() {
       //load new channel
+    },
+    handleSelect(newChannel: string) {
+      this.selectedChannel = newChannel;
     },
   },
   //beforeMount(){} asi? a tu sa budu gettovat z databazy channely
