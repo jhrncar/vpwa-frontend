@@ -1,7 +1,7 @@
 <template>
   <div class="text-h2 text-dark q-mb-xl">Login</div>
 
-  <q-form class="q-gutter-md column" style="width: 50%">
+  <q-form class="q-gutter-y-md column" style="width: 50%">
     <q-input outlined v-model="nickname" label="Nickname/E-mail" />
     <q-input
       v-model="password"
@@ -25,16 +25,16 @@
       color="primary"
       :model-value="false"
     />
+    <q-btn
+      size="lg"
+      label="Login"
+      type="submit"
+      color="primary"
+      class="q-mt-md"
+      to="/"
+    />
   </q-form>
-  <q-btn
-    size="lg"
-    label="Login"
-    type="submit"
-    color="primary"
-    class="q-mt-md"
-    style="width: 50%"
-    to="/"
-  />
+
   <q-btn
     no-caps
     flat
@@ -55,7 +55,7 @@ export default defineComponent({
     return {
       nickname: '',
       password: '',
-      isPwd: 1,
+      isPwd: true,
       rememberMe: 0,
     };
   },

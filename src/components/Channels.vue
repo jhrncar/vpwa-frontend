@@ -1,7 +1,7 @@
 <template>
   <h5
-    style="font-size: 32px; text-align: center"
-    class="text-white q-mb-lg q-mt-lg"
+    style="font-size: 32px; text-align: center; align-content: top"
+    class="text-white q-mb-sm q-mt-sm"
   >
     Public channels
   </h5>
@@ -25,7 +25,7 @@
   </q-list>
   <h5
     style="font-size: 32px; text-align: center"
-    class="text-white q-mb-lg q-mt-lg"
+    class="text-white q-mb-sm q-mt-lg"
   >
     Private channels
   </h5>
