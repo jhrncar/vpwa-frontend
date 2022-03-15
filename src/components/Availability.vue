@@ -7,7 +7,7 @@
       </div>
     </template>
 
-    <q-list separator class="bg-dark text-white">
+    <q-list separator bordered class="bg-grey-2 text-dark">
       <q-item clickable v-close-popup @click="onSelection('positive')">
         <q-item-section avatar>
           <q-icon name="fiber_manual_record" class="text-positive" size="xs" />
