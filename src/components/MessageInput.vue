@@ -1,5 +1,11 @@
 <template>
-  <q-input outlined v-model="text" bg-color="grey-2" placeholder="Message...">
+  <q-input
+    outlined
+    v-model="text"
+    bg-color="grey-2"
+    input-style="color: #424242"
+    placeholder="Message..."
+  >
     <template v-slot:append>
       <q-icon
         v-if="text !== ''"
@@ -21,11 +27,10 @@ import { ref } from 'vue';
 
 export default defineComponent({
   name: 'MessageInput',
+
   setup() {
     return {
       text: ref(''),
-      ph: ref(''),
-      dense: ref(false),
     };
   },
 });

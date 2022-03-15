@@ -1,10 +1,10 @@
 <template>
   <q-page class="row">
     <div class="side-container bg-white col column">
-      <LoginForm></LoginForm>
+      <LoginForm />
     </div>
     <div class="gt-sm side-container bg-primary col column">
-      <GoRegister></GoRegister>
+      <GoRegister />
     </div>
   </q-page>
 </template>

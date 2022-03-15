@@ -9,7 +9,6 @@
     <q-item v-for="channel in publicChannels" :key="channel.id" dense>
       <q-btn
         class="full-width"
-        dense
         :class="{
           'bg-dark': selectedChannel == channel.id ? true : false,
           'text-white': selectedChannel == channel.id ? true : false,

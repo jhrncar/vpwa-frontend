@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHh LpR lfr">
+  <q-layout view="lHh LpR lFr">
     <q-header elevated class="bg-secondary text-white">
       <q-toolbar class="justify-between">
         <q-btn
@@ -13,7 +13,7 @@
 
         <q-toolbar-title class="gt-xs"> Prismarine </q-toolbar-title>
         <div style="justify-content: space-between; display: flex; gap: 5px">
-          <Availability></Availability>
+          <Availability />
           <q-btn flat round icon="people" @click="toggleRightDrawer" />
           <q-btn round flat icon="logout" to="/login" />
         </div>
@@ -21,14 +21,13 @@
     </q-header>
 
     <q-drawer
-      breakpoint="1023"
       show-if-above
       v-model="leftDrawerOpen"
       side="left"
       class="bg-primary"
       width="250"
     >
-      <Channels></Channels>
+      <Channels />
     </q-drawer>
 
     <q-drawer
@@ -37,7 +36,7 @@
       class="bg-primary"
       width="250"
     >
-      <Users></Users>
+      <Users />
     </q-drawer>
 
     <q-page-container>
