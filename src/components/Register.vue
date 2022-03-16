@@ -68,7 +68,7 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: 'RegisterForm',
+  name: 'Register',
   data() {
     return {
       nickname: '',
