@@ -1,6 +1,6 @@
 <template>
   <div class="text-h2 text-dark q-mb-xl">Register</div>
-  <q-form class="q-gutter-y-md column" style="width: 50%">
+  <q-form class="q-gutter-y-md column" style="width: 50%" @submit="onSubmit">
     <q-input
       outlined
       v-model="nickname"
@@ -13,7 +13,7 @@
       outlined
       v-model="fullname"
       label="Full name"
-      :rules="[(val: string) => val.length <= 500 || 'Please use maximum 500 characters']"
+      :rules="[(val: string) => val.length <= 30 || 'Please use maximum 30 characters']"
       hide-bottom-space
     />
     <q-input
@@ -21,9 +21,10 @@
       outlined
       :type="isPwd ? 'password' : 'text'"
       label="Password"
-      :rules="[(val: string) => val.length >= 3 || 'Please use minimum 3 characters']"
-      lazy-rules="ondemand"
+      :rules="[(val: string) => val.length >= 3 || 'Please use minimum 3 characters',
+      (val: string) => val == passwordAgain || 'Passwords do not match']"
       hide-bottom-space
+      lazy-rules="ondemand"
     >
       <template v-slot:append>
         <q-icon
@@ -38,7 +39,9 @@
       outlined
       :type="isPwd ? 'password' : 'text'"
       label="Confirm password"
-      :rules="[(val: string) => val.length >= 3 || 'Please use minimum 3 characters']"
+      :rules="[(val: string) => val.length >= 3 || 'Please use minimum 3 characters',
+      (val: string) => val == password || 'Passwords do not match']"
+      hide-bottom-space
       lazy-rules="ondemand"
     >
       <template v-slot:append>
@@ -77,7 +80,15 @@ export default defineComponent({
       password: '',
       passwordAgain: '',
       isPwd: true,
+      isDifferent: false,
     };
+  },
+  methods: {
+    onSubmit() {
+      if (this.password != this.passwordAgain) {
+        this.isDifferent = true;
+      }
+    },
   },
 });
 </script>

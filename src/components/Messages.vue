@@ -38,6 +38,8 @@
       bg-color="grey-2"
       input-style="color: #424242"
       placeholder="Message..."
+      autofocus
+      ref="commandLine"
     >
       <template v-slot:append>
         <q-icon
@@ -54,12 +56,11 @@
   </q-form>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'Messages',
-
   data() {
     return {
       message: '',
@@ -75,11 +76,10 @@ export default defineComponent({
       ],
     };
   },
-
   methods: {
     sendMessage() {
       if (!this.message) return;
-
+      (this.$refs.commandLine as HTMLElement).focus();
       this.messages.push({
         text: this.message,
         from: 'Me',
