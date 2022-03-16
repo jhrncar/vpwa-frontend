@@ -3,7 +3,6 @@
     <q-chat-message
       v-for="message in messages"
       :key="message.text"
-      :name="message.from"
       :text="[message.text]"
       :sent="message.from == 'Me' ? true : false"
       :bg-color="message.from == 'Me' ? '' : 'dark'"
@@ -11,6 +10,12 @@
       :class="message.from == 'Me' ? 'float-right' : 'float-left'"
       style="width: 60%"
     >
+      <template #name>
+        <span :class="message.from == 'Me' ? 'text-primary' : 'text-dark'">{{
+          message.from
+        }}</span>
+      </template>
+
       <template #avatar>
         <q-avatar
           class="q-message-avatar text-white"
@@ -25,18 +30,27 @@
       </template>
     </q-chat-message>
   </div>
-  <q-form @submit="sendMessage" class="full-width q-pt-md">
+  <q-form @submit="sendMessage" class="row full-width q-pt-md">
     <q-input
-      v-model="newMessage"
+      class="col"
+      v-model="message"
       outlined
       bg-color="grey-2"
       input-style="color: #424242"
       placeholder="Message..."
     >
-      <template v-slot:after>
-        <q-btn round flat type="submit" icon="send" />
+      <template v-slot:append>
+        <q-icon
+          v-if="message !== ''"
+          name="close"
+          @click="message = ''"
+          class="cursor-pointer"
+        />
       </template>
     </q-input>
+    <div class="column flex-center q-pl-md">
+      <q-btn round dense flat color="grey-7" type="submit" icon="send" />
+    </div>
   </q-form>
 </template>
 
@@ -48,7 +62,7 @@ export default defineComponent({
 
   data() {
     return {
-      newMessage: '',
+      message: '',
       messages: [
         {
           text: 'Hey Daniel! How are u doing? Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?',
@@ -64,11 +78,13 @@ export default defineComponent({
 
   methods: {
     sendMessage() {
-      console.log('hello');
+      if (!this.message) return;
+
       this.messages.push({
-        text: this.newMessage,
+        text: this.message,
         from: 'Me',
       });
+      this.message = '';
     },
   },
 });
