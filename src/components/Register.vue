@@ -5,7 +5,9 @@
       outlined
       v-model="nickname"
       label="Nickname"
-      :rules="[(val: string) => val.length <= 30 || 'Please use maximum 30 characters']"
+      :rules="[
+        (val) => val.length <= 30 || 'Please use a maximum of 30 characters',
+      ]"
       hide-bottom-space
     />
     <q-input outlined type="email" v-model="email" label="E-mail" />
@@ -13,7 +15,9 @@
       outlined
       v-model="fullname"
       label="Full name"
-      :rules="[(val: string) => val.length <= 30 || 'Please use maximum 30 characters']"
+      :rules="[
+        (val) => val.length <= 30 || 'Please use a maximum of 30 characters',
+      ]"
       hide-bottom-space
     />
     <q-input
@@ -21,8 +25,10 @@
       outlined
       :type="isPwd ? 'password' : 'text'"
       label="Password"
-      :rules="[(val: string) => val.length >= 3 || 'Please use minimum 3 characters',
-      (val: string) => val == passwordAgain || 'Passwords do not match']"
+      :rules="[
+        (val) => val.length >= 3 || 'Please use a minimum 3 of characters',
+        (val) => val == passwordAgain || 'Passwords do not match',
+      ]"
       hide-bottom-space
       lazy-rules="ondemand"
     >
@@ -39,8 +45,10 @@
       outlined
       :type="isPwd ? 'password' : 'text'"
       label="Confirm password"
-      :rules="[(val: string) => val.length >= 3 || 'Please use minimum 3 characters',
-      (val: string) => val == password || 'Passwords do not match']"
+      :rules="[
+        (val) => val.length >= 3 || 'Please use a minimum 3 of characters',
+        (val) => val == password || 'Passwords do not match',
+      ]"
       hide-bottom-space
       lazy-rules="ondemand"
     >

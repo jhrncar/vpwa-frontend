@@ -1,15 +1,8 @@
 <template>
-  <q-layout view="lHh LpR lfr">
+  <q-layout view="hHh LpR lfr">
     <q-header elevated class="bg-secondary text-white">
       <q-toolbar class="justify-between">
-        <q-btn
-          dense
-          flat
-          round
-          icon="menu"
-          class="lt-md"
-          @click="toggleLeftDrawer"
-        />
+        <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
 
         <q-toolbar-title class="gt-xs"> Prismarine </q-toolbar-title>
         <div style="justify-content: space-between; display: flex; gap: 5px">

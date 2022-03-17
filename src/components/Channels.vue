@@ -1,14 +1,12 @@
 <template>
-  <h5
-    style="font-size: 32px; text-align: center; align-content: top"
-    class="text-white q-mb-sm q-mt-sm"
-  >
-    Public channels
-  </h5>
-  <q-list>
+  <q-list dense class="q-pt-md q-pb-sm">
+    <q-toolbar-title class="text-white q-mx-lg q-mb-xs"
+      >Public channels</q-toolbar-title
+    >
     <q-item v-for="channel in publicChannels" :key="channel.id" dense>
       <q-btn
-        class="full-width"
+        dense
+        class="full-width q-px-md"
         :class="{
           'bg-dark': selectedChannel == channel.id ? true : false,
           'text-white': selectedChannel == channel.id ? true : false,
@@ -23,17 +21,15 @@
       </q-btn>
     </q-item>
   </q-list>
-  <h5
-    style="font-size: 32px; text-align: center"
-    class="text-white q-mb-sm q-mt-lg"
-  >
-    Private channels
-  </h5>
-  <q-list>
+  <q-separator color="secondary" inset></q-separator>
+  <q-list dense class="q-pt-md q-pb-sm">
+    <q-toolbar-title class="text-white q-mx-lg q-mb-xs"
+      >Private channels</q-toolbar-title
+    >
     <q-item v-for="channel in privateChannels" :key="channel.id" dense>
       <q-btn
         dense
-        class="full-width"
+        class="full-width q-px-md"
         :class="{
           'bg-dark': selectedChannel == channel.id ? true : false,
           'text-white': selectedChannel == channel.id ? true : false,
@@ -58,14 +54,14 @@ export default defineComponent({
     // channeli sa loaduju z databazy
     return {
       publicChannels: [
-        { label: '# Channel1', id: '1' },
-        { label: '# Channel2', id: '2' },
-        { label: '# Channel3', id: '3' },
+        { label: '# channel1', id: '1' },
+        { label: '# channel2', id: '2' },
+        { label: '# channel3', id: '3' },
       ],
       privateChannels: [
-        { label: '# Channel1', id: '4' },
-        { label: '# Chanel2', id: '5' },
-        { label: '# Chanel3', id: '6' },
+        { label: '# channel1', id: '4' },
+        { label: '# chanel2', id: '5' },
+        { label: '# chanel3', id: '6' },
       ],
       selectedChannel: '', //TODO treba to dat do storu asi
     };
