@@ -1,8 +1,8 @@
 <template>
   <div class="full-width">
     <q-chat-message
-      v-for="message in messages"
-      :key="message.text"
+      v-for="message in selectedChannel.messages"
+      :key="selectedChannel.messages.indexOf(message)"
       :text="[message.text]"
       :sent="message.from == 'Me' ? true : false"
       :bg-color="message.from == 'Me' ? '' : 'dark'"
@@ -58,35 +58,37 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { Channel } from './models';
 
 export default defineComponent({
   name: 'Messages',
   data() {
     return {
       message: '',
-      messages: [
-        {
-          text: 'Hey Daniel! How are u doing? Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?',
-          from: 'Daniel',
-        },
-        {
-          text: 'Great! How about you?',
-          from: 'Me',
-        },
-      ],
     };
   },
   methods: {
     sendMessage() {
       if (!this.message) return;
       (this.$refs.commandLine as HTMLElement).focus();
-      this.messages.push({
+      this.$store.commit('MainStore/insertNewMessage', {
         text: this.message,
-        from: 'Me',
+        from: 'Me', //TODO Realne meno uzivatela, ale bude sa to zobrazovat ako Me
       });
       this.message = '';
     },
   },
+  computed: {
+    selectedChannel: {
+      get(): Channel {
+        return this.$store.state.MainStore.selectedChannel;
+      },
+      set(val: Channel) {
+        void this.$store.dispatch('MainStore/setSelectedChannel', val);
+      },
+    },
+  },
+  watch: {},
 });
 </script>
 

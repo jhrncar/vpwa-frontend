@@ -21,41 +21,29 @@
   </q-list>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from 'vue';
+import { User } from './models';
 
 export default defineComponent({
   name: 'Users',
 
   data() {
-    return {
-      users: [
-        {
-          id: 1,
-          fullname: 'Ruddy Jedrzej',
-          username: 'xruddy',
-          stat: 'positive',
-        },
-        {
-          id: 2,
-          fullname: 'Mallorie Alessandrini',
-          username: 'xmallorie',
-          stat: 'positive',
-        },
-        {
-          id: 3,
-          fullname: 'Elisabetta Wicklen',
-          username: 'xelisabetta',
-          stat: 'negative',
-        },
-        {
-          id: 4,
-          fullname: 'Seka Fawdrey',
-          username: 'xseka',
-          stat: 'grey',
-        },
-      ],
-    };
+    return {};
+  },
+  computed: {
+    users: {
+      get() {
+        return this.$store.state.MainStore.users;
+      },
+      set(user: User) {
+        this.$store.commit('insertUser', user);
+      },
+    },
+  },
+  methods: {},
+  beforeMount() {
+    void this.$store.dispatch('MainStore/getUsers');
   },
 });
 </script>
