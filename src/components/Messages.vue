@@ -69,6 +69,7 @@ export default defineComponent({
   },
   methods: {
     sendMessage() {
+      //TODO scrollnutie na koniec pri nacitani, infinite scroll
       if (!this.message) return;
       (this.$refs.commandLine as HTMLElement).focus();
       this.$store.commit('MainStore/insertNewMessage', {
