@@ -17,8 +17,3 @@ export type User = {
   username: string;
   stat: string;
 };
-export interface Messag {
-  text: string;
-  //timeSent: string; //TODO asi nejaky date type
-  from: string;
-}
