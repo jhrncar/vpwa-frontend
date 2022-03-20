@@ -4,15 +4,26 @@ export interface MainStateInterface {
   selectedChannel: Channel;
   publicChannels: Channel[];
   privateChannels: Channel[];
-  users: User[];
+  user: User;
 }
 
 function state(): MainStateInterface {
   return {
-    selectedChannel: { label: '', id: '', pendingInvite: false, messages: [] },
+    selectedChannel: {
+      label: '',
+      id: 0,
+      pendingInvite: false,
+      messages: [],
+      users: [],
+    },
     publicChannels: [],
     privateChannels: [],
-    users: [],
+    user: {
+      id: 0,
+      fullname: '',
+      username: '',
+      status: '',
+    },
   };
 }
 

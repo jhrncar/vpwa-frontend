@@ -1,47 +1,3 @@
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { Channel } from './models';
-
-export default defineComponent({
-  name: 'Channels',
-  data() {
-    //TODO pozvanky
-    return {};
-  },
-  watch: {},
-  computed: {
-    selectedChannel: {
-      get(): Channel {
-        return this.$store.state.MainStore.selectedChannel;
-      },
-
-      set(val: Channel) {
-        void this.$store.dispatch('MainStore/setSelectedChannel', val);
-      },
-    },
-    publicChannels: {
-      get(): Channel[] {
-        return this.$store.state.MainStore.publicChannels;
-      },
-      set(value: Channel) {
-        this.$store.commit('MainStore/insertPublicChannel', value);
-      },
-    },
-    privateChannels: {
-      get(): Channel[] {
-        return this.$store.state.MainStore.privateChannels;
-      },
-      set(value: Channel) {
-        this.$store.commit('MainStore/insertPrivateChannel', value);
-      },
-    },
-  },
-  methods: {},
-  mounted() {
-    void this.$store.dispatch('MainStore/getChannels');
-  },
-});
-</script>
 <template>
   <q-list dense class="q-pt-md q-pb-sm">
     <q-toolbar-title class="text-white q-mx-lg q-mb-xs"
@@ -89,3 +45,48 @@ export default defineComponent({
     </q-item>
   </q-list>
 </template>
+
+<script lang="ts">
+import { defineComponent } from 'vue';
+import { Channel } from './models';
+
+export default defineComponent({
+  name: 'Channels',
+  data() {
+    //TODO pozvanky
+    return {};
+  },
+  watch: {},
+  computed: {
+    selectedChannel: {
+      get(): Channel {
+        return this.$store.state.MainStore.selectedChannel;
+      },
+
+      set(value: Channel) {
+        void this.$store.dispatch('MainStore/setSelectedChannel', value);
+      },
+    },
+    publicChannels: {
+      get(): Channel[] {
+        return this.$store.state.MainStore.publicChannels;
+      },
+      set(value: Channel) {
+        this.$store.commit('MainStore/insertPublicChannel', value);
+      },
+    },
+    privateChannels: {
+      get(): Channel[] {
+        return this.$store.state.MainStore.privateChannels;
+      },
+      set(value: Channel) {
+        this.$store.commit('MainStore/insertPrivateChannel', value);
+      },
+    },
+  },
+  methods: {},
+  mounted() {
+    void this.$store.dispatch('MainStore/getChannels');
+  },
+});
+</script>

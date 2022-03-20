@@ -26,6 +26,7 @@
       :model-value="false"
     />
     <q-btn
+      @click="logUser"
       size="lg"
       label="Login"
       type="submit"
@@ -58,6 +59,11 @@ export default defineComponent({
       isPwd: true,
       rememberMe: 0,
     };
+  },
+  methods: {
+    logUser() {
+      void this.$store.dispatch('MainStore/getUser');
+    },
   },
 });
 </script>

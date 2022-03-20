@@ -11,11 +11,11 @@ const actions: ActionTree<MainStateInterface, StateInterface> = {
     const publicChannels: Channel[] = [
       {
         label: '# channel1',
-        id: '1',
+        id: 1,
         pendingInvite: false,
         messages: [
           {
-            text: 'Hey Daniel! How are u doing? Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?Hey Daniel! How are u doing?',
+            text: 'Hey Daniel! How are u doing?',
             from: 'Daniel',
           },
           {
@@ -23,15 +23,71 @@ const actions: ActionTree<MainStateInterface, StateInterface> = {
             from: 'Me',
           },
         ],
+        users: [
+          {
+            id: 2,
+            fullname: 'Ruddy Jedrzej',
+            username: 'xruddy',
+            status: 'Online',
+          },
+          {
+            id: 3,
+            fullname: 'Mallorie Alessandrini',
+            username: 'xmallorie',
+            status: 'Online',
+          },
+          {
+            id: 4,
+            fullname: 'Elisabetta Wicklen',
+            username: 'xelisabetta',
+            status: 'DND',
+          },
+          {
+            id: 5,
+            fullname: 'Seka Fawdrey',
+            username: 'xseka',
+            status: 'Offline',
+          },
+        ],
       },
-      { label: '# channel2', id: '2', pendingInvite: false, messages: [] },
-      { label: '# channel3', id: '3', pendingInvite: false, messages: [] },
+      {
+        label: '# channel2',
+        id: 2,
+        pendingInvite: false,
+        messages: [],
+        users: [],
+      },
+      {
+        label: '# channel3',
+        id: 3,
+        pendingInvite: false,
+        messages: [],
+        users: [],
+      },
     ];
 
     const privateChannels: Channel[] = [
-      { label: '# channel1', id: '4', pendingInvite: false, messages: [] },
-      { label: '# chanel2', id: '5', pendingInvite: false, messages: [] },
-      { label: '# chanel3', id: '6', pendingInvite: false, messages: [] },
+      {
+        label: '# channel1',
+        id: 4,
+        pendingInvite: false,
+        messages: [],
+        users: [],
+      },
+      {
+        label: '# channel2',
+        id: 5,
+        pendingInvite: false,
+        messages: [],
+        users: [],
+      },
+      {
+        label: '# channel3',
+        id: 6,
+        pendingInvite: false,
+        messages: [],
+        users: [],
+      },
     ];
     publicChannels.forEach((channel: Channel) => {
       context.commit('insertPublicChannel', channel);
@@ -40,36 +96,17 @@ const actions: ActionTree<MainStateInterface, StateInterface> = {
       context.commit('insertPrivateChannel', channel);
     });
   },
-  getUsers(context) {
-    const users: User[] = [
-      {
-        id: 1,
-        fullname: 'Ruddy Jedrzej',
-        username: 'xruddy',
-        stat: 'positive',
-      },
-      {
-        id: 2,
-        fullname: 'Mallorie Alessandrini',
-        username: 'xmallorie',
-        stat: 'positive',
-      },
-      {
-        id: 3,
-        fullname: 'Elisabetta Wicklen',
-        username: 'xelisabetta',
-        stat: 'negative',
-      },
-      {
-        id: 4,
-        fullname: 'Seka Fawdrey',
-        username: 'xseka',
-        stat: 'grey',
-      },
-    ];
-    users.forEach((user: User) => {
-      context.commit('insertUser', user);
-    });
+  getUser(context) {
+    const user: User = {
+      id: 1,
+      fullname: 'Logged User',
+      username: 'xuser',
+      status: 'Online',
+    };
+    context.commit('insertUser', user);
+  },
+  setStatus(context, status: string) {
+    context.commit('updateStatus', status);
   },
 };
 

@@ -2,13 +2,13 @@
   <q-btn-dropdown no-caps flat class="text-white q-pr-xs">
     <template v-slot:label>
       <div class="row items-center no-wrap">
-        <q-icon left name="fiber_manual_record" :color="stat" />
-        <div>{{ label }}</div>
+        <q-icon left name="fiber_manual_record" :color="statusColor" />
+        <div>{{ status }}</div>
       </div>
     </template>
 
     <q-list separator bordered class="bg-grey-2 text-dark">
-      <q-item clickable v-close-popup @click="onSelection('positive')">
+      <q-item clickable v-close-popup @click="status = 'Online'">
         <q-item-section avatar>
           <q-icon name="fiber_manual_record" class="text-positive" size="xs" />
         </q-item-section>
@@ -17,7 +17,7 @@
         </q-item-section>
       </q-item>
 
-      <q-item clickable v-close-popup @click="onSelection('negative')">
+      <q-item clickable v-close-popup @click="status = 'DND'">
         <q-item-section avatar>
           <q-icon name="fiber_manual_record" class="text-negative" size="xs" />
         </q-item-section>
@@ -26,7 +26,7 @@
         </q-item-section>
       </q-item>
 
-      <q-item clickable v-close-popup @click="onSelection('grey')">
+      <q-item clickable v-close-popup @click="status = 'Offline'">
         <q-item-section avatar>
           <q-icon name="fiber_manual_record" class="text-grey" size="xs" />
         </q-item-section>
@@ -42,21 +42,27 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'Availability',
-  data() {
-    return {
-      stat: 'grey',
-      label: 'Offline',
-    };
-  },
-  methods: {
-    onSelection(state: string) {
-      this.stat = state;
-      if (state == 'positive') {
-        this.label = 'Online';
-      } else if (state == 'negative') {
-        this.label = 'DND';
-      } else if (state == 'grey') {
-        this.label = 'Offline';
+
+  computed: {
+    status: {
+      get(): string {
+        return this.$store.state.MainStore.user.status;
+      },
+
+      set(value: string) {
+        void this.$store.dispatch('MainStore/setStatus', value);
+      },
+    },
+    statusColor() {
+      switch (this.status) {
+        case 'Online':
+          return 'positive';
+        case 'DND':
+          return 'negative';
+        case 'Offline':
+          return 'grey';
+        default:
+          return '';
       }
     },
   },

@@ -6,14 +6,15 @@ export type Message = {
 
 export type Channel = {
   label: string;
-  id: string;
+  id: number;
   pendingInvite: boolean;
   messages: Message[];
+  users: User[];
 };
 
 export type User = {
   id: number;
   fullname: string;
   username: string;
-  stat: string;
+  status: string;
 };

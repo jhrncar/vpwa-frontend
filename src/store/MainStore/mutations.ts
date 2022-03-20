@@ -6,6 +6,9 @@ const mutation: MutationTree<MainStateInterface> = {
   updateChannel(state: MainStateInterface, newChannel: Channel) {
     state.selectedChannel = newChannel;
   },
+  updateStatus(state: MainStateInterface, newStatus: string) {
+    state.user.status = newStatus;
+  },
   insertNewMessage(state: MainStateInterface, newMessage: Message) {
     state.selectedChannel.messages.push(newMessage);
   },
@@ -16,7 +19,7 @@ const mutation: MutationTree<MainStateInterface> = {
     state.privateChannels.push(newChannel);
   },
   insertUser(state: MainStateInterface, newUser: User) {
-    state.users.push(newUser);
+    state.user = newUser;
   },
 };
 
