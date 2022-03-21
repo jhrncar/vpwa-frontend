@@ -4,6 +4,7 @@ import { MainStateInterface } from './state';
 
 const mutation: MutationTree<MainStateInterface> = {
   updateChannel(state: MainStateInterface, newChannel: Channel) {
+    if (newChannel.pendingInvite) newChannel.pendingInvite = false;
     state.selectedChannel = newChannel;
   },
   updateStatus(state: MainStateInterface, newStatus: string) {
@@ -12,11 +13,12 @@ const mutation: MutationTree<MainStateInterface> = {
   insertNewMessage(state: MainStateInterface, newMessage: Message) {
     state.selectedChannel.messages.push(newMessage);
   },
-  insertPublicChannel(state: MainStateInterface, newChannel: Channel) {
-    state.publicChannels.push(newChannel);
-  },
-  insertPrivateChannel(state: MainStateInterface, newChannel: Channel) {
-    state.privateChannels.push(newChannel);
+  insertChannel(state: MainStateInterface, newChannel: Channel) {
+    if (newChannel.pendingInvite) {
+      state.channels.unshift(newChannel);
+    } else {
+      state.channels.push(newChannel);
+    }
   },
   insertUser(state: MainStateInterface, newUser: User) {
     state.user = newUser;

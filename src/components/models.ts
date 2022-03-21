@@ -6,6 +6,7 @@ export type Message = {
 
 export type Channel = {
   label: string;
+  type: 'public' | 'private' | '';
   id: number;
   pendingInvite: boolean;
   messages: Message[];

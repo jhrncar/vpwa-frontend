@@ -38,11 +38,11 @@ export default defineComponent({
   methods: {
     getStatusColor(status: string) {
       switch (status) {
-        case 'Online':
+        case 'online':
           return 'positive';
-        case 'DND':
+        case 'dnd':
           return 'negative';
-        case 'Offline':
+        case 'offline':
           return 'grey';
         default:
           return '';

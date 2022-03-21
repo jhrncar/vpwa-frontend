@@ -2,8 +2,7 @@ import { Channel, User } from 'src/components/models';
 
 export interface MainStateInterface {
   selectedChannel: Channel;
-  publicChannels: Channel[];
-  privateChannels: Channel[];
+  channels: Channel[];
   user: User;
 }
 
@@ -12,12 +11,12 @@ function state(): MainStateInterface {
     selectedChannel: {
       label: '',
       id: 0,
+      type: '',
       pendingInvite: false,
       messages: [],
       users: [],
     },
-    publicChannels: [],
-    privateChannels: [],
+    channels: [],
     user: {
       id: 0,
       fullname: '',

@@ -3,12 +3,18 @@
     <template v-slot:label>
       <div class="row items-center no-wrap">
         <q-icon left name="fiber_manual_record" :color="statusColor" />
-        <div>{{ status }}</div>
+        <div>
+          {{
+            status == 'dnd'
+              ? status.toUpperCase()
+              : status.charAt(0).toUpperCase() + status.slice(1)
+          }}
+        </div>
       </div>
     </template>
 
     <q-list separator bordered class="bg-grey-2 text-dark">
-      <q-item clickable v-close-popup @click="status = 'Online'">
+      <q-item clickable v-close-popup @click="status = 'online'">
         <q-item-section avatar>
           <q-icon name="fiber_manual_record" class="text-positive" size="xs" />
         </q-item-section>
@@ -17,7 +23,7 @@
         </q-item-section>
       </q-item>
 
-      <q-item clickable v-close-popup @click="status = 'DND'">
+      <q-item clickable v-close-popup @click="status = 'dnd'">
         <q-item-section avatar>
           <q-icon name="fiber_manual_record" class="text-negative" size="xs" />
         </q-item-section>
@@ -26,7 +32,7 @@
         </q-item-section>
       </q-item>
 
-      <q-item clickable v-close-popup @click="status = 'Offline'">
+      <q-item clickable v-close-popup @click="status = 'offline'">
         <q-item-section avatar>
           <q-icon name="fiber_manual_record" class="text-grey" size="xs" />
         </q-item-section>
@@ -55,11 +61,11 @@ export default defineComponent({
     },
     statusColor() {
       switch (this.status) {
-        case 'Online':
+        case 'online':
           return 'positive';
-        case 'DND':
+        case 'dnd':
           return 'negative';
-        case 'Offline':
+        case 'offline':
           return 'grey';
         default:
           return '';

@@ -8,10 +8,11 @@ const actions: ActionTree<MainStateInterface, StateInterface> = {
     context.commit('updateChannel', data);
   },
   getChannels(context) {
-    const publicChannels: Channel[] = [
+    const channels: Channel[] = [
       {
         label: '# channel1',
         id: 1,
+        type: 'public',
         pendingInvite: false,
         messages: [
           {
@@ -28,31 +29,32 @@ const actions: ActionTree<MainStateInterface, StateInterface> = {
             id: 2,
             fullname: 'Ruddy Jedrzej',
             username: 'xruddy',
-            status: 'Online',
+            status: 'online',
           },
           {
             id: 3,
             fullname: 'Mallorie Alessandrini',
             username: 'xmallorie',
-            status: 'Online',
+            status: 'online',
           },
           {
             id: 4,
             fullname: 'Elisabetta Wicklen',
             username: 'xelisabetta',
-            status: 'DND',
+            status: 'dnd',
           },
           {
             id: 5,
             fullname: 'Seka Fawdrey',
             username: 'xseka',
-            status: 'Offline',
+            status: 'offline',
           },
         ],
       },
       {
         label: '# channel2',
         id: 2,
+        type: 'public',
         pendingInvite: false,
         messages: [],
         users: [],
@@ -60,40 +62,38 @@ const actions: ActionTree<MainStateInterface, StateInterface> = {
       {
         label: '# channel3',
         id: 3,
-        pendingInvite: false,
+        type: 'public',
+        pendingInvite: true,
         messages: [],
         users: [],
       },
-    ];
-
-    const privateChannels: Channel[] = [
       {
-        label: '# channel1',
+        label: '# channel4',
         id: 4,
+        type: 'private',
         pendingInvite: false,
         messages: [],
         users: [],
       },
       {
-        label: '# channel2',
+        label: '# channel5',
         id: 5,
-        pendingInvite: false,
+        type: 'private',
+        pendingInvite: true,
         messages: [],
         users: [],
       },
       {
-        label: '# channel3',
+        label: '# channel6',
         id: 6,
+        type: 'private',
         pendingInvite: false,
         messages: [],
         users: [],
       },
     ];
-    publicChannels.forEach((channel: Channel) => {
-      context.commit('insertPublicChannel', channel);
-    });
-    privateChannels.forEach((channel: Channel) => {
-      context.commit('insertPrivateChannel', channel);
+    channels.forEach((channel: Channel) => {
+      context.commit('insertChannel', channel);
     });
   },
   getUser(context) {
@@ -101,7 +101,7 @@ const actions: ActionTree<MainStateInterface, StateInterface> = {
       id: 1,
       fullname: 'Logged User',
       username: 'xuser',
-      status: 'Online',
+      status: 'online',
     };
     context.commit('insertUser', user);
   },
