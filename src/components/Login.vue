@@ -63,6 +63,7 @@ export default defineComponent({
   methods: {
     logUser() {
       void this.$store.dispatch('MainStore/getUser');
+      void this.$store.dispatch('MainStore/getChannels');
     },
   },
 });

@@ -2,10 +2,12 @@
   <q-layout view="hHh LpR lfr">
     <q-header elevated class="bg-secondary text-white">
       <q-toolbar class="justify-between">
-        <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
+        <q-btn flat round icon="menu" @click="toggleLeftDrawer" />
 
-        <q-toolbar-title class="gt-xs"> Prismarine </q-toolbar-title>
-        <div style="justify-content: space-between; display: flex; gap: 5px">
+        <q-toolbar-title v-if="!leftDrawerOpen">
+          {{ selectedChannelLabel }}
+        </q-toolbar-title>
+        <div style="justify-content: space-between; display: flex; gap: 10px">
           <Availability />
           <q-btn flat round icon="people" @click="toggleRightDrawer" />
           <q-btn round flat icon="logout" to="/login" />
@@ -18,7 +20,7 @@
       v-model="leftDrawerOpen"
       side="left"
       class="bg-primary"
-      width="250"
+      :width="250"
     >
       <Channels />
     </q-drawer>
@@ -27,7 +29,7 @@
       v-model="rightDrawerOpen"
       side="right"
       class="bg-primary"
-      width="250"
+      :width="250"
     >
       <Users />
     </q-drawer>
@@ -38,16 +40,23 @@
   </q-layout>
 </template>
 
-<script>
+<script lang="ts">
 import { ref } from 'vue';
+import { defineComponent } from 'vue';
 import Availability from 'src/components/Availability.vue';
 import Channels from 'src/components/Channels.vue';
 import Users from 'src/components/Users.vue';
 
-export default {
+export default defineComponent({
   name: 'MainLayout',
 
   components: { Availability, Channels, Users },
+
+  data() {
+    return {
+      drawerWidth: 250,
+    };
+  },
 
   setup() {
     const leftDrawerOpen = ref(false);
@@ -63,6 +72,12 @@ export default {
       },
     };
   },
-};
+
+  computed: {
+    selectedChannelLabel() {
+      return this.$store.state.MainStore.selectedChannel.label;
+    },
+  },
+});
 </script>
 <style></style>

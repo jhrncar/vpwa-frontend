@@ -1,4 +1,20 @@
 <template>
+  <q-card
+    full-width
+    class="absolute-top bg-grey-2 z-top"
+    v-if="selectedChannel.pendingInvite"
+  >
+    <q-card-section class="row no-wrap justify-center">
+      <div class="q-pr-lg">
+        <div class="text-weight-bold">
+          Accept invite to {{ selectedChannel.label }}
+        </div>
+        <div class="text-grey">From August</div>
+      </div>
+      <q-btn flat round icon="check" @click="acceptInvite" />
+      <q-btn flat round icon="close" @click="declineInvite" />
+    </q-card-section>
+  </q-card>
   <div class="full-width">
     <q-chat-message
       v-for="message in selectedChannel.messages"
@@ -68,15 +84,21 @@ export default defineComponent({
     };
   },
   methods: {
-    sendMessage() {
+    sendMessage(): void {
       //TODO scrollnutie na koniec pri nacitani, infinite scroll
-      if (!this.message) return;
+      if (!this.message || this.selectedChannel.pendingInvite) return;
       (this.$refs.commandLine as HTMLElement).focus();
       this.$store.commit('MainStore/insertNewMessage', {
         text: this.message,
         from: 'Me', //TODO Realne meno uzivatela, ale bude sa to zobrazovat ako Me
       });
       this.message = '';
+    },
+    acceptInvite(): void {
+      this.$store.commit('MainStore/updatePendingInvite');
+    },
+    declineInvite(): void {
+      this.$store.commit('MainStore/removeChannel', this.selectedChannel);
     },
   },
   computed: {
@@ -89,7 +111,6 @@ export default defineComponent({
       },
     },
   },
-  watch: {},
 });
 </script>
 

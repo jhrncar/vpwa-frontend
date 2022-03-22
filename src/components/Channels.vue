@@ -1,13 +1,10 @@
 <template>
   <div v-for="type in ['public', 'private']" :key="type">
-    <q-separator v-if="type == 'private'" color="secondary" inset></q-separator>
-    <q-list dense class="q-pt-md q-pb-sm">
-      <q-toolbar-title class="text-white q-mx-lg q-mb-xs"
-        >{{
-          type.charAt(0).toUpperCase() + type.slice(1)
-        }}
-        channels</q-toolbar-title
-      >
+    <q-list dense>
+      <q-toolbar-title class="text-white q-mx-lg q-mt-md q-mb-xs"
+        >{{ type.charAt(0).toUpperCase() + type.slice(1) }} channels
+      </q-toolbar-title>
+      <q-separator inset class="q-mt-xs q-mb-sm"></q-separator>
       <q-item
         v-for="channel in channels.filter((item) => item.type == type)"
         :key="channel.id"
@@ -70,8 +67,5 @@ export default defineComponent({
   },
 
   methods: {},
-  mounted() {
-    void this.$store.dispatch('MainStore/getChannels');
-  },
 });
 </script>
