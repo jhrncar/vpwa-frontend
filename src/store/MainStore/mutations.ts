@@ -11,6 +11,11 @@ const mutation: MutationTree<MainStateInterface> = {
   },
   updatePendingInvite(state: MainStateInterface) {
     state.selectedChannel.pendingInvite = false;
+    state.channels.sort((a, b) => {
+      if (a.pendingInvite) return -1;
+      if (b.pendingInvite) return 1;
+      return a.label > b.label ? 1 : -1;
+    });
   },
   removeChannel(state: MainStateInterface, channel: Channel) {
     if (channel === state.selectedChannel) {
