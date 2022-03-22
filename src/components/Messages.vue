@@ -1,7 +1,7 @@
 <template>
   <q-card
     full-width
-    class="absolute-top bg-grey-2 z-top"
+    class="absolute-top bg-grey-2"
     v-if="selectedChannel.pendingInvite"
   >
     <q-card-section class="row no-wrap justify-center">
@@ -15,7 +15,7 @@
       <q-btn flat round icon="close" @click="declineInvite" />
     </q-card-section>
   </q-card>
-  <div class="full-width">
+  <div v-if="!selectedChannel.pendingInvite">
     <q-chat-message
       v-for="message in selectedChannel.messages"
       :key="selectedChannel.messages.indexOf(message)"
@@ -86,7 +86,7 @@ export default defineComponent({
   methods: {
     sendMessage(): void {
       //TODO scrollnutie na koniec pri nacitani, infinite scroll
-      if (!this.message || this.selectedChannel.pendingInvite) return;
+      // if (!this.message || this.selectedChannel.pendingInvite) return;
       (this.$refs.commandLine as HTMLElement).focus();
       this.$store.commit('MainStore/insertNewMessage', {
         text: this.message,

@@ -25,7 +25,10 @@
           unelevated
           no-caps
           align="left"
-          @click="selectedChannel = channel"
+          @click="
+            selectedChannel = channel;
+            if ($q.screen.lt.md) $emit('closeDrawer');
+          "
         >
           <div v-if="channel.pendingInvite">
             <q-icon name="fiber_new" size="sm" class="q-pr-sm" />
@@ -43,6 +46,7 @@ import { Channel } from './models';
 
 export default defineComponent({
   name: 'Channels',
+  emits: ['closeDrawer'],
   data() {
     return {};
   },
@@ -65,7 +69,5 @@ export default defineComponent({
       },
     },
   },
-
-  methods: {},
 });
 </script>

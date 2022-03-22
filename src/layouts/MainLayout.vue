@@ -22,7 +22,7 @@
       class="bg-primary"
       :width="250"
     >
-      <Channels />
+      <Channels @closeDrawer="toggleLeftDrawer" />
     </q-drawer>
 
     <q-drawer
