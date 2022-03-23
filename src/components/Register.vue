@@ -1,24 +1,33 @@
 <template>
   <div class="text-h2 text-dark q-mb-xl">Register</div>
-  <q-form class="q-gutter-y-md column" style="width: 50%" @submit="onSubmit">
+  <q-form
+    class="q-gutter-y-md column"
+    style="width: 50%"
+    @submit.stop="onSubmit"
+  >
     <q-input
       outlined
       v-model="nickname"
       label="Nickname"
-      :rules="[
-        (val) => val.length <= 30 || 'Please use a maximum of 30 characters',
-      ]"
+      :error="v$.nickname.$error"
       hide-bottom-space
+      :error-message="v$.$errors.map((e) => e.$message).join()"
     />
-    <q-input outlined type="email" v-model="email" label="E-mail" />
+    <q-input
+      outlined
+      v-model="email"
+      label="E-mail"
+      hide-bottom-space
+      :error-message="v$.$errors.map((e) => e.$message).join()"
+      :error="v$.email.$error"
+    />
     <q-input
       outlined
       v-model="fullname"
       label="Full name"
-      :rules="[
-        (val) => val.length <= 30 || 'Please use a maximum of 30 characters',
-      ]"
+      :error="v$.fullName.$error"
       hide-bottom-space
+      :error-message="v$.$errors.map((e) => e.$message).join()"
     />
     <q-input
       v-model="password"
@@ -30,7 +39,8 @@
         (val) => val == passwordAgain || 'Passwords do not match',
       ]"
       hide-bottom-space
-      lazy-rules="ondemand"
+      :error-message="v$.$errors.map((e) => e.$message).join()"
+      :error="v$.password.$error"
     >
       <template v-slot:append>
         <q-icon
@@ -77,9 +87,20 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import useVuelidate from '@vuelidate/core';
+import {
+  minLength,
+  maxLength,
+  required,
+  email,
+  sameAs,
+} from '@vuelidate/validators';
 
 export default defineComponent({
   name: 'Register',
+  setup() {
+    return { v$: useVuelidate({ $autoDirty: true }) };
+  },
   data() {
     return {
       nickname: '',
@@ -90,9 +111,31 @@ export default defineComponent({
       isPwd: true,
       isDifferent: false,
     };
+  validations() {
+    return {
+      nickname: {
+        required,
+        maxLength: maxLength(30),
+      },
+      fullName: {
+        required,
+        maxLength: maxLength(30),
+      },
+      email: {
+        required,
+        email,
+      },
+      password: {
+        required,
+        sameAs,
+      },
+    };
   },
   methods: {
-    onSubmit() {
+    async onSubmit() {
+      const isFormCorrect = await this.v$.$validate();
+      if (!isFormCorrect) {
+      }
       if (this.password != this.passwordAgain) {
         this.isDifferent = true;
       }

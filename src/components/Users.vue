@@ -2,7 +2,7 @@
   <q-list class="full-width q-py-md" dense>
     <q-toolbar-title class="text-white q-mx-lg">Users</q-toolbar-title>
     <q-separator inset class="q-mt-xs q-mb-sm" />
-    <q-item v-for="user in users" :key="user.id" class="text-dark">
+    <q-item v-for="user in users" :key="user.id" class="text-dark q-mb-xs">
       <q-icon
         name="fiber_manual_record"
         :color="getStatusColor(user.status)"

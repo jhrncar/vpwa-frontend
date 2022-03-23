@@ -1,7 +1,7 @@
 <template>
   <div class="text-h2 text-dark q-mb-xl">Login</div>
 
-  <q-form class="q-gutter-y-md column" style="width: 50%">
+  <q-form class="q-gutter-y-md column" style="width: 50%" @submit="logUser">
     <q-input outlined v-model="nickname" label="Nickname/E-mail" />
     <q-input
       v-model="password"
@@ -26,13 +26,11 @@
       :model-value="false"
     />
     <q-btn
-      @click="logUser"
       size="lg"
       label="Login"
       type="submit"
       color="primary"
       class="q-mt-md"
-      to="/"
     />
   </q-form>
 
@@ -64,6 +62,7 @@ export default defineComponent({
     logUser() {
       void this.$store.dispatch('MainStore/getUser');
       void this.$store.dispatch('MainStore/getChannels');
+      void this.$router.push('/');
     },
   },
 });
