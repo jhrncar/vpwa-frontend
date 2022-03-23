@@ -11,35 +11,31 @@
       label="Nickname"
       :error="v$.nickname.$error"
       hide-bottom-space
-      :error-message="v$.$errors.map((e) => e.$message).join()"
+      :error-message="getErrorMessage('nickname')"
     />
     <q-input
       outlined
       v-model="email"
       label="E-mail"
       hide-bottom-space
-      :error-message="v$.$errors.map((e) => e.$message).join()"
+      :error-message="getErrorMessage('email')"
       :error="v$.email.$error"
     />
     <q-input
       outlined
       v-model="fullname"
       label="Full name"
-      :error="v$.fullName.$error"
+      :error="v$.fullname.$error"
       hide-bottom-space
-      :error-message="v$.$errors.map((e) => e.$message).join()"
+      :error-message="getErrorMessage('fullName')"
     />
     <q-input
       v-model="password"
       outlined
       :type="isPwd ? 'password' : 'text'"
       label="Password"
-      :rules="[
-        (val) => val.length >= 3 || 'Please use a minimum 3 of characters',
-        (val) => val == passwordAgain || 'Passwords do not match',
-      ]"
       hide-bottom-space
-      :error-message="v$.$errors.map((e) => e.$message).join()"
+      :error-message="getErrorMessage('password')"
       :error="v$.password.$error"
     >
       <template v-slot:append>
@@ -55,12 +51,9 @@
       outlined
       :type="isPwd ? 'password' : 'text'"
       label="Confirm password"
-      :rules="[
-        (val) => val.length >= 3 || 'Please use a minimum 3 of characters',
-        (val) => val == password || 'Passwords do not match',
-      ]"
       hide-bottom-space
-      lazy-rules="ondemand"
+      :error-message="getErrorMessage('passwordAgain')"
+      :error="v$.passwordAgain.$error"
     >
       <template v-slot:append>
         <q-icon
@@ -87,19 +80,20 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import useVuelidate from '@vuelidate/core';
+import useVuelidate, { ErrorObject } from '@vuelidate/core';
 import {
   minLength,
   maxLength,
   required,
   email,
   sameAs,
+  helpers,
 } from '@vuelidate/validators';
 
 export default defineComponent({
   name: 'Register',
   setup() {
-    return { v$: useVuelidate({ $autoDirty: true }) };
+    return { v$: useVuelidate() };
   },
   data() {
     return {
@@ -109,15 +103,11 @@ export default defineComponent({
       password: '',
       passwordAgain: '',
       isPwd: true,
-      isDifferent: false,
     };
+  },
   validations() {
     return {
       nickname: {
-        required,
-        maxLength: maxLength(30),
-      },
-      fullName: {
         required,
         maxLength: maxLength(30),
       },
@@ -125,19 +115,43 @@ export default defineComponent({
         required,
         email,
       },
+      fullname: {
+        required,
+        maxLength: maxLength(30),
+      },
+
       password: {
         required,
-        sameAs,
+        sameAs: sameAs(this.passwordAgain),
+        minLength: minLength(8),
+        maxLength: maxLength(30),
+      },
+      passwordAgain: {
+        required,
+        sameAs: sameAs(this.password),
+        minLength: minLength(8),
+        maxLength: maxLength(30),
       },
     };
   },
   methods: {
     async onSubmit() {
+      this.v$.$touch;
       const isFormCorrect = await this.v$.$validate();
       if (!isFormCorrect) {
       }
-      if (this.password != this.passwordAgain) {
-        this.isDifferent = true;
+    },
+    getErrorMessage(id: string): string {
+      let a = undefined;
+      try {
+        a = this.v$.$errors.reduce((previousValue, currentValue) =>
+          currentValue.$property == id ? currentValue : previousValue
+        ).$message;
+      } catch (error) {}
+      if (typeof a == 'string') {
+        return a;
+      } else {
+        return '';
       }
     },
   },
