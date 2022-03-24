@@ -122,13 +122,19 @@ export default defineComponent({
 
       password: {
         required,
-        sameAs: sameAs(this.passwordAgain),
+        sameAs: helpers.withMessage(
+          'The passwords are not the same',
+          sameAs(this.passwordAgain)
+        ),
         minLength: minLength(8),
         maxLength: maxLength(30),
       },
       passwordAgain: {
         required,
-        sameAs: sameAs(this.password),
+        sameAs: helpers.withMessage(
+          'The passwords are not the same',
+          sameAs(this.password)
+        ),
         minLength: minLength(8),
         maxLength: maxLength(30),
       },
@@ -138,7 +144,7 @@ export default defineComponent({
     async onSubmit() {
       this.v$.$touch;
       const isFormCorrect = await this.v$.$validate();
-      if (!isFormCorrect) {
+      if (isFormCorrect) {
       }
     },
     getErrorMessage(id: string): string {

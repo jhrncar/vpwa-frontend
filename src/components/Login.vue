@@ -2,12 +2,22 @@
   <div class="text-h2 text-dark q-mb-xl">Login</div>
 
   <q-form class="q-gutter-y-md column" style="width: 50%" @submit="logUser">
-    <q-input outlined v-model="nickname" label="Nickname/E-mail" />
+    <q-input
+      outlined
+      v-model="nickname"
+      label="Nickname/E-mail"
+      hide-bottom-space
+      :error-message="getErrorMessage('nickname')"
+      :error="v$.nickname.$error"
+    />
     <q-input
       v-model="password"
       outlined
       :type="isPwd ? 'password' : 'text'"
       label="Password"
+      hide-bottom-space
+      :error-message="getErrorMessage('password')"
+      :error="v$.password.$error"
     >
       <template v-slot:append>
         <q-icon
@@ -46,10 +56,15 @@
 </template>
 
 <script lang="ts">
+import useVuelidate from '@vuelidate/core';
+import { maxLength, minLength, required } from '@vuelidate/validators';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'Login',
+  setup() {
+    return { v$: useVuelidate() };
+  },
   data() {
     return {
       nickname: '',
@@ -58,11 +73,41 @@ export default defineComponent({
       rememberMe: 0,
     };
   },
+  validations() {
+    return {
+      nickname: {
+        required,
+      },
+      password: {
+        required,
+        minLength: minLength(8),
+        maxLength: maxLength(30),
+      },
+    };
+  },
   methods: {
-    logUser() {
+    async logUser() {
+      this.v$.$touch;
+      const isFormCorrect = await this.v$.$validate();
+      if (isFormCorrect) {
+        //TODO vsetko bude tu, len zatial nech nemusime furt vyplnat
+      }
       void this.$store.dispatch('MainStore/getUser');
       void this.$store.dispatch('MainStore/getChannels');
       void this.$router.push('/');
+    },
+    getErrorMessage(id: string): string {
+      let a = undefined;
+      try {
+        a = this.v$.$errors.reduce((previousValue, currentValue) =>
+          currentValue.$property == id ? currentValue : previousValue
+        ).$message;
+      } catch (error) {}
+      if (typeof a == 'string') {
+        return a;
+      } else {
+        return '';
+      }
     },
   },
 });
