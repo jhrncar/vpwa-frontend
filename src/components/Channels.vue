@@ -25,10 +25,7 @@
           unelevated
           no-caps
           align="left"
-          @click="
-            selectedChannel = channel;
-            if ($q.screen.lt.md) $emit('closeDrawer');
-          "
+          @click="handleSelect(channel)"
         >
           <div v-if="channel.pendingInvite">
             <q-icon name="fiber_new" size="sm" class="q-pr-sm" />
@@ -41,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, nextTick } from 'vue';
 import { Channel } from './models';
 
 export default defineComponent({
@@ -49,6 +46,14 @@ export default defineComponent({
   emits: ['closeDrawer'],
   data() {
     return {};
+  },
+  methods: {
+    async handleSelect(selected: Channel) {
+      this.selectedChannel = selected;
+      if (this.$q.screen.lt.md) this.$emit('closeDrawer');
+      await nextTick();
+      window.scrollTo(0, document.body.scrollHeight);
+    },
   },
   computed: {
     selectedChannel: {

@@ -23,6 +23,78 @@ const actions: ActionTree<MainStateInterface, StateInterface> = {
             text: 'Great! How about you?',
             from: 'Me',
           },
+          {
+            text: 'Hey Daniel! How are u doing?',
+            from: 'Daniel',
+          },
+          {
+            text: 'Great! How about you?',
+            from: 'Me',
+          },
+          {
+            text: 'Hey Daniel! How are u doing?',
+            from: 'Daniel',
+          },
+          {
+            text: 'Great! How about you?',
+            from: 'Me',
+          },
+          {
+            text: 'Hey Daniel! How are u doing?',
+            from: 'Daniel',
+          },
+          {
+            text: 'Great! How about you?',
+            from: 'Me',
+          },
+          {
+            text: 'Hey Daniel! How are u doing?',
+            from: 'Daniel',
+          },
+          {
+            text: 'Great! How about you?',
+            from: 'Me',
+          },
+          {
+            text: 'Hey Daniel! How are u doing?',
+            from: 'Daniel',
+          },
+          {
+            text: 'Great! How about you?',
+            from: 'Me',
+          },
+          {
+            text: 'Hey Daniel! How are u doing?',
+            from: 'Daniel',
+          },
+          {
+            text: 'Great! How about you?',
+            from: 'Me',
+          },
+          {
+            text: 'Hey Daniel! How are u doing?',
+            from: 'Daniel',
+          },
+          {
+            text: 'Great! How about you?',
+            from: 'Me',
+          },
+          {
+            text: 'Hey Daniel! How are u doing?',
+            from: 'Daniel',
+          },
+          {
+            text: 'Great! How about you?',
+            from: 'Me',
+          },
+          {
+            text: 'Hey Daniel! How are u doing?',
+            from: 'Daniel',
+          },
+          {
+            text: 'Great! How about you?',
+            from: 'Me',
+          },
         ],
         users: [
           {
