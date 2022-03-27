@@ -9,8 +9,11 @@ const mutation: MutationTree<MainStateInterface> = {
   updateStatus(state: MainStateInterface, newStatus: string) {
     state.user.status = newStatus;
   },
-  updatePendingInvite(state: MainStateInterface) {
+  acceptPendingInvite(state: MainStateInterface) {
     state.selectedChannel.pendingInvite = false;
+    mutation.sortChannels(state);
+  },
+  sortChannels(state: MainStateInterface) {
     state.channels.sort((a, b) => {
       if (a.pendingInvite) return -1;
       if (b.pendingInvite) return 1;
@@ -19,14 +22,7 @@ const mutation: MutationTree<MainStateInterface> = {
   },
   removeChannel(state: MainStateInterface, channel: Channel) {
     if (channel === state.selectedChannel) {
-      state.selectedChannel = {
-        label: '',
-        id: 0,
-        type: '',
-        pendingInvite: false,
-        messages: [],
-        users: [],
-      };
+      state.selectedChannel = {} as Channel;
     }
     state.channels.splice(state.channels.indexOf(channel), 1);
   },
@@ -39,6 +35,7 @@ const mutation: MutationTree<MainStateInterface> = {
     } else {
       state.channels.push(newChannel);
     }
+    mutation.sortChannels(state);
   },
   insertUser(state: MainStateInterface, newUser: User) {
     state.user = newUser;

@@ -8,21 +8,9 @@ export interface MainStateInterface {
 
 function state(): MainStateInterface {
   return {
-    selectedChannel: {
-      label: '',
-      id: 0,
-      type: '',
-      pendingInvite: false,
-      messages: [],
-      users: [],
-    },
+    selectedChannel: {} as Channel,
     channels: [],
-    user: {
-      id: 0,
-      fullname: '',
-      username: '',
-      status: '',
-    },
+    user: {} as User,
   };
 }
 

@@ -11,6 +11,7 @@ export type Channel = {
   pendingInvite: boolean;
   messages: Message[];
   users: User[];
+  admin: User;
 };
 
 export type User = {

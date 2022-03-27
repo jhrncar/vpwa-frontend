@@ -7,6 +7,18 @@ const actions: ActionTree<MainStateInterface, StateInterface> = {
   setSelectedChannel(context, data: Channel) {
     context.commit('updateChannel', data);
   },
+  createChannel(context, data: { label: string; type: 'public' | 'private' }) {
+    const newChannel: Channel = {
+      label: data.label,
+      id: 7,
+      type: data.type,
+      pendingInvite: false,
+      messages: [],
+      users: [],
+      admin: context.state.user,
+    };
+    context.commit('insertChannel', newChannel);
+  },
   getChannels(context) {
     const channels: Channel[] = [
       {
@@ -122,6 +134,7 @@ const actions: ActionTree<MainStateInterface, StateInterface> = {
             status: 'offline',
           },
         ],
+        admin: context.state.user,
       },
       {
         label: '# channel2',
@@ -130,6 +143,7 @@ const actions: ActionTree<MainStateInterface, StateInterface> = {
         pendingInvite: false,
         messages: [],
         users: [],
+        admin: {} as User,
       },
       {
         label: '# channel3',
@@ -138,6 +152,7 @@ const actions: ActionTree<MainStateInterface, StateInterface> = {
         pendingInvite: true,
         messages: [],
         users: [],
+        admin: {} as User,
       },
       {
         label: '# channel4',
@@ -146,6 +161,7 @@ const actions: ActionTree<MainStateInterface, StateInterface> = {
         pendingInvite: false,
         messages: [],
         users: [],
+        admin: {} as User,
       },
       {
         label: '# channel5',
@@ -154,6 +170,7 @@ const actions: ActionTree<MainStateInterface, StateInterface> = {
         pendingInvite: true,
         messages: [],
         users: [],
+        admin: {} as User,
       },
       {
         label: '# channel6',
@@ -162,6 +179,7 @@ const actions: ActionTree<MainStateInterface, StateInterface> = {
         pendingInvite: false,
         messages: [],
         users: [],
+        admin: {} as User,
       },
     ];
     channels.forEach((channel: Channel) => {
