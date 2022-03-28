@@ -80,7 +80,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import useVuelidate, { ErrorObject } from '@vuelidate/core';
+import useVuelidate from '@vuelidate/core';
 import {
   minLength,
   maxLength,
