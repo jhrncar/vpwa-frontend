@@ -17,8 +17,6 @@
             </q-item-section>
           </q-item>
 
-          <q-separator class="q-my-xs" />
-
           <q-item clickable v-close-popup @click="status = 'dnd'">
             <q-item-section avatar>
               <q-icon
@@ -31,8 +29,6 @@
               <q-item-label>DND</q-item-label>
             </q-item-section>
           </q-item>
-
-          <q-separator class="q-my-xs" />
 
           <q-item clickable v-close-popup @click="status = 'offline'">
             <q-item-section avatar>

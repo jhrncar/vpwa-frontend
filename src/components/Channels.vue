@@ -112,59 +112,60 @@
               </q-list>
             </div>
           </q-menu>
-          <q-dialog v-model="confirmLeave" style="max-width: 500px">
-            <q-card>
-              <q-card-section>
-                <div class="text-h6">Leave {{ confirmChannel.label }}</div>
-              </q-card-section>
-
-              <q-card-section class="q-pt-none">
-                Are you sure you want to leave
-                {{ confirmChannel.label }}?
-              </q-card-section>
-
-              <q-card-actions align="right">
-                <q-btn flat label="Cancel" color="dark" v-close-popup />
-                <q-btn
-                  flat
-                  label="Leave"
-                  color="negative"
-                  @click="
-                    leaveChannel();
-                    confirmLeave = false;
-                  "
-                />
-              </q-card-actions>
-            </q-card>
-          </q-dialog>
-          <q-dialog v-model="confirmDelete" style="max-width: 500px">
-            <q-card>
-              <q-card-section>
-                <div class="text-h6">Delete {{ confirmChannel.label }}</div>
-              </q-card-section>
-
-              <q-card-section class="q-pt-none">
-                Are you sure you want to delete
-                {{ confirmChannel.label }}?
-              </q-card-section>
-
-              <q-card-actions align="right">
-                <q-btn flat label="Cancel" color="dark" v-close-popup />
-                <q-btn
-                  flat
-                  label="Delete"
-                  color="negative"
-                  @click="
-                    deleteChannel();
-                    confirmDelete = false;
-                  "
-                />
-              </q-card-actions>
-            </q-card>
-          </q-dialog>
         </q-btn>
       </q-item>
     </q-list>
+
+    <q-dialog v-model="confirmLeave">
+      <q-card>
+        <q-card-section>
+          <div class="text-h6">Leave {{ confirmChannel.label }}</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          Are you sure you want to leave
+          {{ confirmChannel.label }}?
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="Cancel" color="dark" v-close-popup />
+          <q-btn
+            flat
+            label="Leave"
+            color="negative"
+            @click="
+              leaveChannel();
+              confirmLeave = false;
+            "
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <q-dialog v-model="confirmDelete">
+      <q-card>
+        <q-card-section>
+          <div class="text-h6">Delete {{ confirmChannel.label }}</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          Are you sure you want to delete
+          {{ confirmChannel.label }}?
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="Cancel" color="dark" v-close-popup />
+          <q-btn
+            flat
+            label="Delete"
+            color="negative"
+            @click="
+              deleteChannel();
+              confirmDelete = false;
+            "
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 

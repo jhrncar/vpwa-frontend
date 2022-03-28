@@ -102,7 +102,7 @@ export default defineComponent({
       window.scrollTo(0, document.body.scrollHeight);
     },
     acceptInvite(): void {
-      this.$store.commit('MainStore/updatePendingInvite');
+      this.$store.commit('MainStore/acceptPendingInvite');
     },
     declineInvite(): void {
       this.$store.commit('MainStore/removeChannel', this.selectedChannel);
