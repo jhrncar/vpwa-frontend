@@ -77,48 +77,48 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick } from 'vue';
-import { Channel } from './models';
+import { defineComponent, nextTick } from 'vue'
+import { Channel } from './models'
 
 export default defineComponent({
-  name: 'Messages',
-  data() {
+  name: 'MessagesComponent',
+  data () {
     return {
-      message: '',
-    };
+      message: ''
+    }
   },
   methods: {
-    async sendMessage() {
-      //TODO scrollnutie na koniec pri nacitani, infinite scroll
+    async sendMessage () {
+      // TODO scrollnutie na koniec pri nacitani, infinite scroll
       // if (!this.message || this.selectedChannel.pendingInvite) return;
-      (this.$refs.commandLine as HTMLElement).focus();
+      (this.$refs.commandLine as HTMLElement).focus()
 
       this.$store.commit('MainStore/insertNewMessage', {
         text: this.message,
-        from: 'Me', //TODO Realne meno uzivatela, ale bude sa to zobrazovat ako Me
-      });
-      this.message = '';
-      await nextTick();
-      window.scrollTo(0, document.body.scrollHeight);
+        from: 'Me' // TODO Realne meno uzivatela, ale bude sa to zobrazovat ako Me
+      })
+      this.message = ''
+      await nextTick()
+      window.scrollTo(0, document.body.scrollHeight)
     },
-    acceptInvite(): void {
-      this.$store.commit('MainStore/acceptPendingInvite');
+    acceptInvite (): void {
+      this.$store.commit('MainStore/acceptPendingInvite')
     },
-    declineInvite(): void {
-      this.$store.commit('MainStore/removeChannel', this.selectedChannel);
-    },
+    declineInvite (): void {
+      this.$store.commit('MainStore/removeChannel', this.selectedChannel)
+    }
   },
   computed: {
     selectedChannel: {
-      get(): Channel {
-        return this.$store.state.MainStore.selectedChannel;
+      get (): Channel {
+        return this.$store.state.MainStore.selectedChannel
       },
-      set(val: Channel) {
-        void this.$store.dispatch('MainStore/setSelectedChannel', val);
-      },
-    },
-  },
-});
+      set (val: Channel) {
+        void this.$store.dispatch('MainStore/setSelectedChannel', val)
+      }
+    }
+  }
+})
 </script>
 
 <style scoped></style>

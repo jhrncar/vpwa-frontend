@@ -44,33 +44,33 @@
   </q-btn>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'Availability',
+  name: 'AvailabilityComponent',
 
   computed: {
     status: {
-      get(): string {
-        return this.$store.state.MainStore.user.status;
+      get (): string {
+        return this.$store.state.MainStore.user.status
       },
 
-      set(value: string) {
-        void this.$store.dispatch('MainStore/setStatus', value);
-      },
-    },
-    statusColor(): string {
-      switch (this.status) {
-        case 'online':
-          return 'positive';
-        case 'dnd':
-          return 'negative';
-        case 'offline':
-          return 'grey';
-        default:
-          return '';
+      set (value: string) {
+        this.$store.dispatch('MainStore/setStatus', value)
       }
     },
-  },
-});
+    statusColor (): string {
+      switch (this.status) {
+        case 'online':
+          return 'positive'
+        case 'dnd':
+          return 'negative'
+        case 'offline':
+          return 'grey'
+        default:
+          return ''
+      }
+    }
+  }
+})
 </script>

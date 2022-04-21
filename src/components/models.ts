@@ -1,7 +1,14 @@
 export type Message = {
   text: string;
-  //timeSent: string; //TODO asi nejaky date type
+  // timeSent: string; //TODO asi nejaky date type
   from: string;
+};
+
+export type User = {
+  id: number;
+  fullname: string;
+  username: string;
+  status: string;
 };
 
 export type Channel = {
@@ -12,11 +19,4 @@ export type Channel = {
   messages: Message[];
   users: User[];
   admin: User;
-};
-
-export type User = {
-  id: number;
-  fullname: string;
-  username: string;
-  status: string;
 };

@@ -1,19 +1,20 @@
 <template>
   <div class="text-h2 text-dark q-mb-xl">Login</div>
 
-  <q-form class="q-gutter-y-md column" style="width: 50%" @submit="logUser">
+  <q-form class="q-gutter-y-md column" style="width: 50%" @submit.stop="logUser">
     <q-input
       outlined
-      v-model="nickname"
-      label="Nickname/E-mail"
+      v-model="email"
+      label="E-mail"
       hide-bottom-space
-      :error-message="getErrorMessage('nickname')"
-      :error="v$.nickname.$error"
+      :error-message="getErrorMessage('email')"
+      :error="v$.email.$error"
+      autofocus
     />
     <q-input
       v-model="password"
       outlined
-      :type="isPwd ? 'password' : 'text'"
+      :type="showPassword ? 'text' : 'password'"
       label="Password"
       hide-bottom-space
       :error-message="getErrorMessage('password')"
@@ -21,15 +22,15 @@
     >
       <template v-slot:append>
         <q-icon
-          :name="isPwd ? 'visibility_off' : 'visibility'"
+          :name="showPassword ? 'visibility' : 'visibility_off'"
           class="cursor-pointer"
-          @click="isPwd = !isPwd"
+          @click="showPassword = !showPassword"
         />
       </template>
     </q-input>
     <q-checkbox
       class="text-dark"
-      v-model="rememberMe"
+      v-model="remember"
       left-label
       label="Remember me"
       color="primary"
@@ -41,6 +42,7 @@
       type="submit"
       color="primary"
       class="q-mt-md"
+      :loading="loading"
     />
   </q-form>
 
@@ -48,7 +50,7 @@
     no-caps
     flat
     class="lt-md q-mt-sm text-subtitle1 text-dark"
-    to="/register"
+    :to="{ name: 'register' }"
     ><p>
       Don't have an Account? <span class="text-primary">Register</span>
     </p></q-btn
@@ -56,59 +58,87 @@
 </template>
 
 <script lang="ts">
-import useVuelidate from '@vuelidate/core';
-import { maxLength, minLength, required } from '@vuelidate/validators';
-import { defineComponent } from 'vue';
+import useVuelidate from '@vuelidate/core'
+import { maxLength, minLength, required, email } from '@vuelidate/validators'
+import { defineComponent } from 'vue'
+import { RouteLocationRaw } from 'vue-router'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
-  name: 'Login',
-  setup() {
-    return { v$: useVuelidate() };
+  name: 'LoginComponent',
+  setup () {
+    const $q = useQuasar()
+
+    function alert () {
+      $q.dialog({
+        title: 'Error',
+        message: 'User does not exist.'
+      })
+    }
+
+    return { v$: useVuelidate(), alert }
   },
-  data() {
+  data () {
     return {
-      nickname: '',
+      email: '',
       password: '',
-      isPwd: true,
-      rememberMe: 0,
-    };
+      remember: '',
+      showPassword: false
+    }
   },
-  validations() {
+  validations () {
     return {
-      nickname: {
+      email: {
         required,
+        email
       },
       password: {
         required,
         minLength: minLength(8),
-        maxLength: maxLength(30),
-      },
-    };
+        maxLength: maxLength(30)
+      }
+    }
+  },
+  computed: {
+    redirectTo (): RouteLocationRaw {
+      return (this.$route.query.redirect as string) || { name: 'home' }
+    },
+    loading (): boolean {
+      return this.$store.state.auth.status === 'pending'
+    }
   },
   methods: {
-    async logUser() {
-      this.v$.$touch;
-      const isFormCorrect = await this.v$.$validate();
+    async logUser () {
+      this.v$.$touch()
+      const isFormCorrect = await this.v$.$validate()
       if (isFormCorrect) {
-        //TODO vsetko bude tu, len zatial nech nemusime furt vyplnat
+        const data = {
+          email: this.email,
+          password: this.password,
+          remember: this.remember
+        }
+        this.$store
+          .dispatch('auth/login', data)
+          .then(() => {
+            this.$store.dispatch('MainStore/getUser')
+            this.$store.dispatch('MainStore/getChannels')
+            this.$router.push(this.redirectTo)
+          }).catch(error => { if (error.response.status === 400) this.alert() })
       }
-      void this.$store.dispatch('MainStore/getUser');
-      void this.$store.dispatch('MainStore/getChannels');
-      void this.$router.push('/');
     },
-    getErrorMessage(id: string): string {
-      let a = undefined;
+    getErrorMessage (id: string): string {
+      let a
       try {
         a = this.v$.$errors.reduce((previousValue, currentValue) =>
-          currentValue.$property == id ? currentValue : previousValue
-        ).$message;
+          currentValue.$property === id ? currentValue : previousValue
+        ).$message
       } catch (error) {}
-      if (typeof a == 'string') {
-        return a;
+      if (typeof a === 'string') {
+        return a
       } else {
-        return '';
+        return ''
       }
-    },
-  },
-});
+    }
+  }
+})
 </script>

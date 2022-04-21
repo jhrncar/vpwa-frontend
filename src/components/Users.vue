@@ -24,33 +24,33 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { User } from './models';
+import { defineComponent } from 'vue'
+import { User } from './models'
 
 export default defineComponent({
-  name: 'Users',
+  name: 'UsersComponent',
 
-  data() {
-    return {};
+  data () {
+    return {}
   },
   computed: {
-    users(): User[] {
-      return this.$store.state.MainStore.selectedChannel.users;
-    },
+    users (): User[] {
+      return this.$store.state.MainStore.selectedChannel.users
+    }
   },
   methods: {
-    getStatusColor(status: string): string {
+    getStatusColor (status: string): string {
       switch (status) {
         case 'online':
-          return 'positive';
+          return 'positive'
         case 'dnd':
-          return 'negative';
+          return 'negative'
         case 'offline':
-          return 'grey';
+          return 'grey'
         default:
-          return '';
+          return ''
       }
-    },
-  },
-});
+    }
+  }
+})
 </script>

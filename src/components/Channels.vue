@@ -170,18 +170,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick, ref } from 'vue';
-import { Channel } from './models';
+import { defineComponent, nextTick, ref } from 'vue'
+import { Channel } from './models'
 
 export default defineComponent({
-  name: 'Channels',
+  name: 'ChannelsComponent',
   emits: ['closeDrawer'],
-  data() {
+  data () {
     return {
-      confirmChannel: {} as Channel,
-    };
+      confirmChannel: {} as Channel
+    }
   },
-  setup() {
+  setup () {
     return {
       confirmLeave: ref(false),
       confirmDelete: ref(false),
@@ -191,54 +191,54 @@ export default defineComponent({
       options: [
         {
           label: 'Public',
-          value: 'public',
+          value: 'public'
         },
         {
           label: 'Private',
-          value: 'private',
-        },
-      ],
-    };
+          value: 'private'
+        }
+      ]
+    }
   },
   methods: {
-    async handleSelect(selected: Channel) {
-      this.selectedChannel = selected;
-      if (this.$q.screen.lt.md) this.$emit('closeDrawer');
-      await nextTick();
-      window.scrollTo(0, document.body.scrollHeight);
+    async handleSelect (selected: Channel) {
+      this.selectedChannel = selected
+      if (this.$q.screen.lt.md) this.$emit('closeDrawer')
+      await nextTick()
+      window.scrollTo(0, document.body.scrollHeight)
     },
-    leaveChannel(): void {
-      this.$store.commit('MainStore/removeChannel', this.confirmChannel);
+    leaveChannel (): void {
+      this.$store.commit('MainStore/removeChannel', this.confirmChannel)
     },
-    deleteChannel(): void {
-      this.$store.commit('MainStore/removeChannel', this.confirmChannel);
+    deleteChannel (): void {
+      this.$store.commit('MainStore/removeChannel', this.confirmChannel)
     },
-    createChannel(): void {
+    createChannel (): void {
       void this.$store.dispatch('MainStore/createChannel', {
         label: this.channelName,
-        type: this.channelType,
-      });
-      this.channelName = '';
-    },
+        type: this.channelType
+      })
+      this.channelName = ''
+    }
   },
   computed: {
     selectedChannel: {
-      get(): Channel {
-        return this.$store.state.MainStore.selectedChannel;
+      get (): Channel {
+        return this.$store.state.MainStore.selectedChannel
       },
 
-      set(value: Channel) {
-        void this.$store.dispatch('MainStore/setSelectedChannel', value);
-      },
+      set (value: Channel) {
+        void this.$store.dispatch('MainStore/setSelectedChannel', value)
+      }
     },
     channels: {
-      get(): Channel[] {
-        return this.$store.state.MainStore.channels;
+      get (): Channel[] {
+        return this.$store.state.MainStore.channels
       },
-      set(value: Channel) {
-        this.$store.commit('MainStore/insertChannel', value);
-      },
-    },
-  },
-});
+      set (value: Channel) {
+        this.$store.commit('MainStore/insertChannel', value)
+      }
+    }
+  }
+})
 </script>

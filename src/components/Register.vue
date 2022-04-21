@@ -1,21 +1,18 @@
 <template>
   <div class="text-h2 text-dark q-mb-xl">Register</div>
-  <q-form
-    class="q-gutter-y-md column"
-    style="width: 50%"
-    @submit.stop="onSubmit"
-  >
+  <q-form class="q-gutter-y-md column" style="width: 50%" @submit="onSubmit">
     <q-input
       outlined
-      v-model="nickname"
-      label="Nickname"
-      :error="v$.nickname.$error"
+      v-model="username"
+      label="Username"
+      :error="v$.username.$error"
       hide-bottom-space
-      :error-message="getErrorMessage('nickname')"
+      :error-message="getErrorMessage('username')"
+      autofocus
     />
     <q-input
       outlined
-      v-model="email"
+      v-model.trim="email"
       label="E-mail"
       hide-bottom-space
       :error-message="getErrorMessage('email')"
@@ -32,7 +29,7 @@
     <q-input
       v-model="password"
       outlined
-      :type="isPwd ? 'password' : 'text'"
+      :type="showPassword ? 'text' : 'password'"
       label="Password"
       hide-bottom-space
       :error-message="getErrorMessage('password')"
@@ -40,30 +37,36 @@
     >
       <template v-slot:append>
         <q-icon
-          :name="isPwd ? 'visibility_off' : 'visibility'"
+          :name="showPassword ? 'visibility' : 'visibility_off'"
           class="cursor-pointer"
-          @click="isPwd = !isPwd"
+          @click="showPassword = !showPassword"
         />
       </template>
     </q-input>
     <q-input
-      v-model="passwordAgain"
+      v-model="passwordConfirmation"
       outlined
-      :type="isPwd ? 'password' : 'text'"
+      :type="showPassword ? 'text' : 'password'"
       label="Confirm password"
       hide-bottom-space
-      :error-message="getErrorMessage('passwordAgain')"
-      :error="v$.passwordAgain.$error"
+      :error-message="getErrorMessage('passwordConfirmation')"
+      :error="v$.passwordConfirmation.$error"
     >
       <template v-slot:append>
         <q-icon
-          :name="isPwd ? 'visibility_off' : 'visibility'"
+          :name="showPassword ? 'visibility' : 'visibility_off'"
           class="cursor-pointer"
-          @click="isPwd = !isPwd"
+          @click="showPassword = !showPassword"
         />
       </template>
     </q-input>
-    <q-btn size="lg" label="Register" type="submit" color="primary" />
+    <q-btn
+      size="lg"
+      label="Register"
+      type="submit"
+      color="primary"
+      :loading="loading"
+    />
   </q-form>
 
   <q-btn
@@ -71,7 +74,7 @@
     flat
     class="lt-md q-mt-sm text-subtitle1 text-dark"
     color="dark"
-    to="/login"
+    :to="{ name: 'login' }"
     ><p>
       Already have an Account? <span class="text-primary"> Login</span>
     </p></q-btn
@@ -79,87 +82,118 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import useVuelidate from '@vuelidate/core';
+import { defineComponent } from 'vue'
+import useVuelidate from '@vuelidate/core'
 import {
   minLength,
   maxLength,
   required,
   email,
   sameAs,
-  helpers,
-} from '@vuelidate/validators';
+  helpers
+} from '@vuelidate/validators'
+import { RouteLocationRaw } from 'vue-router'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
-  name: 'Register',
-  setup() {
-    return { v$: useVuelidate() };
+  name: 'RegisterComponent',
+  setup () {
+    const $q = useQuasar()
+
+    function alert () {
+      $q.dialog({
+        title: 'Error',
+        message: 'User with this username/e-mail already exists.'
+      })
+    }
+
+    return { v$: useVuelidate(), alert }
   },
-  data() {
+  data () {
     return {
-      nickname: '',
+      username: '',
       email: '',
       fullname: '',
       password: '',
-      passwordAgain: '',
-      isPwd: true,
-    };
+      passwordConfirmation: '',
+      showPassword: false
+    }
   },
-  validations() {
+  validations () {
     return {
-      nickname: {
+      username: {
         required,
-        maxLength: maxLength(30),
+        minLength: minLength(6),
+        maxLength: maxLength(30)
       },
       email: {
         required,
-        email,
+        email
       },
       fullname: {
         required,
-        maxLength: maxLength(30),
+        minLength: minLength(6),
+        maxLength: maxLength(30)
       },
 
       password: {
         required,
         sameAs: helpers.withMessage(
           'The passwords are not the same',
-          sameAs(this.passwordAgain)
+          sameAs(this.passwordConfirmation)
         ),
         minLength: minLength(8),
-        maxLength: maxLength(30),
+        maxLength: maxLength(30)
       },
-      passwordAgain: {
+      passwordConfirmation: {
         required,
         sameAs: helpers.withMessage(
           'The passwords are not the same',
           sameAs(this.password)
         ),
         minLength: minLength(8),
-        maxLength: maxLength(30),
-      },
-    };
+        maxLength: maxLength(30)
+      }
+    }
+  },
+  computed: {
+    redirectTo (): RouteLocationRaw {
+      return { name: 'login' }
+    },
+    loading (): boolean {
+      return this.$store.state.auth.status === 'pending'
+    }
   },
   methods: {
-    async onSubmit() {
-      this.v$.$touch;
-      const isFormCorrect = await this.v$.$validate();
+    async onSubmit () {
+      this.v$.$touch()
+      const isFormCorrect = await this.v$.$validate()
       if (isFormCorrect) {
+        const data = {
+          username: this.username,
+          email: this.email,
+          fullname: this.fullname,
+          password: this.password,
+          passwordConfirmation: this.passwordConfirmation
+        }
+        this.$store
+          .dispatch('auth/register', data)
+          .then(() => this.$router.push(this.redirectTo)).catch(error => { if (error.response.status === 422) this.alert() })
       }
     },
-    getErrorMessage(id: string): string {
-      let a = undefined;
+    getErrorMessage (id: string): string {
+      let a
       try {
         a = this.v$.$errors.reduce((previousValue, currentValue) =>
-          currentValue.$property == id ? currentValue : previousValue
-        ).$message;
+          currentValue.$property === id ? currentValue : previousValue
+        ).$message
       } catch (error) {}
-      if (typeof a == 'string') {
-        return a;
+      if (typeof a === 'string') {
+        return a
       } else {
-        return '';
+        return ''
       }
-    },
-  },
-});
+    }
+  }
+})
 </script>

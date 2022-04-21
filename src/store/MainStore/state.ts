@@ -1,4 +1,4 @@
-import { Channel, User } from 'src/components/models';
+import { Channel, User } from 'src/components/models'
 
 export interface MainStateInterface {
   selectedChannel: Channel;
@@ -6,12 +6,12 @@ export interface MainStateInterface {
   user: User;
 }
 
-function state(): MainStateInterface {
+function state (): MainStateInterface {
   return {
     selectedChannel: {} as Channel,
     channels: [],
-    user: {} as User,
-  };
+    user: {} as User
+  }
 }
 
-export default state;
+export default state

@@ -5,13 +5,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import Messages from 'components/Messages.vue';
+import { defineComponent } from 'vue'
+import Messages from 'components/Messages.vue'
 
 export default defineComponent({
   name: 'ChatPage',
   components: {
-    Messages,
-  },
-});
+    Messages
+  }
+})
 </script>

@@ -1,13 +1,13 @@
-import { Channel, User } from 'src/components/models';
-import { ActionTree } from 'vuex';
-import { StateInterface } from '../index';
-import { MainStateInterface } from './state';
+import { Channel, User } from 'src/components/models'
+import { ActionTree } from 'vuex'
+import { StateInterface } from '../index'
+import { MainStateInterface } from './state'
 
 const actions: ActionTree<MainStateInterface, StateInterface> = {
-  setSelectedChannel(context, data: Channel) {
-    context.commit('updateChannel', data);
+  setSelectedChannel (context, data: Channel) {
+    context.commit('updateChannel', data)
   },
-  createChannel(context, data: { label: string; type: 'public' | 'private' }) {
+  createChannel (context, data: { label: string; type: 'public' | 'private' }) {
     const newChannel: Channel = {
       label: data.label,
       id: 7,
@@ -15,11 +15,11 @@ const actions: ActionTree<MainStateInterface, StateInterface> = {
       pendingInvite: false,
       messages: [],
       users: [],
-      admin: context.state.user,
-    };
-    context.commit('insertChannel', newChannel);
+      admin: context.state.user
+    }
+    context.commit('insertChannel', newChannel)
   },
-  getChannels(context) {
+  getChannels (context) {
     const channels: Channel[] = [
       {
         label: '# channel1',
@@ -29,112 +29,112 @@ const actions: ActionTree<MainStateInterface, StateInterface> = {
         messages: [
           {
             text: 'Hey Daniel! How are u doing?',
-            from: 'Daniel',
+            from: 'Daniel'
           },
           {
             text: 'Great! How about you?',
-            from: 'Me',
+            from: 'Me'
           },
           {
             text: 'Hey Daniel! How are u doing?',
-            from: 'Daniel',
+            from: 'Daniel'
           },
           {
             text: 'Great! How about you?',
-            from: 'Me',
+            from: 'Me'
           },
           {
             text: 'Hey Daniel! How are u doing?',
-            from: 'Daniel',
+            from: 'Daniel'
           },
           {
             text: 'Great! How about you?',
-            from: 'Me',
+            from: 'Me'
           },
           {
             text: 'Hey Daniel! How are u doing?',
-            from: 'Daniel',
+            from: 'Daniel'
           },
           {
             text: 'Great! How about you?',
-            from: 'Me',
+            from: 'Me'
           },
           {
             text: 'Hey Daniel! How are u doing?',
-            from: 'Daniel',
+            from: 'Daniel'
           },
           {
             text: 'Great! How about you?',
-            from: 'Me',
+            from: 'Me'
           },
           {
             text: 'Hey Daniel! How are u doing?',
-            from: 'Daniel',
+            from: 'Daniel'
           },
           {
             text: 'Great! How about you?',
-            from: 'Me',
+            from: 'Me'
           },
           {
             text: 'Hey Daniel! How are u doing?',
-            from: 'Daniel',
+            from: 'Daniel'
           },
           {
             text: 'Great! How about you?',
-            from: 'Me',
+            from: 'Me'
           },
           {
             text: 'Hey Daniel! How are u doing?',
-            from: 'Daniel',
+            from: 'Daniel'
           },
           {
             text: 'Great! How about you?',
-            from: 'Me',
+            from: 'Me'
           },
           {
             text: 'Hey Daniel! How are u doing?',
-            from: 'Daniel',
+            from: 'Daniel'
           },
           {
             text: 'Great! How about you?',
-            from: 'Me',
+            from: 'Me'
           },
           {
             text: 'Hey Daniel! How are u doing?',
-            from: 'Daniel',
+            from: 'Daniel'
           },
           {
             text: 'Great! How about you?',
-            from: 'Me',
-          },
+            from: 'Me'
+          }
         ],
         users: [
           {
             id: 2,
             fullname: 'Ruddy Jedrzej',
             username: 'xruddy',
-            status: 'online',
+            status: 'online'
           },
           {
             id: 3,
             fullname: 'Mallorie Alessandrini',
             username: 'xmallorie',
-            status: 'online',
+            status: 'online'
           },
           {
             id: 4,
             fullname: 'Elisabetta Wicklen',
             username: 'xelisabetta',
-            status: 'dnd',
+            status: 'dnd'
           },
           {
             id: 5,
             fullname: 'Seka Fawdrey',
             username: 'xseka',
-            status: 'offline',
-          },
+            status: 'offline'
+          }
         ],
-        admin: context.state.user,
+        admin: context.state.user
       },
       {
         label: '# channel2',
@@ -143,7 +143,7 @@ const actions: ActionTree<MainStateInterface, StateInterface> = {
         pendingInvite: false,
         messages: [],
         users: [],
-        admin: {} as User,
+        admin: {} as User
       },
       {
         label: '# channel3',
@@ -152,7 +152,7 @@ const actions: ActionTree<MainStateInterface, StateInterface> = {
         pendingInvite: true,
         messages: [],
         users: [],
-        admin: {} as User,
+        admin: {} as User
       },
       {
         label: '# channel4',
@@ -161,7 +161,7 @@ const actions: ActionTree<MainStateInterface, StateInterface> = {
         pendingInvite: false,
         messages: [],
         users: [],
-        admin: {} as User,
+        admin: {} as User
       },
       {
         label: '# channel5',
@@ -170,7 +170,7 @@ const actions: ActionTree<MainStateInterface, StateInterface> = {
         pendingInvite: true,
         messages: [],
         users: [],
-        admin: {} as User,
+        admin: {} as User
       },
       {
         label: '# channel6',
@@ -179,25 +179,25 @@ const actions: ActionTree<MainStateInterface, StateInterface> = {
         pendingInvite: false,
         messages: [],
         users: [],
-        admin: {} as User,
-      },
-    ];
+        admin: {} as User
+      }
+    ]
     channels.forEach((channel: Channel) => {
-      context.commit('insertChannel', channel);
-    });
+      context.commit('insertChannel', channel)
+    })
   },
-  getUser(context) {
+  getUser (context) {
     const user: User = {
       id: 1,
       fullname: 'Logged User',
       username: 'xuser',
-      status: 'online',
-    };
-    context.commit('insertUser', user);
+      status: 'online'
+    }
+    context.commit('insertUser', user)
   },
-  setStatus(context, status: string) {
-    context.commit('updateStatus', status);
-  },
-};
+  setStatus (context, status: string) {
+    context.commit('updateStatus', status)
+  }
+}
 
-export default actions;
+export default actions

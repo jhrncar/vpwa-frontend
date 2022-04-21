@@ -11,22 +11,22 @@
         class="bg-white text-dark q-ma-lg"
         style="width: 50%"
         label="Login to an Account"
-        to="/login"
+        :to="{ name: 'login' }"
       />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import Register from 'src/components/Register.vue';
+import { defineComponent } from 'vue'
+import Register from 'src/components/Register.vue'
 
 export default defineComponent({
   name: 'RegisterPage',
   components: {
-    Register,
-  },
-});
+    Register
+  }
+})
 </script>
 
 <style scoped>

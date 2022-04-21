@@ -10,7 +10,7 @@
         <div style="justify-content: space-between; display: flex; gap: 10px">
           <Availability />
           <q-btn flat round icon="people" @click="toggleRightDrawer" />
-          <q-btn round flat icon="logout" to="/login" />
+          <q-btn round flat icon="logout" :to="{ name: 'login' }" />
         </div>
       </q-toolbar>
     </q-header>
@@ -41,43 +41,43 @@
 </template>
 
 <script lang="ts">
-import { ref } from 'vue';
-import { defineComponent } from 'vue';
-import Availability from 'src/components/Availability.vue';
-import Channels from 'src/components/Channels.vue';
-import Users from 'src/components/Users.vue';
+import { ref, defineComponent } from 'vue'
+
+import Availability from 'src/components/Availability.vue'
+import Channels from 'src/components/Channels.vue'
+import Users from 'src/components/Users.vue'
 
 export default defineComponent({
   name: 'MainLayout',
 
   components: { Availability, Channels, Users },
 
-  data() {
+  data () {
     return {
-      drawerWidth: 250,
-    };
+      drawerWidth: 250
+    }
   },
 
-  setup() {
-    const leftDrawerOpen = ref(false);
-    const rightDrawerOpen = ref(false);
+  setup () {
+    const leftDrawerOpen = ref(false)
+    const rightDrawerOpen = ref(false)
     return {
       leftDrawerOpen,
-      toggleLeftDrawer() {
-        leftDrawerOpen.value = !leftDrawerOpen.value;
+      toggleLeftDrawer () {
+        leftDrawerOpen.value = !leftDrawerOpen.value
       },
       rightDrawerOpen,
-      toggleRightDrawer() {
-        rightDrawerOpen.value = !rightDrawerOpen.value;
-      },
-    };
+      toggleRightDrawer () {
+        rightDrawerOpen.value = !rightDrawerOpen.value
+      }
+    }
   },
 
   computed: {
-    selectedChannelLabel() {
-      return this.$store.state.MainStore.selectedChannel.label;
-    },
-  },
-});
+    selectedChannelLabel () {
+      return this.$store.state.MainStore.selectedChannel.label
+    }
+  }
+})
 </script>
 <style></style>
