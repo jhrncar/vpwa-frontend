@@ -1,16 +1,13 @@
 import type { AxiosError, AxiosRequestConfig } from 'axios'
-import type {
-  ApiToken,
-  LoginCredentials,
-  RegisterData,
-  User
-} from 'src/contracts'
+import type { ApiToken, LoginCredentials, RegisterData, User } from 'src/contracts'
 import { api } from 'src/boot/axios'
 
 class AuthService {
   async me (dontTriggerLogout = false): Promise<User | null> {
-    return api
-      .get('auth/me', { dontTriggerLogout } as AxiosRequestConfig)
+    return api.get(
+      'auth/me',
+      { dontTriggerLogout } as AxiosRequestConfig
+    )
       .then((response) => response.data)
       .catch((error: AxiosError) => {
         if (error.response?.status === 401) {

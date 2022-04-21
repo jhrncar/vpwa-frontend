@@ -4,8 +4,8 @@ import { authManager } from 'src/services'
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
-    $axios: AxiosInstance;
-    $api: AxiosInstance;
+    $axios: AxiosInstance
+    $api: AxiosInstance
   }
 }
 
@@ -62,10 +62,7 @@ api.interceptors.response.use(
     }
 
     // server api request returned unathorized response so we trrigger logout
-    if (
-      error.response.status === 401 &&
-      !error.response.config.dontTriggerLogout
-    ) {
+    if (error.response.status === 401 && !error.response.config.dontTriggerLogout) {
       authManager.logout()
     }
 

@@ -1,7 +1,7 @@
 <template>
   <div class="text-h2 text-dark q-mb-xl">Login</div>
 
-  <q-form class="q-gutter-y-md column" style="width: 50%" @submit.stop="logUser">
+  <q-form class="q-gutter-y-md column" style="width: 50%" @submit="login">
     <q-input
       outlined
       v-model="email"
@@ -34,7 +34,6 @@
       left-label
       label="Remember me"
       color="primary"
-      :model-value="false"
     />
     <q-btn
       size="lg"
@@ -82,7 +81,7 @@ export default defineComponent({
     return {
       email: '',
       password: '',
-      remember: '',
+      remember: false,
       showPassword: false
     }
   },
@@ -108,7 +107,7 @@ export default defineComponent({
     }
   },
   methods: {
-    async logUser () {
+    async login () {
       this.v$.$touch()
       const isFormCorrect = await this.v$.$validate()
       if (isFormCorrect) {

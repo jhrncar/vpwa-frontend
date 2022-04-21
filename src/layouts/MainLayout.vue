@@ -10,7 +10,7 @@
         <div style="justify-content: space-between; display: flex; gap: 10px">
           <Availability />
           <q-btn flat round icon="people" @click="toggleRightDrawer" />
-          <q-btn round flat icon="logout" :to="{ name: 'login' }" />
+          <q-btn round flat icon="logout" @click="logout" />
         </div>
       </q-toolbar>
     </q-header>
@@ -76,6 +76,12 @@ export default defineComponent({
   computed: {
     selectedChannelLabel () {
       return this.$store.state.MainStore.selectedChannel.label
+    }
+  },
+
+  methods: {
+    logout () {
+      this.$store.dispatch('auth/logout')
     }
   }
 })

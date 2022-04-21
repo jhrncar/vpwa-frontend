@@ -1,6 +1,6 @@
 <template>
   <div class="text-h2 text-dark q-mb-xl">Register</div>
-  <q-form class="q-gutter-y-md column" style="width: 50%" @submit="onSubmit">
+  <q-form class="q-gutter-y-md column" style="width: 50%" @submit="register">
     <q-input
       outlined
       v-model="username"
@@ -165,7 +165,7 @@ export default defineComponent({
     }
   },
   methods: {
-    async onSubmit () {
+    async register () {
       this.v$.$touch()
       const isFormCorrect = await this.v$.$validate()
       if (isFormCorrect) {

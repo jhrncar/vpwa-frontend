@@ -1,9 +1,6 @@
 import { LocalStorage } from 'quasar'
 
-type ChangeListener = (
-  newToken: string | null,
-  oldToken: string | null
-) => void;
+type ChangeListener = (newToken: string | null, oldToken: string | null) => void
 
 // this handles token storing to localstorage and notifying about changes
 // also triggereing listeners when storage key is changed from another browser tab
