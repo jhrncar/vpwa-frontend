@@ -34,6 +34,6 @@ export default defineComponent({
   align-items: center;
   justify-content: center;
   height: 100vh;
-  min-height: 600px;
+  min-height: 700px;
 }
 </style>

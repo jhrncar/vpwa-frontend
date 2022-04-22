@@ -5,7 +5,7 @@
     <q-input
       outlined
       v-model="email"
-      label="E-mail"
+      label="E-mail/Username"
       hide-bottom-space
       :error-message="getErrorMessage('email')"
       :error="v$.email.$error"
