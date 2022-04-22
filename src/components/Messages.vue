@@ -16,8 +16,10 @@
         <q-btn flat round icon="close" @click="declineInvite" />
       </q-card-section>
     </q-card>
-
-    <div v-if="!selectedChannel.pendingInvite">
+    <span class="q-subtitle-1 q-pl-md">
+      {{ activeChannel }}
+    </span>
+    <div v-if="!selectedChannel.pendingInvite || true">
       <q-chat-message
         v-for="message in selectedChannel.messages"
         :key="selectedChannel.messages.indexOf(message)"
@@ -27,7 +29,9 @@
         :text-color="message.from == 'Me' ? 'dark' : 'white'"
         :class="message.from == 'Me' ? 'float-right' : 'float-left'"
         style="width: 60%"
+        v-show="false"
       >
+
         <template #name>
           <span :class="message.from == 'Me' ? 'text-primary' : 'text-dark'">{{
             message.from
@@ -47,9 +51,17 @@
           </q-avatar>
         </template>
       </q-chat-message>
+      <q-chat-message v-for="message in messages"
+        :key="message.id"
+        :name="message.author.email"
+        :text="[message.content]"
+        :stamp="message.createdAt"
+        :sent="isMine(message)"
+        style="width: 60%"
+      />
     </div>
 
-    <q-form @submit="sendMessage" class="row full-width q-pt-md">
+    <q-form @submit="send" class="row full-width q-pt-md">
       <q-input
         class="col"
         v-model="message"
@@ -59,6 +71,8 @@
         placeholder="Message..."
         autofocus
         ref="commandLine"
+        :disable="loading"
+        @keydown.enter.prevent="send"
       >
         <template v-slot:append>
           <q-icon
@@ -70,7 +84,7 @@
         </template>
       </q-input>
       <div class="column flex-center q-pl-md">
-        <q-btn round dense flat color="grey-7" type="submit" icon="send" />
+        <q-btn round dense flat color="grey-7" type="submit" icon="send" :disable="loading"/>
       </div>
     </q-form>
   </q-infinite-scroll>
@@ -79,17 +93,31 @@
 <script lang="ts">
 import { defineComponent, nextTick } from 'vue'
 import { Channel } from './models'
-
+import { SerializedMessage } from 'src/contracts'
+import { mapActions, mapGetters, mapMutations } from 'vuex'
 export default defineComponent({
   name: 'MessagesComponent',
   data () {
     return {
-      message: ''
+      message: '',
+      loading: false
     }
   },
   methods: {
-    async sendMessage () {
-      // TODO scrollnutie na koniec pri nacitani, infinite scroll
+    isMine (message: SerializedMessage): boolean {
+      return message.author.id === this.currentUser
+    },
+    async send () {
+      this.loading = true
+      void await this.addMessage({ channel: this.activeChannel, message: this.message })
+      this.message = ''
+      this.loading = false
+    },
+
+    ...mapActions('auth', ['logout']),
+    ...mapActions('channels', ['addMessage']),
+    async sendMessage () { // TODO redundantne
+      // TODO infinite scroll
       // if (!this.message || this.selectedChannel.pendingInvite) return;
       (this.$refs.commandLine as HTMLElement).focus()
 
@@ -109,14 +137,26 @@ export default defineComponent({
     }
   },
   computed: {
-    selectedChannel: {
+    selectedChannel: { // TODO reduntantne
       get (): Channel {
         return this.$store.state.MainStore.selectedChannel
       },
       set (val: Channel) {
         void this.$store.dispatch('MainStore/setSelectedChannel', val)
       }
-    }
+    },
+    activeChannel () {
+      return this.$store.state.channels.active
+    },
+    currentUser () {
+      return this.$store.state.auth.user?.id
+    },
+    messages (): SerializedMessage[] {
+      return this.$store.getters['channels/currentMessages']
+    },
+    ...mapGetters('channels', {
+      lastMessageOf: 'lastMessageOf'
+    })
   }
 })
 </script>

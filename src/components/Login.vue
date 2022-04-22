@@ -119,8 +119,6 @@ export default defineComponent({
         this.$store
           .dispatch('auth/login', data)
           .then(() => {
-            this.$store.dispatch('MainStore/getUser')
-            this.$store.dispatch('MainStore/getChannels')
             this.$router.push(this.redirectTo)
           }).catch(error => { if (error.response.status === 400) this.alert() })
       }

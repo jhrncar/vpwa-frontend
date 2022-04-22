@@ -47,14 +47,14 @@
     </q-card>
   </q-dialog>
   <q-separator inset class="q-mt-xs" />
-  <div v-for="type in ['public', 'private']" :key="type">
+  <div v-for="type in ['public', 'private']" :key="type" v-show="false">
     <q-list dense>
       <q-toolbar-title
         class="text-white q-mx-lg text-subtitle1 text-uppercase q-mt-sm"
         >{{ type.charAt(0).toUpperCase() + type.slice(1) }}
       </q-toolbar-title>
       <q-item
-        v-for="channel in channels.filter((item) => item.type == type)"
+        v-for="channel in chanels.filter((item) => item.type == type)"
         :key="channel.id"
         dense
       >
@@ -167,10 +167,36 @@
       </q-card>
     </q-dialog>
   </div>
+  <q-list>
+            <q-item
+              v-for="(channel, index) in channels"
+              :key="index"
+              clickable
+              v-ripple
+              @click="setActiveChannel(channel)"
+            >
+              <q-item-section>
+                <q-item-label lines="1">
+                  {{ channel }}
+                </q-item-label>
+                <q-item-label class="conversation__summary" caption>
+                  {{ lastMessageOf(channel)?.content || '' }}
+                </q-item-label>
+              </q-item-section>
+
+              <q-item-section side>
+                <!--q-item-label caption>
+                  {{ channel }}
+                </q-item-label-->
+                <q-icon name="keyboard_arrow_down" />
+              </q-item-section>
+            </q-item>
+          </q-list>
 </template>
 
 <script lang="ts">
 import { defineComponent, nextTick, ref } from 'vue'
+import { mapGetters, mapMutations } from 'vuex'
 import { Channel } from './models'
 
 export default defineComponent({
@@ -201,6 +227,9 @@ export default defineComponent({
     }
   },
   methods: {
+    ...mapMutations('channels', {
+      setActiveChannel: 'SET_ACTIVE'
+    }),
     async handleSelect (selected: Channel) {
       this.selectedChannel = selected
       if (this.$q.screen.lt.md) this.$emit('closeDrawer')
@@ -222,6 +251,13 @@ export default defineComponent({
     }
   },
   computed: {
+    ...mapGetters('channels', {
+      channels: 'joinedChannels',
+      lastMessageOf: 'lastMessageOf'
+    }),
+    activeChannel () {
+      return this.$store.state.channels.active
+    },
     selectedChannel: {
       get (): Channel {
         return this.$store.state.MainStore.selectedChannel
@@ -231,7 +267,7 @@ export default defineComponent({
         void this.$store.dispatch('MainStore/setSelectedChannel', value)
       }
     },
-    channels: {
+    chanels: {
       get (): Channel[] {
         return this.$store.state.MainStore.channels
       },

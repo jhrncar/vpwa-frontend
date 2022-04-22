@@ -9,6 +9,8 @@ import MainStore from './MainStore'
 import { MainStateInterface } from './MainStore/state'
 import auth from './module-auth'
 import type { AuthStateInterface } from './module-auth/state'
+import { ChannelsStateInterface } from './module-channels/state'
+import channels from './module-channels'
 
 // import example from './module-example'
 // import { ExampleStateInterface } from './module-example/state';
@@ -28,6 +30,7 @@ export interface StateInterface {
   // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
   auth: AuthStateInterface;
   MainStore: MainStateInterface;
+  channels: ChannelsStateInterface
 }
 
 // provide typings for `this.$store`
@@ -45,7 +48,8 @@ export default store(function (/* { ssrContext } */) {
   const Store = createStore<StateInterface>({
     modules: {
       MainStore,
-      auth
+      auth,
+      channels
     },
 
     // enable strict mode (adds overhead!)

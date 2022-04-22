@@ -1,11 +1,19 @@
-export interface ExampleStateInterface {
-  prop: boolean;
+import { SerializedMessage } from 'src/contracts'
+
+export interface ChannelsStateInterface {
+  loading: boolean,
+  error: Error | null,
+  messages: { [channel: string]: SerializedMessage[] }
+  active: string | null
 }
 
-function state(): ExampleStateInterface {
+function state (): ChannelsStateInterface {
   return {
-    prop: false,
-  };
+    loading: false,
+    error: null,
+    messages: {},
+    active: null
+  }
 }
 
-export default state;
+export default state
