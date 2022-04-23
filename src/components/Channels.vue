@@ -55,7 +55,7 @@
         >{{ type.charAt(0).toUpperCase() + type.slice(1) }}
       </q-toolbar-title>
       <q-item
-        v-for="(channel, index) in channels.filter((c) => c.type === type)"
+        v-for="(channel, index) in channels.filter(c => c.type === type)"
         :key="index"
         dense
       >
@@ -79,7 +79,7 @@
           <div v-if="channel.pendingInvite">
             <q-icon name="fiber_new" size="sm" class="q-pr-sm" />
           </div>
-          # {{channel.name}}
+          <div class="ellipsis"># {{channel.name}}</div>
           <q-menu touch-position context-menu v-if="!channel.pendingInvite">
             <div class="q-pa-sm bg-grey-2">
               <q-list dense style="min-width: 125px">

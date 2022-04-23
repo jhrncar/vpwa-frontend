@@ -5,7 +5,7 @@
         <q-btn flat round icon="menu" @click="toggleLeftDrawer" />
 
         <q-toolbar-title v-if="!leftDrawerOpen">
-          {{ selectedChannelLabel }}
+          # {{activeChannel}}
         </q-toolbar-title>
         <div style="justify-content: space-between; display: flex; gap: 10px">
           <Availability />
@@ -74,8 +74,8 @@ export default defineComponent({
   },
 
   computed: {
-    selectedChannelLabel () {
-      return this.$store.state.MainStore.selectedChannel.label
+    activeChannel () {
+      return this.$store.state.channels.active
     }
   },
 

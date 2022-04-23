@@ -82,7 +82,7 @@
 import { defineComponent, nextTick } from 'vue'
 import { Channel } from './models'
 import { SerializedMessage } from 'src/contracts'
-import { mapActions, mapGetters, mapMutations } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 export default defineComponent({
   name: 'MessagesComponent',
   data () {
