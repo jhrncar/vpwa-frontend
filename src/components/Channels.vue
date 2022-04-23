@@ -48,38 +48,38 @@
     </q-card>
   </q-dialog>
   <q-separator inset class="q-mt-xs" />
-  <div v-for="type in ['public', 'private']" :key="type" v-show="false">
+  <div v-for="type in ['public', 'private']" :key="type" >
     <q-list dense>
       <q-toolbar-title
         class="text-white q-mx-lg text-subtitle1 text-uppercase q-mt-sm"
         >{{ type.charAt(0).toUpperCase() + type.slice(1) }}
       </q-toolbar-title>
       <q-item
-        v-for="channel in chanels.filter((item) => item.type == type)"
-        :key="channel.id"
+        v-for="(channel, index) in channels.filter((c) => c.type === type)"
+        :key="index"
         dense
       >
         <q-btn
           dense
           class="full-width q-px-md"
           :class="{
-            'bg-secondary': selectedChannel.id == channel.id ? true : false,
+            'bg-secondary': activeChannel == channel.name ? true : false,
             'bg-dark': channel.pendingInvite ? true : false,
             'text-white':
-              selectedChannel.id == channel.id || channel.pendingInvite
+              activeChannel == channel.name  || channel.pendingInvite
                 ? true
                 : false,
-            'text-dark': selectedChannel.id == channel.id ? false : true,
+            'text-dark': activeChannel == channel.name  ? false : true,
           }"
           unelevated
           no-caps
           align="left"
-          @click="handleSelect(channel)"
+          @click="setActiveChannel(channel.name)"
         >
           <div v-if="channel.pendingInvite">
             <q-icon name="fiber_new" size="sm" class="q-pr-sm" />
           </div>
-          {{ channel.label }}
+          # {{channel.name}}
           <q-menu touch-position context-menu v-if="!channel.pendingInvite">
             <div class="q-pa-sm bg-grey-2">
               <q-list dense style="min-width: 125px">
@@ -168,31 +168,6 @@
       </q-card>
     </q-dialog>
   </div>
-  <q-list>
-    <q-item
-      v-for="(channel, index) in channels"
-      :key="index"
-      clickable
-      v-ripple
-      @click="setActiveChannel(channel)"
-    >
-      <q-item-section>
-        <q-item-label lines="1">
-          {{ channel }}
-        </q-item-label>
-        <q-item-label class="conversation__summary" caption>
-          {{ lastMessageOf(channel)?.content || '' }}
-        </q-item-label>
-      </q-item-section>
-
-      <q-item-section side>
-        <!--q-item-label caption>
-          {{ channel }}
-        </q-item-label-->
-        <q-icon name="keyboard_arrow_down" />
-      </q-item-section>
-    </q-item>
-  </q-list>
 </template>
 
 <script lang="ts">
@@ -261,7 +236,7 @@ export default defineComponent({
     }),
     async handleSelect (selected: Channel) {
       this.selectedChannel = selected
-      if (this.$q.screen.lt.md) this.$emit('closeDrawer')
+      if (this.$q.screen.lt.md) this.$emit('closeDrawer') // TODO implementovat aj v novej verzii
       await nextTick()
       window.scrollTo(0, document.body.scrollHeight)
     },
@@ -296,11 +271,11 @@ export default defineComponent({
     }
   },
   computed: {
-    ...mapGetters('channels', {
-      channels: 'joinedChannels',
-      lastMessageOf: 'lastMessageOf'
+    ...mapGetters('auth', {
+      channels: 'joinedChannels'
     }),
     activeChannel () {
+      window.scrollTo(0, document.body.scrollHeight)
       return this.$store.state.channels.active
     },
     selectedChannel: {

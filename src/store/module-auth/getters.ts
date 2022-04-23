@@ -5,6 +5,9 @@ import { AuthStateInterface } from './state'
 const getters: GetterTree<AuthStateInterface, StateInterface> = {
   isAuthenticated (context) {
     return context.user !== null
+  },
+  joinedChannels (context) {
+    return context.user?.channels
   }
 }
 

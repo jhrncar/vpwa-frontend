@@ -1,6 +1,7 @@
 import { SerializedMessage } from 'src/contracts'
 import { MutationTree } from 'vuex'
 import { ChannelsStateInterface } from './state'
+import { nextTick } from 'vue'
 
 const mutation: MutationTree<ChannelsStateInterface> = {
   LOADING_START (state) {
@@ -21,6 +22,7 @@ const mutation: MutationTree<ChannelsStateInterface> = {
   },
   SET_ACTIVE (state, channel: string) {
     state.active = channel
+    nextTick().then(() => { window.scrollTo(0, document.body.scrollHeight) }) // TODO toto nejde na malej sirke, lebo modal je ako overlay
   },
   NEW_MESSAGE (state, { channel, message }: { channel: string, message: SerializedMessage }) {
     state.messages[channel].push(message)
