@@ -2,8 +2,7 @@ import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
 import { AuthStateInterface } from './state'
 import { authService, authManager } from 'src/services'
-import { LoginCredentials, RegisterData } from 'src/contracts'
-import { Channel } from 'src/contracts/Channel'
+import { LoginCredentials, RegisterData, Channel } from 'src/contracts'
 
 const actions: ActionTree<AuthStateInterface, StateInterface> = {
   async check ({ state, commit, dispatch }) {

@@ -2,8 +2,7 @@ import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
 import { ChannelsStateInterface } from './state'
 import { channelService } from 'src/services'
-import { RawMessage } from 'src/contracts'
-import { CreateChannelData } from 'src/contracts/Channel'
+import { RawMessage, CreateChannelData } from 'src/contracts'
 
 const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
   async createChannel ({ commit }, data: CreateChannelData) {

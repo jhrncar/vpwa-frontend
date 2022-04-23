@@ -76,19 +76,44 @@
       </div>
     </q-form>
   </q-infinite-scroll>
+
+  <q-dialog v-model="showUsers">
+    <div class="bg-white" style="width: 300px">
+      <q-toolbar class="bg-primary text-white shadow-2">
+        <q-toolbar-title>Users in # {{activeChannel}}</q-toolbar-title>
+      </q-toolbar>
+      <q-list class="bg-white" style="max-height: 50vh; overflow: auto">
+        <q-item v-for="user in users" :key="user.id" class="q-my-sm" clickable v-ripple>
+          <q-item-section avatar>
+            <q-avatar color="primary" text-color="white">
+              {{ user.username.charAt(0) }}
+            </q-avatar>
+          </q-item-section>
+
+          <q-item-section>
+            <q-item-label lines="1">{{ user.fullname }}</q-item-label>
+            <q-item-label caption lines="1">{{ user.username }}</q-item-label>
+          </q-item-section>
+        </q-item>
+      </q-list>
+    </div>
+  </q-dialog>
 </template>
 
 <script lang="ts">
 import { defineComponent, nextTick } from 'vue'
 import { Channel } from './models'
-import { SerializedMessage } from 'src/contracts'
+import { ChannelUser, SerializedMessage } from 'src/contracts'
 import { mapActions, mapGetters } from 'vuex'
+import { channelService } from 'src/services'
 export default defineComponent({
   name: 'MessagesComponent',
   data () {
     return {
       message: '',
-      loading: false
+      loading: false,
+      showUsers: false,
+      users: [] as ChannelUser[]
     }
   },
   methods: {
@@ -102,11 +127,17 @@ export default defineComponent({
       return message.author.id === this.currentUser
     },
     async send () {
-      if (this.message === '') {
+      if (this.message === '' || !this.activeChannel) {
         return
       }
       this.loading = true
-      void await this.addMessage({ channel: this.activeChannel, message: this.message })
+      if (this.message === '/list') {
+        const data = await channelService.getUsers(this.activeChannel)
+        this.showUsers = true
+        this.users = data
+      } else {
+        await this.addMessage({ channel: this.activeChannel, message: this.message })
+      }
       this.message = ''
       this.loading = false
       this.scrollNFocus()

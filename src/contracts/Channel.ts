@@ -1,14 +1,23 @@
 export interface CreateChannelData {
-  name: string;
+  name: string
   type: 'public' | 'private'
 }
 
 export interface Channel {
-  id: number;
-  adminId: number;
-  name: string;
-  type: 'public' | 'private';
-  numberOfUsers: number | null
-  createdAt: string;
-  updatedAt: string;
+  id: number
+  adminId: number | null
+  name: string
+  type: 'public' | 'private'
+  numberOfUsers: number
+  createdAt: string
+  updatedAt: string
+}
+
+export interface ChannelUser {
+  id: number
+  username: string
+  email: string
+  fullname: string
+  createdAt: string
+  updatedAt: string
 }

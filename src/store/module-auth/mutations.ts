@@ -1,5 +1,4 @@
-import { User } from 'src/contracts'
-import { Channel } from 'src/contracts/Channel'
+import { User, Channel } from 'src/contracts'
 import { MutationTree } from 'vuex'
 import { AuthStateInterface } from './state'
 

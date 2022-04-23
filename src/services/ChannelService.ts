@@ -1,5 +1,4 @@
-import { RawMessage, SerializedMessage } from 'src/contracts'
-import { Channel, CreateChannelData } from 'src/contracts/Channel'
+import { RawMessage, SerializedMessage, Channel, CreateChannelData, ChannelUser } from 'src/contracts'
 import { BootParams, SocketManager } from './SocketManager'
 import { api } from 'src/boot/axios'
 
@@ -29,6 +28,12 @@ class ChannelService {
 
   async create (data: CreateChannelData): Promise<Channel> {
     return await api.post<Channel>('channel/create', data)
+      .then(response => response.data)
+      .catch(error => Promise.reject(error))
+  }
+
+  async getUsers (name: string): Promise<ChannelUser[]> {
+    return await api.get<ChannelUser[]>(`channel/users/${name}`)
       .then(response => response.data)
       .catch(error => Promise.reject(error))
   }
