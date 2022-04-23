@@ -9,9 +9,10 @@ const actions: ActionTree<AuthStateInterface, StateInterface> = {
     try {
       commit('AUTH_START')
       const user = await authService.me()
+      console.log(user)
       // join user to general channel - hardcoded for now
       if (user?.id !== state.user?.id) { // TODO tu sa asi budu musiet aktivovat vsetky channele a nie len jeden general
-        await dispatch('channels/join', 'general', { root: true })
+        user?.channels.forEach(async channel => await dispatch('channels/join', channel.name, { root: true }))
       }
       commit('AUTH_SUCCESS', user)
       return user !== null

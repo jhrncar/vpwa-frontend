@@ -58,7 +58,7 @@
 
 <script lang="ts">
 import useVuelidate from '@vuelidate/core'
-import { maxLength, minLength, required, email } from '@vuelidate/validators'
+import { maxLength, minLength, required } from '@vuelidate/validators'
 import { defineComponent } from 'vue'
 import { RouteLocationRaw } from 'vue-router'
 import { useQuasar } from 'quasar'
@@ -88,8 +88,7 @@ export default defineComponent({
   validations () {
     return {
       email: {
-        required,
-        email
+        required
       },
       password: {
         required,

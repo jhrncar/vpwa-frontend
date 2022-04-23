@@ -1,3 +1,5 @@
+import { Channel } from './Channel'
+
 export interface ApiToken {
   type: 'bearer';
   token: string;
@@ -24,6 +26,8 @@ export interface User {
   username: string;
   email: string;
   fullname: string;
+  channels: Channel[];
+  channelInvites: Channel[];
   createdAt: string;
   updatedAt: string;
 }
