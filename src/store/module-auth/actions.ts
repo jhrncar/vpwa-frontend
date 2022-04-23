@@ -3,15 +3,14 @@ import { StateInterface } from '../index'
 import { AuthStateInterface } from './state'
 import { authService, authManager } from 'src/services'
 import { LoginCredentials, RegisterData } from 'src/contracts'
+import { Channel } from 'src/contracts/Channel'
 
 const actions: ActionTree<AuthStateInterface, StateInterface> = {
   async check ({ state, commit, dispatch }) {
     try {
       commit('AUTH_START')
       const user = await authService.me()
-      console.log(user)
-      // join user to general channel - hardcoded for now
-      if (user?.id !== state.user?.id) { // TODO tu sa asi budu musiet aktivovat vsetky channele a nie len jeden general
+      if (user?.id !== state.user?.id) {
         user?.channels.forEach(async channel => await dispatch('channels/join', channel.name, { root: true }))
       }
       commit('AUTH_SUCCESS', user)
@@ -20,6 +19,9 @@ const actions: ActionTree<AuthStateInterface, StateInterface> = {
       commit('AUTH_ERROR', err)
       throw err
     }
+  },
+  async addChannel ({ commit }, channel: Channel) {
+    commit('ADD_CHANNEL', channel)
   },
   async register ({ commit }, form: RegisterData) {
     try {

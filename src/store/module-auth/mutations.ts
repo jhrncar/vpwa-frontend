@@ -1,4 +1,5 @@
 import { User } from 'src/contracts'
+import { Channel } from 'src/contracts/Channel'
 import { MutationTree } from 'vuex'
 import { AuthStateInterface } from './state'
 
@@ -14,6 +15,9 @@ const mutation: MutationTree<AuthStateInterface> = {
   AUTH_ERROR (state, errors) {
     state.status = 'error'
     state.errors = errors
+  },
+  ADD_CHANNEL (state, channel: Channel) {
+    state.user?.channels.push(channel)
   }
 }
 

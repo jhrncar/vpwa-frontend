@@ -22,6 +22,8 @@
           label="Channel name"
           v-model="channelName"
           autofocus
+          :error-message="getErrorMessage('channelName')"
+          :error="v$.channelName.$error"
           @keyup.enter="prompt = false"
         ></q-input>
       </q-card-section>
@@ -40,7 +42,6 @@
           flat
           label="Create"
           class="text-primary"
-          v-close-popup
           @click="createChannel()"
         />
       </q-card-actions>
@@ -168,36 +169,43 @@
     </q-dialog>
   </div>
   <q-list>
-            <q-item
-              v-for="(channel, index) in channels"
-              :key="index"
-              clickable
-              v-ripple
-              @click="setActiveChannel(channel)"
-            >
-              <q-item-section>
-                <q-item-label lines="1">
-                  {{ channel }}
-                </q-item-label>
-                <q-item-label class="conversation__summary" caption>
-                  {{ lastMessageOf(channel)?.content || '' }}
-                </q-item-label>
-              </q-item-section>
+    <q-item
+      v-for="(channel, index) in channels"
+      :key="index"
+      clickable
+      v-ripple
+      @click="setActiveChannel(channel)"
+    >
+      <q-item-section>
+        <q-item-label lines="1">
+          {{ channel }}
+        </q-item-label>
+        <q-item-label class="conversation__summary" caption>
+          {{ lastMessageOf(channel)?.content || '' }}
+        </q-item-label>
+      </q-item-section>
 
-              <q-item-section side>
-                <!--q-item-label caption>
-                  {{ channel }}
-                </q-item-label-->
-                <q-icon name="keyboard_arrow_down" />
-              </q-item-section>
-            </q-item>
-          </q-list>
+      <q-item-section side>
+        <!--q-item-label caption>
+          {{ channel }}
+        </q-item-label-->
+        <q-icon name="keyboard_arrow_down" />
+      </q-item-section>
+    </q-item>
+  </q-list>
 </template>
 
 <script lang="ts">
 import { defineComponent, nextTick, ref } from 'vue'
 import { mapGetters, mapMutations } from 'vuex'
 import { Channel } from './models'
+import { useQuasar } from 'quasar'
+import useVuelidate from '@vuelidate/core'
+import {
+  minLength,
+  maxLength,
+  required
+} from '@vuelidate/validators'
 
 export default defineComponent({
   name: 'ChannelsComponent',
@@ -208,9 +216,21 @@ export default defineComponent({
     }
   },
   setup () {
+    const $q = useQuasar()
+
+    function alert () {
+      $q.dialog({
+        title: 'Error',
+        message: 'Channel with this name already exists.'
+      })
+    }
+
     return {
+      v$: useVuelidate(),
+      alert,
       confirmLeave: ref(false),
       confirmDelete: ref(false),
+      showPopUp: ref(false),
       prompt: ref(false),
       channelName: ref(''),
       channelType: ref('public'),
@@ -224,6 +244,15 @@ export default defineComponent({
           value: 'private'
         }
       ]
+    }
+  },
+  validations () {
+    return {
+      channelName: {
+        required,
+        minLength: minLength(4),
+        maxLength: maxLength(30)
+      }
     }
   },
   methods: {
@@ -242,12 +271,28 @@ export default defineComponent({
     deleteChannel (): void {
       this.$store.commit('MainStore/removeChannel', this.confirmChannel)
     },
-    createChannel (): void {
-      void this.$store.dispatch('MainStore/createChannel', {
-        label: this.channelName,
-        type: this.channelType
-      })
-      this.channelName = ''
+    async createChannel () {
+      this.v$.$touch()
+      const isFormCorrect = await this.v$.$validate()
+      if (isFormCorrect) {
+        this.$store.dispatch('channels/createChannel', {
+          name: this.channelName,
+          type: this.channelType
+        }).then(() => { this.prompt = false }).catch(error => { if (error.response.status === 422) this.alert() })
+      }
+    },
+    getErrorMessage (id: string): string {
+      let a
+      try {
+        a = this.v$.$errors.reduce((previousValue, currentValue) =>
+          currentValue.$property === id ? currentValue : previousValue
+        ).$message
+      } catch (error) {}
+      if (typeof a === 'string') {
+        return a
+      } else {
+        return ''
+      }
     }
   },
   computed: {

@@ -1,3 +1,8 @@
+export interface CreateChannelData {
+  name: string;
+  type: 'public' | 'private'
+}
+
 export interface Channel {
   id: number;
   adminId: number;

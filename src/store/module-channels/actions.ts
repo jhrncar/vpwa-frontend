@@ -3,8 +3,21 @@ import { StateInterface } from '../index'
 import { ChannelsStateInterface } from './state'
 import { channelService } from 'src/services'
 import { RawMessage } from 'src/contracts'
+import { CreateChannelData } from 'src/contracts/Channel'
 
 const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
+  async createChannel ({ commit }, data: CreateChannelData) {
+    try {
+      commit('LOADING_START')
+      const channel = await channelService.create(data)
+      commit('auth/ADD_CHANNEL', channel, { root: true })
+      await channelService.join(channel.name).loadMessages()
+      commit('LOADING_SUCCESS', { channel: channel.name, messages: [] })
+    } catch (err) {
+      commit('LOADING_ERROR', err)
+      throw err
+    }
+  },
   async join ({ commit }, channel: string) {
     try {
       commit('LOADING_START')
