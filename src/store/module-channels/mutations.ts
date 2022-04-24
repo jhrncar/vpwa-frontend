@@ -1,4 +1,4 @@
-import { SerializedMessage } from 'src/contracts'
+import { SerializedMessage, ChannelUser } from 'src/contracts'
 import { MutationTree } from 'vuex'
 import { ChannelsStateInterface } from './state'
 import { nextTick } from 'vue'
@@ -8,9 +8,10 @@ const mutation: MutationTree<ChannelsStateInterface> = {
     state.loading = true
     state.error = null
   },
-  LOADING_SUCCESS (state, { channel, messages }: { channel: string, messages: SerializedMessage[] }) {
+  LOADING_SUCCESS (state, { channel, messages, users }: { channel: string, messages: SerializedMessage[], users: ChannelUser[] }) {
     state.loading = false
     state.messages[channel] = messages
+    state.users[channel] = users
   },
   LOADING_ERROR (state, error) {
     state.loading = false
@@ -19,6 +20,7 @@ const mutation: MutationTree<ChannelsStateInterface> = {
   CLEAR_CHANNEL (state, channel) {
     state.active = null
     delete state.messages[channel]
+    delete state.users[channel]
   },
   SET_ACTIVE (state, channel: string) {
     state.active = channel
@@ -26,6 +28,9 @@ const mutation: MutationTree<ChannelsStateInterface> = {
   },
   NEW_MESSAGE (state, { channel, message }: { channel: string, message: SerializedMessage }) {
     state.messages[channel].push(message)
+  },
+  NEW_USER (state, { channel, user }: {channel: string, user: ChannelUser}) {
+    state.users[channel].push(user)
   }
 }
 

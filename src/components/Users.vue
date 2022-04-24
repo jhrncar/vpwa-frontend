@@ -5,7 +5,7 @@
     <q-item v-for="user in users" :key="user.id" class="text-dark q-mb-xs">
       <q-icon
         name="fiber_manual_record"
-        :color="getStatusColor(user.status)"
+        color="green"
         size="sm"
         class="q-pr-md"
       />
@@ -24,8 +24,8 @@
 </template>
 
 <script lang="ts">
+import { ChannelUser } from 'src/contracts'
 import { defineComponent } from 'vue'
-import { User } from './models'
 
 export default defineComponent({
   name: 'UsersComponent',
@@ -34,8 +34,8 @@ export default defineComponent({
     return {}
   },
   computed: {
-    users (): User[] {
-      return this.$store.state.MainStore.selectedChannel.users
+    users (): ChannelUser[] {
+      return this.$store.getters['channels/currentUsers']
     }
   },
   methods: {

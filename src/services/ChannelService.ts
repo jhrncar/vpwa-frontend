@@ -12,6 +12,10 @@ class ChannelSocketManager extends SocketManager {
     this.socket.on('message', (message: SerializedMessage) => {
       store.commit('channels/NEW_MESSAGE', { channel, message })
     })
+
+    this.socket.on('user', (user: ChannelUser) => {
+      store.commit('channels/NEW_USER', { channel, user })
+    })
   }
 
   public addMessage (message: RawMessage): Promise<SerializedMessage> {
@@ -20,6 +24,10 @@ class ChannelSocketManager extends SocketManager {
 
   public loadMessages (): Promise<SerializedMessage[]> {
     return this.emitAsync('loadMessages')
+  }
+
+  public loadUsers (): Promise<ChannelUser[]> {
+    return this.emitAsync('loadUsers')
   }
 }
 

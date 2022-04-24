@@ -9,9 +9,11 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
     try {
       commit('LOADING_START')
       const channel = await channelService.create(data)
+      const manager = channelService.join(channel.name)
+      const messages = await manager.loadMessages()
+      const users = await manager.loadUsers()
       commit('auth/ADD_CHANNEL', channel, { root: true })
-      await channelService.join(channel.name).loadMessages()
-      commit('LOADING_SUCCESS', { channel: channel.name, messages: [] })
+      commit('LOADING_SUCCESS', { channel: channel.name, messages, users })
     } catch (err) {
       commit('LOADING_ERROR', err)
       throw err
@@ -20,8 +22,10 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
   async join ({ commit }, channel: string) {
     try {
       commit('LOADING_START')
-      const messages = await channelService.join(channel).loadMessages()
-      commit('LOADING_SUCCESS', { channel, messages })
+      const manager = channelService.join(channel)
+      const messages = await manager.loadMessages()
+      const users = await manager.loadUsers()
+      commit('LOADING_SUCCESS', { channel, messages, users })
     } catch (err) {
       commit('LOADING_ERROR', err)
       throw err

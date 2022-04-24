@@ -105,15 +105,14 @@ import { defineComponent, nextTick } from 'vue'
 import { Channel } from './models'
 import { ChannelUser, SerializedMessage } from 'src/contracts'
 import { mapActions, mapGetters } from 'vuex'
-import { channelService } from 'src/services'
+
 export default defineComponent({
   name: 'MessagesComponent',
   data () {
     return {
       message: '',
       loading: false,
-      showUsers: false,
-      users: [] as ChannelUser[]
+      showUsers: false
     }
   },
   methods: {
@@ -132,9 +131,7 @@ export default defineComponent({
       }
       this.loading = true
       if (this.message === '/list') {
-        const data = await channelService.getUsers(this.activeChannel)
         this.showUsers = true
-        this.users = data
       } else {
         await this.addMessage({ channel: this.activeChannel, message: this.message })
       }
@@ -168,6 +165,9 @@ export default defineComponent({
     },
     messages (): SerializedMessage[] {
       return this.$store.getters['channels/currentMessages']
+    },
+    users (): ChannelUser[] {
+      return this.$store.getters['channels/currentUsers']
     },
     ...mapGetters('channels', {
       lastMessageOf: 'lastMessageOf'
