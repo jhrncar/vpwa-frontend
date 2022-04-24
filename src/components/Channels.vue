@@ -55,7 +55,7 @@
         >{{ type.charAt(0).toUpperCase() + type.slice(1) }}
       </q-toolbar-title>
       <q-item
-        v-for="(channel, index) in channels.filter(c => c.type === type)"
+        v-for="(channel, index) in channels?.filter(c => c.type === type)"
         :key="index"
         dense
       >

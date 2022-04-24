@@ -9,6 +9,7 @@ const actions: ActionTree<AuthStateInterface, StateInterface> = {
     try {
       commit('AUTH_START')
       const user = await authService.me()
+      console.log('aa')
       if (user?.id !== state.user?.id) {
         user?.channels.forEach(async channel => await dispatch('channels/join', channel.name, { root: true }))
       }
