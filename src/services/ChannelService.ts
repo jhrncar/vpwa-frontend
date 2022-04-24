@@ -16,6 +16,15 @@ class ChannelSocketManager extends SocketManager {
     this.socket.on('user', (user: ChannelUser) => {
       store.commit('channels/NEW_USER', { channel, user })
     })
+
+    this.socket.on('channel:delete', (name: string) => {
+      store.commit('auth/REMOVE_CHANNEL', name)
+      store.commit('channels/CLEAR_CHANNEL', name)
+    })
+
+    this.socket.on('user:leave', (id: number) => {
+      store.commit('channels/REMOVE_USER', { channel, userId: id })
+    })
   }
 
   public addMessage (message: RawMessage): Promise<SerializedMessage> {
@@ -28,6 +37,11 @@ class ChannelSocketManager extends SocketManager {
 
   public loadUsers (): Promise<ChannelUser[]> {
     return this.emitAsync('loadUsers')
+  }
+
+  public leaveChannel (): Promise<void> {
+    const channel = this.namespace.split('/').pop() as string
+    return this.emitAsync('leaveChannel', channel)
   }
 }
 

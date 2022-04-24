@@ -35,6 +35,9 @@ const mutation: MutationTree<ChannelsStateInterface> = {
   },
   NEW_USER (state, { channel, user }: {channel: string, user: ChannelUser}) {
     state.users[channel].push(user)
+  },
+  REMOVE_USER (state, { channel, userId }: {channel: string, userId: number}) {
+    state.users[channel].splice(state.users[channel].findIndex(u => u.id === userId), 1)
   }
 }
 

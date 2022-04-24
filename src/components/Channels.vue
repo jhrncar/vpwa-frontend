@@ -55,8 +55,8 @@
         >{{ type.charAt(0).toUpperCase() + type.slice(1) }}
       </q-toolbar-title>
       <q-item
-        v-for="(channel, index) in channels?.filter(c => c.type === type)"
-        :key="index"
+        v-for="(channel) in channels?.filter(c => c.type === type)"
+        :key="channel.id"
         dense
       >
         <q-btn
@@ -120,12 +120,12 @@
     <q-dialog v-model="confirmLeave">
       <q-card>
         <q-card-section>
-          <div class="text-h6">Leave {{ confirmChannel.label }}</div>
+          <div class="text-h6">Leave {{ confirmChannel.name }}</div>
         </q-card-section>
 
         <q-card-section class="q-pt-none">
           Are you sure you want to leave
-          {{ confirmChannel.label }}?
+          {{ confirmChannel.name }}?
         </q-card-section>
 
         <q-card-actions align="right">
@@ -145,12 +145,12 @@
     <q-dialog v-model="confirmDelete">
       <q-card>
         <q-card-section>
-          <div class="text-h6">Delete {{ confirmChannel.label }}</div>
+          <div class="text-h6">Delete {{ confirmChannel.name }}</div>
         </q-card-section>
 
         <q-card-section class="q-pt-none">
           Are you sure you want to delete
-          {{ confirmChannel.label }}?
+          {{ confirmChannel.name }}?
         </q-card-section>
 
         <q-card-actions align="right">
@@ -173,7 +173,8 @@
 <script lang="ts">
 import { defineComponent, nextTick, ref } from 'vue'
 import { mapGetters, mapMutations } from 'vuex'
-import { Channel } from './models'
+import { Channel as Chanel } from './models'
+import { Channel } from 'src/contracts'
 import { useQuasar } from 'quasar'
 import useVuelidate from '@vuelidate/core'
 import {
@@ -234,14 +235,14 @@ export default defineComponent({
     ...mapMutations('channels', {
       setActiveChannel: 'SET_ACTIVE'
     }),
-    async handleSelect (selected: Channel) {
+    async handleSelect (selected: Chanel) {
       this.selectedChannel = selected
       if (this.$q.screen.lt.md) this.$emit('closeDrawer') // TODO implementovat aj v novej verzii
       await nextTick()
       window.scrollTo(0, document.body.scrollHeight)
     },
     leaveChannel (): void {
-      this.$store.commit('MainStore/removeChannel', this.confirmChannel)
+      this.$store.dispatch('channels/leave', this.confirmChannel)
     },
     deleteChannel (): void {
       this.$store.commit('MainStore/removeChannel', this.confirmChannel)
@@ -279,19 +280,19 @@ export default defineComponent({
       return this.$store.state.channels.active
     },
     selectedChannel: {
-      get (): Channel {
+      get (): Chanel {
         return this.$store.state.MainStore.selectedChannel
       },
 
-      set (value: Channel) {
+      set (value: Chanel) {
         void this.$store.dispatch('MainStore/setSelectedChannel', value)
       }
     },
     chanels: {
-      get (): Channel[] {
+      get (): Chanel[] {
         return this.$store.state.MainStore.channels
       },
-      set (value: Channel) {
+      set (value: Chanel) {
         this.$store.commit('MainStore/insertChannel', value)
       }
     }

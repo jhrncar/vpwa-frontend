@@ -17,6 +17,9 @@ const mutation: MutationTree<AuthStateInterface> = {
   },
   ADD_CHANNEL (state, channel: Channel) {
     state.user?.channels.push(channel)
+  },
+  REMOVE_CHANNEL (state, name: string) {
+    state.user?.channels.splice(state.user?.channels.findIndex(c => c.name === name), 1)
   }
 }
 
