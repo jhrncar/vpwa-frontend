@@ -13,6 +13,10 @@ const mutation: MutationTree<ChannelsStateInterface> = {
     state.messages[channel] = messages
     state.users[channel] = users
   },
+  LOADING_FINISHED (state, { channel, messages }: {channel: string, messages: SerializedMessage[]}) {
+    state.loading = false
+    state.messages[channel].push(...messages)
+  },
   LOADING_ERROR (state, error) {
     state.loading = false
     state.error = error

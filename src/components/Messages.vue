@@ -1,5 +1,11 @@
 <template>
-  <q-infinite-scroll reverse>
+  <q-infinite-scroll reverse @load="onLoad" v-show="activeChannel">
+      <template v-slot:loading>
+        <div class="row justify-center q-my-md">
+          <q-spinner color="primary" name="dots" size="40px" />
+        </div>
+      </template>
+
     <q-card
       full-width
       class="absolute-top bg-grey-2"
@@ -105,6 +111,7 @@ import { defineComponent, nextTick } from 'vue'
 import { Channel } from './models'
 import { ChannelUser, SerializedMessage } from 'src/contracts'
 import { mapActions, mapGetters } from 'vuex'
+import { api } from 'src/boot/axios'
 
 export default defineComponent({
   name: 'MessagesComponent',
@@ -116,6 +123,17 @@ export default defineComponent({
     }
   },
   methods: {
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    async onLoad (index: number, done: Function) {
+      if (this.activeChannel === null) {
+        done()
+        return
+      }
+      const url = '/channel/loadMore/' + this.activeChannel + '/' + this.numberOfMessages
+      const newMessages = await api.get(url)
+      await this.loadMoreMessages({ channel: this.activeChannel, messages: newMessages.data })
+      done()
+    },
     scrollNFocus () {
       nextTick(() => {
         window.scrollTo(0, document.body.scrollHeight);
@@ -141,6 +159,7 @@ export default defineComponent({
     },
     ...mapActions('auth', ['logout']),
     ...mapActions('channels', ['addMessage']),
+    ...mapActions('channels', ['loadMoreMessages']),
     acceptInvite (): void {
       this.$store.commit('MainStore/acceptPendingInvite')
     },
@@ -165,6 +184,9 @@ export default defineComponent({
     },
     messages (): SerializedMessage[] {
       return this.$store.getters['channels/currentMessages']
+    },
+    numberOfMessages (): number {
+      return this.messages.length
     },
     users (): ChannelUser[] {
       return this.$store.getters['channels/currentUsers']

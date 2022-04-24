@@ -2,7 +2,7 @@ import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
 import { ChannelsStateInterface } from './state'
 import { channelService } from 'src/services'
-import { RawMessage, CreateChannelData, Channel } from 'src/contracts'
+import { RawMessage, CreateChannelData, Channel, SerializedMessage } from 'src/contracts'
 
 const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
   async createChannel ({ commit }, data: CreateChannelData) {
@@ -42,6 +42,15 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
   async addMessage ({ commit }, { channel, message }: { channel: string, message: RawMessage }) {
     const newMessage = await channelService.in(channel)?.addMessage(message)
     commit('NEW_MESSAGE', { channel, message: newMessage })
+  },
+  async loadMoreMessages ({ commit }, { channel, messages }: { channel: string, messages: SerializedMessage[] }) {
+    try {
+      commit('LOADING_START')
+      commit('LOADING_FINISHED', { channel, messages })
+    } catch (err) {
+      commit('LOADING_ERROR', err)
+      throw err
+    }
   }
 }
 
