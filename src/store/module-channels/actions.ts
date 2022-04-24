@@ -2,7 +2,7 @@ import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
 import { ChannelsStateInterface } from './state'
 import { channelService } from 'src/services'
-import { RawMessage, CreateChannelData } from 'src/contracts'
+import { RawMessage, CreateChannelData, Channel } from 'src/contracts'
 
 const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
   async createChannel ({ commit }, data: CreateChannelData) {
@@ -31,11 +31,11 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
       throw err
     }
   },
-  async leave ({ getters, commit }, channel: string | null) {
-    const leaving: string[] = channel !== null ? [channel] : getters.joinedChannels
+  async leave ({ rootGetters, commit }, channel: Channel | null) {
+    const leaving: Channel[] = channel !== null ? [channel] : rootGetters['auth/joinedChannels']
 
     leaving.forEach((c) => {
-      channelService.leave(c)
+      channelService.leave(c.name)
       commit('CLEAR_CHANNEL', c)
     })
   },
