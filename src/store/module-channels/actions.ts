@@ -19,6 +19,18 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
       throw err
     }
   },
+  async refreshChannel ({ commit }, channel: string) {
+    try {
+      commit('LOADING_START')
+      const manager = channelService.in(channel)
+      const messages = await manager?.loadMessages()
+      const users = await manager?.loadUsers()
+      commit('LOADING_SUCCESS', { channel, messages, users })
+    } catch (err) {
+      commit('LOADING_ERROR', err)
+      throw err
+    }
+  },
   async join ({ commit }, channel: string) {
     try {
       commit('LOADING_START')

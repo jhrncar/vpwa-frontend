@@ -1,4 +1,4 @@
-import { SerializedMessage, ChannelUser } from 'src/contracts'
+import { SerializedMessage, ChannelUser, Channel } from 'src/contracts'
 import { MutationTree } from 'vuex'
 import { ChannelsStateInterface } from './state'
 import { nextTick } from 'vue'
@@ -26,7 +26,7 @@ const mutation: MutationTree<ChannelsStateInterface> = {
     delete state.messages[channel]
     delete state.users[channel]
   },
-  SET_ACTIVE (state, channel: string) {
+  SET_ACTIVE (state, channel: Channel) {
     state.active = channel
     nextTick().then(() => { window.scrollTo(0, document.body.scrollHeight) }) // TODO toto nejde na malej sirke, lebo modal je ako overlay
   },

@@ -86,7 +86,7 @@
   <q-dialog v-model="showUsers">
     <div class="bg-white" style="width: 300px">
       <q-toolbar class="bg-primary text-white shadow-2">
-        <q-toolbar-title>Users in # {{activeChannel}}</q-toolbar-title>
+        <q-toolbar-title>Users in # {{activeChannel?.name}}</q-toolbar-title>
       </q-toolbar>
       <q-list class="bg-white" style="max-height: 50vh; overflow: auto">
         <q-item v-for="user in users" :key="user.id" class="q-my-sm" clickable v-ripple>
@@ -129,9 +129,9 @@ export default defineComponent({
         done()
         return
       }
-      const url = '/channel/loadMore/' + this.activeChannel + '/' + this.numberOfMessages
+      const url = '/channel/loadMore/' + this.activeChannel.name + '/' + this.numberOfMessages
       const newMessages = await api.get(url)
-      await this.loadMoreMessages({ channel: this.activeChannel, messages: newMessages.data })
+      await this.loadMoreMessages({ channel: this.activeChannel.name, messages: newMessages.data })
       done()
     },
     scrollNFocus () {
@@ -149,9 +149,12 @@ export default defineComponent({
       }
       this.loading = true
       if (this.message === '/list') {
+        await this.$store.dispatch('channels/refreshChannel', this.activeChannel.name)
         this.showUsers = true
+      } else if (this.message === '/cancel') {
+        await this.$store.dispatch('channels/leave', this.activeChannel)
       } else {
-        await this.addMessage({ channel: this.activeChannel, message: this.message })
+        await this.addMessage({ channel: this.activeChannel.name, message: this.message })
       }
       this.message = ''
       this.loading = false

@@ -4,8 +4,8 @@
       <q-toolbar class="justify-between">
         <q-btn flat round icon="menu" @click="toggleLeftDrawer" />
 
-        <q-toolbar-title v-if="!leftDrawerOpen">
-          # {{activeChannel}}
+        <q-toolbar-title v-if="!leftDrawerOpen && activeChannel">
+          # {{activeChannel.name}}
         </q-toolbar-title>
         <div style="justify-content: space-between; display: flex; gap: 10px">
           <Availability />

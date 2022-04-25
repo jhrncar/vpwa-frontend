@@ -63,18 +63,18 @@
           dense
           class="full-width q-px-md"
           :class="{
-            'bg-secondary': activeChannel == channel.name ? true : false,
+            'bg-secondary': activeChannel === channel ? true : false,
             'bg-dark': channel.pendingInvite ? true : false,
             'text-white':
-              activeChannel == channel.name  || channel.pendingInvite
+              activeChannel === channel  || channel.pendingInvite
                 ? true
                 : false,
-            'text-dark': activeChannel == channel.name  ? false : true,
+            'text-dark': activeChannel === channel  ? false : true,
           }"
           unelevated
           no-caps
           align="left"
-          @click="setActiveChannel(channel.name)"
+          @click="setActiveChannel(channel)"
         >
           <div v-if="channel.pendingInvite">
             <q-icon name="fiber_new" size="sm" class="q-pr-sm" />
@@ -95,7 +95,7 @@
                   <q-item-section>Leave</q-item-section>
                 </q-item>
                 <q-item
-                  v-if="channel.admin == $store.state.MainStore.user"
+                  v-if="channel.adminId === $store.state.auth.user.id"
                   clickable
                   v-close-popup
                   class="text-negative"
@@ -120,12 +120,11 @@
     <q-dialog v-model="confirmLeave">
       <q-card>
         <q-card-section>
-          <div class="text-h6">Leave {{ confirmChannel.name }}</div>
+          <div class="text-h6">Leave #{{ confirmChannel.name }}</div>
         </q-card-section>
 
         <q-card-section class="q-pt-none">
-          Are you sure you want to leave
-          {{ confirmChannel.name }}?
+          Are you sure you want to leave #{{ confirmChannel.name }}?
         </q-card-section>
 
         <q-card-actions align="right">
@@ -145,12 +144,11 @@
     <q-dialog v-model="confirmDelete">
       <q-card>
         <q-card-section>
-          <div class="text-h6">Delete {{ confirmChannel.name }}</div>
+          <div class="text-h6">Delete #{{ confirmChannel.name }}</div>
         </q-card-section>
 
         <q-card-section class="q-pt-none">
-          Are you sure you want to delete
-          {{ confirmChannel.name }}?
+          Are you sure you want to delete #{{ confirmChannel.name }}?
         </q-card-section>
 
         <q-card-actions align="right">
@@ -160,7 +158,7 @@
             label="Delete"
             color="negative"
             @click="
-              deleteChannel();
+              leaveChannel();
               confirmDelete = false;
             "
           />
@@ -244,9 +242,6 @@ export default defineComponent({
     leaveChannel (): void {
       this.$store.dispatch('channels/leave', this.confirmChannel)
     },
-    deleteChannel (): void {
-      this.$store.commit('MainStore/removeChannel', this.confirmChannel)
-    },
     async createChannel () {
       this.v$.$touch()
       const isFormCorrect = await this.v$.$validate()
@@ -254,7 +249,11 @@ export default defineComponent({
         this.$store.dispatch('channels/createChannel', {
           name: this.channelName,
           type: this.channelType
-        }).then(() => { this.prompt = false }).catch(error => { if (error.response.status === 422) this.alert() })
+        }).then(() => {
+          this.prompt = false
+          this.channelName = ''
+          this.channelType = 'public'
+        }).catch(error => { if (error.response.status === 422) this.alert() })
       }
     },
     getErrorMessage (id: string): string {
