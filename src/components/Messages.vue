@@ -1,5 +1,5 @@
 <template>
-  <q-infinite-scroll reverse @load="onLoad" v-show="activeChannel">
+  <q-infinite-scroll reverse @load="onLoad" v-show="activeChannel" :disable="disableScroll">
       <template v-slot:loading>
         <div class="row justify-center q-my-md">
           <q-spinner color="primary" name="dots" size="40px" />
@@ -104,22 +104,84 @@
       </q-list>
     </div>
   </q-dialog>
+
+  <q-dialog v-model="confirmLeave">
+      <q-card>
+        <q-card-section>
+          <div class="text-h6">Leave #{{ activeChannel?.name }}</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          Are you sure you want to leave #{{ activeChannel?.name }}?
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="Cancel" color="dark" v-close-popup />
+          <q-btn
+            flat
+            label="Leave"
+            color="negative"
+            @click="
+              leaveOrDelete()
+            "
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <q-dialog v-model="confirmDelete">
+      <q-card>
+        <q-card-section>
+          <div class="text-h6">Delete #{{ activeChannel?.name }}</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          Are you sure you want to delete #{{ activeChannel?.name }}?
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="Cancel" color="dark" v-close-popup />
+          <q-btn
+            flat
+            label="Delete"
+            color="negative"
+            @click="
+              leaveOrDelete();
+            "
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick } from 'vue'
+import { defineComponent, nextTick, ref } from 'vue'
 import { Channel } from './models'
 import { ChannelUser, SerializedMessage } from 'src/contracts'
 import { mapActions, mapGetters } from 'vuex'
 import { api } from 'src/boot/axios'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
   name: 'MessagesComponent',
+
+  setup () {
+    const $q = useQuasar()
+    function alert () {
+      $q.dialog({
+        title: 'Error',
+        message: 'Error during cancellation process.'
+      })
+    }
+    return { alert }
+  },
   data () {
     return {
       message: '',
       loading: false,
-      showUsers: false
+      showUsers: false,
+      disableScroll: false,
+      confirmLeave: ref(false),
+      confirmDelete: ref(false)
     }
   },
   methods: {
@@ -131,8 +193,14 @@ export default defineComponent({
       }
       const url = '/channel/loadMore/' + this.activeChannel.name + '/' + this.numberOfMessages
       const newMessages = await api.get(url)
-      await this.loadMoreMessages({ channel: this.activeChannel.name, messages: newMessages.data })
-      done()
+      if (newMessages.data.length === 0) {
+        this.disableScroll = true
+        done()
+      } else {
+        this.disableScroll = false
+        await this.loadMoreMessages({ channel: this.activeChannel.name, messages: newMessages.data })
+        done()
+      }
     },
     scrollNFocus () {
       nextTick(() => {
@@ -143,6 +211,11 @@ export default defineComponent({
     isMine (message: SerializedMessage): boolean {
       return message.author.id === this.currentUser
     },
+    async leaveOrDelete () {
+      await this.$store.dispatch('channels/leave', this.activeChannel)
+      this.confirmDelete = false
+      this.confirmLeave = false
+    },
     async send () {
       if (this.message === '' || !this.activeChannel) {
         return
@@ -152,7 +225,7 @@ export default defineComponent({
         await this.$store.dispatch('channels/refreshChannel', this.activeChannel.name)
         this.showUsers = true
       } else if (this.message === '/cancel') {
-        await this.$store.dispatch('channels/leave', this.activeChannel)
+        this.activeChannel.adminId === this.$store.state.auth.user?.id ? this.confirmDelete = true : this.confirmLeave = true
       } else {
         await this.addMessage({ channel: this.activeChannel.name, message: this.message })
       }

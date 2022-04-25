@@ -172,7 +172,6 @@
 import { defineComponent, nextTick, ref } from 'vue'
 import { mapGetters, mapMutations } from 'vuex'
 import { Channel as Chanel } from './models'
-import { Channel } from 'src/contracts'
 import { useQuasar } from 'quasar'
 import useVuelidate from '@vuelidate/core'
 import {
@@ -180,6 +179,7 @@ import {
   maxLength,
   required
 } from '@vuelidate/validators'
+import { Channel } from '../contracts'
 
 export default defineComponent({
   name: 'ChannelsComponent',
