@@ -1,13 +1,20 @@
+import { UserStatus } from './Auth'
+
+export enum ChannelType {
+  PUBLIC = 'public',
+  PRIVATE = 'private'
+}
+
 export interface CreateChannelData {
   name: string
-  type: 'public' | 'private'
+  type: ChannelType
 }
 
 export interface Channel {
   id: number
   adminId: number | null
   name: string
-  type: 'public' | 'private'
+  type: ChannelType
   numberOfUsers: number
   createdAt: string
   updatedAt: string
@@ -18,6 +25,7 @@ export interface ChannelUser {
   username: string
   email: string
   fullname: string
+  status: UserStatus
   createdAt: string
   updatedAt: string
 }

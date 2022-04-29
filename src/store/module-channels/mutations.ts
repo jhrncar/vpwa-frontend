@@ -1,4 +1,4 @@
-import { SerializedMessage, ChannelUser, Channel } from 'src/contracts'
+import { SerializedMessage, ChannelUser, Channel, UserStatus } from 'src/contracts'
 import { MutationTree } from 'vuex'
 import { ChannelsStateInterface } from './state'
 import { nextTick } from 'vue'
@@ -38,6 +38,30 @@ const mutation: MutationTree<ChannelsStateInterface> = {
   },
   REMOVE_USER (state, { channel, userId }: {channel: string, userId: number}) {
     state.users[channel].splice(state.users[channel].findIndex(u => u.id === userId), 1)
+  },
+  UPDATE_USER_STATUS (state, { userId, status } : {userId: number, status: UserStatus}) {
+    const channels = Object.keys(state.users)
+    channels.forEach(channel => {
+      state.users[channel].map(user => {
+        user.status = user.id === userId ? status : user.status
+        return user
+      })
+      state.users[channel].sort((a, b) => {
+        if (a.status === UserStatus.ONLINE) {
+          return -1
+        }
+        if (b.status === UserStatus.ONLINE) {
+          return 1
+        }
+        if (a.status === UserStatus.DND) {
+          return -1
+        }
+        if (b.status === UserStatus.DND) {
+          return 1
+        }
+        return a.fullname.toLowerCase() > b.fullname.toLowerCase() ? 1 : -1
+      })
+    })
   }
 }
 

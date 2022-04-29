@@ -4,7 +4,7 @@
     <q-menu anchor="bottom middle" self="top middle">
       <div class="q-pa-sm bg-grey-2">
         <q-list dense class="bg-grey-2 text-dark">
-          <q-item clickable v-close-popup @click="status = 'online'">
+          <q-item clickable v-close-popup @click="updateStatus(UserStatus.ONLINE)">
             <q-item-section avatar>
               <q-icon
                 name="fiber_manual_record"
@@ -17,7 +17,7 @@
             </q-item-section>
           </q-item>
 
-          <q-item clickable v-close-popup @click="status = 'dnd'">
+          <q-item clickable v-close-popup @click="updateStatus(UserStatus.DND)">
             <q-item-section avatar>
               <q-icon
                 name="fiber_manual_record"
@@ -30,7 +30,7 @@
             </q-item-section>
           </q-item>
 
-          <q-item clickable v-close-popup @click="status = 'offline'">
+          <q-item clickable v-close-popup @click="updateStatus(UserStatus.OFFLINE)">
             <q-item-section avatar>
               <q-icon name="fiber_manual_record" class="text-grey" size="xs" />
             </q-item-section>
@@ -45,31 +45,37 @@
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { UserStatus } from 'src/contracts'
 
 export default defineComponent({
   name: 'AvailabilityComponent',
 
+  data () {
+    return {
+      UserStatus
+    }
+  },
   computed: {
-    status: {
-      get (): string {
-        return this.$store.state.MainStore.user.status
-      },
-
-      set (value: string) {
-        this.$store.dispatch('MainStore/setStatus', value)
-      }
+    status () {
+      return this.$store.state.auth.user?.status
     },
     statusColor (): string {
       switch (this.status) {
-        case 'online':
+        case UserStatus.ONLINE:
           return 'positive'
-        case 'dnd':
+        case UserStatus.DND:
           return 'negative'
-        case 'offline':
+        case UserStatus.OFFLINE:
           return 'grey'
         default:
-          return ''
+          return 'grey'
       }
+    }
+  },
+  methods: {
+    async updateStatus (status: UserStatus) {
+      if (this.status === status) return
+      await this.$store.dispatch('auth/updateStatus', status)
     }
   }
 })

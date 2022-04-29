@@ -2,7 +2,7 @@ import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
 import { ChannelsStateInterface } from './state'
 import { channelService } from 'src/services'
-import { RawMessage, CreateChannelData, Channel, SerializedMessage } from 'src/contracts'
+import { RawMessage, CreateChannelData, Channel, SerializedMessage, UserStatus, User } from 'src/contracts'
 
 const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
   async createChannel ({ commit }, data: CreateChannelData) {
@@ -12,6 +12,10 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
       const manager = channelService.join(channel.name)
       const messages = await manager.loadMessages()
       const users = await manager.loadUsers()
+      users.map(user => {
+        user.status = this.state.auth.user?.status ? this.state.auth.user.status : UserStatus.OFFLINE
+        return user
+      })
       commit('auth/ADD_CHANNEL', channel, { root: true })
       commit('LOADING_SUCCESS', { channel: channel.name, messages, users })
     } catch (err) {
@@ -31,12 +35,20 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
       throw err
     }
   },
-  async join ({ commit }, channel: string) {
+  async join ({ commit }, { channel, user } : {channel: string, user: User}) {
     try {
       commit('LOADING_START')
       const manager = channelService.join(channel)
       const messages = await manager.loadMessages()
       const users = await manager.loadUsers()
+      users.map(u => {
+        if (u.id === user.id) {
+          u.status = user.status
+        } else {
+          u.status = UserStatus.OFFLINE
+        }
+        return u
+      })
       commit('LOADING_SUCCESS', { channel, messages, users })
     } catch (err) {
       commit('LOADING_ERROR', err)

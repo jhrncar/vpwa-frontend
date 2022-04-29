@@ -1,18 +1,21 @@
 import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
 import { AuthStateInterface } from './state'
-import { authService, authManager } from 'src/services'
-import { LoginCredentials, RegisterData, Channel } from 'src/contracts'
+import { authService, authManager, activityService } from 'src/services'
+import { LoginCredentials, RegisterData, Channel, UserStatus } from 'src/contracts'
 
 const actions: ActionTree<AuthStateInterface, StateInterface> = {
   async check ({ state, commit, dispatch }) {
     try {
       commit('AUTH_START')
       const user = await authService.me()
-      if (user?.id !== state.user?.id) {
-        user?.channels.forEach(async channel => await dispatch('channels/join', channel.name, { root: true }))
+      if (user?.id !== state.user?.id && user?.channels) {
+        for (const channel of user.channels) {
+          await dispatch('channels/join', { channel: channel.name, user }, { root: true })
+        }
       }
       commit('AUTH_SUCCESS', user)
+      activityService.getStatus()
       return user !== null
     } catch (err) {
       commit('AUTH_ERROR', err)
@@ -58,6 +61,11 @@ const actions: ActionTree<AuthStateInterface, StateInterface> = {
       commit('AUTH_ERROR', err)
       throw err
     }
+  },
+  async updateStatus ({ state, commit }, status: UserStatus) {
+    commit('UPDATE_STATUS', status)
+    commit('channels/UPDATE_USER_STATUS', { userId: state.user?.id, status }, { root: true })
+    activityService.notifyStatus(status)
   }
 }
 

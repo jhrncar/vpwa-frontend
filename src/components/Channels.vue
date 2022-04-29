@@ -48,7 +48,7 @@
     </q-card>
   </q-dialog>
   <q-separator inset class="q-mt-xs" />
-  <div v-for="type in ['public', 'private']" :key="type" >
+  <div v-for="type in [ChannelType.PUBLIC, ChannelType.PRIVATE]" :key="type" >
     <q-list dense>
       <q-toolbar-title
         class="text-white q-mx-lg text-subtitle1 text-uppercase q-mt-sm"
@@ -179,14 +179,15 @@ import {
   maxLength,
   required
 } from '@vuelidate/validators'
-import { Channel } from '../contracts'
+import { Channel, ChannelType } from '../contracts'
 
 export default defineComponent({
   name: 'ChannelsComponent',
   emits: ['closeDrawer'],
   data () {
     return {
-      confirmChannel: {} as Channel
+      confirmChannel: {} as Channel,
+      ChannelType
     }
   },
   setup () {
@@ -207,15 +208,15 @@ export default defineComponent({
       showPopUp: ref(false),
       prompt: ref(false),
       channelName: ref(''),
-      channelType: ref('public'),
+      channelType: ref(ChannelType.PUBLIC),
       options: [
         {
           label: 'Public',
-          value: 'public'
+          value: ChannelType.PUBLIC
         },
         {
           label: 'Private',
-          value: 'private'
+          value: ChannelType.PRIVATE
         }
       ]
     }
@@ -252,7 +253,7 @@ export default defineComponent({
         }).then(() => {
           this.prompt = false
           this.channelName = ''
-          this.channelType = 'public'
+          this.channelType = ChannelType.PUBLIC
         }).catch(error => { if (error.response.status === 422) this.alert() })
       }
     },

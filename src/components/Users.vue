@@ -5,7 +5,7 @@
     <q-item v-for="user in users" :key="user.id" class="text-dark q-mb-xs">
       <q-icon
         name="fiber_manual_record"
-        color="green"
+        :color="getStatusColor(user.status)"
         size="sm"
         class="q-pr-md"
       />
@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { ChannelUser } from 'src/contracts'
+import { ChannelUser, UserStatus } from 'src/contracts'
 import { defineComponent } from 'vue'
 
 export default defineComponent({
@@ -39,16 +39,16 @@ export default defineComponent({
     }
   },
   methods: {
-    getStatusColor (status: string): string {
+    getStatusColor (status: UserStatus): string {
       switch (status) {
-        case 'online':
+        case UserStatus.ONLINE:
           return 'positive'
-        case 'dnd':
+        case UserStatus.DND:
           return 'negative'
-        case 'offline':
+        case UserStatus.OFFLINE:
           return 'grey'
         default:
-          return ''
+          return 'grey'
       }
     }
   }

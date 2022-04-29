@@ -1,4 +1,4 @@
-import { User, Channel } from 'src/contracts'
+import { User, Channel, UserStatus } from 'src/contracts'
 import { MutationTree } from 'vuex'
 import { AuthStateInterface } from './state'
 
@@ -20,6 +20,9 @@ const mutation: MutationTree<AuthStateInterface> = {
   },
   REMOVE_CHANNEL (state, name: string) {
     state.user?.channels.splice(state.user?.channels.findIndex(c => c.name === name), 1)
+  },
+  UPDATE_STATUS (state, status: UserStatus) {
+    if (state.user) state.user.status = status
   }
 }
 
