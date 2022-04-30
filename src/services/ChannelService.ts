@@ -17,13 +17,22 @@ class ChannelSocketManager extends SocketManager {
       store.commit('channels/NEW_USER', { channel, user })
     })
 
-    this.socket.on('channel:delete', (name: string) => {
-      store.commit('auth/REMOVE_CHANNEL', name)
-      store.commit('channels/CLEAR_CHANNEL', name)
+    this.socket.on('channel:delete', () => {
+      const ch = store.state.auth.user?.channels.find(c => c.name === channel)
+      store.dispatch('channels/leave', ch, { root: true })
     })
 
     this.socket.on('user:leave', (id: number) => {
       store.commit('channels/REMOVE_USER', { channel, userId: id })
+    })
+
+    this.socket.on('user:kick', (id: number) => {
+      if (store.state.auth.user?.id === id) {
+        const ch = store.state.auth.user?.channels.find(c => c.name === channel)
+        store.dispatch('channels/leave', ch, { root: true })
+      } else {
+        store.commit('channels/REMOVE_USER', { channel, userId: id })
+      }
     })
   }
 
@@ -42,6 +51,10 @@ class ChannelSocketManager extends SocketManager {
   public leaveChannel (): Promise<void> {
     const channel = this.namespace.split('/').pop() as string
     return this.emitAsync('leaveChannel', channel)
+  }
+
+  public kickUser (username: string): Promise<void> {
+    return this.emitAsync('kickUser', username)
   }
 }
 

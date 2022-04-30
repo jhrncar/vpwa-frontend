@@ -80,6 +80,16 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
       commit('LOADING_ERROR', err)
       throw err
     }
+  },
+  async kickUser ({ commit }, { channel, username }: {channel: string, username: string}) {
+    try {
+      commit('LOADING_START')
+      await channelService.in(channel)?.kickUser(username)
+      commit('LOADING_END')
+    } catch (err) {
+      commit('LOADING_ERROR', err)
+      throw err
+    }
   }
 }
 
