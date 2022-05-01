@@ -54,8 +54,34 @@
         class="text-white q-mx-lg text-subtitle1 text-uppercase q-mt-sm"
         >{{ type.charAt(0).toUpperCase() + type.slice(1) }}
       </q-toolbar-title>
+
       <q-item
-        v-for="(channel) in channels?.filter(c => c.type === type)"
+        v-for="(channel) in invites"
+        :key="channel.id"
+        dense
+      >
+        <q-btn
+          v-if="channel.type === type"
+          dense
+          class="full-width q-px-md bg-dark text-white"
+          :class="{
+            'bg-secondary': activeChannel === channel ? true : false,
+            'text-dark': activeChannel === channel  ? false : true,
+          }"
+          unelevated
+          no-caps
+          align="left"
+          @click="setActiveChannel(channel)"
+        >
+          <div v-if="true">
+            <q-icon name="fiber_new" size="sm" class="q-pr-sm" />
+          </div>
+          <div class="ellipsis"># {{channel.name}}</div>
+        </q-btn>
+      </q-item>
+
+      <q-item
+        v-for="(channel) in channels.filter(c => c.type === type)"
         :key="channel.id"
         dense
       >
@@ -64,9 +90,8 @@
           class="full-width q-px-md"
           :class="{
             'bg-secondary': activeChannel === channel ? true : false,
-            'bg-dark': channel.pendingInvite ? true : false,
             'text-white':
-              activeChannel === channel  || channel.pendingInvite
+              activeChannel === channel
                 ? true
                 : false,
             'text-dark': activeChannel === channel  ? false : true,
@@ -76,14 +101,15 @@
           align="left"
           @click="setActiveChannel(channel)"
         >
-          <div v-if="channel.pendingInvite">
+          <div v-if="false">
             <q-icon name="fiber_new" size="sm" class="q-pr-sm" />
           </div>
           <div class="ellipsis"># {{channel.name}}</div>
-          <q-menu touch-position context-menu v-if="!channel.pendingInvite">
+          <q-menu touch-position context-menu v-if="!false">
             <div class="q-pa-sm bg-grey-2">
               <q-list dense style="min-width: 125px">
                 <q-item
+                  v-if="channel.adminId !== $store.state.auth.user.id"
                   clickable
                   v-close-popup
                   class="text-negative"
@@ -273,7 +299,8 @@ export default defineComponent({
   },
   computed: {
     ...mapGetters('auth', {
-      channels: 'joinedChannels'
+      channels: 'joinedChannels',
+      invites: 'channelInvites'
     }),
     activeChannel () {
       window.scrollTo(0, document.body.scrollHeight)
@@ -286,14 +313,6 @@ export default defineComponent({
 
       set (value: Chanel) {
         void this.$store.dispatch('MainStore/setSelectedChannel', value)
-      }
-    },
-    chanels: {
-      get (): Chanel[] {
-        return this.$store.state.MainStore.channels
-      },
-      set (value: Chanel) {
-        this.$store.commit('MainStore/insertChannel', value)
       }
     }
   }

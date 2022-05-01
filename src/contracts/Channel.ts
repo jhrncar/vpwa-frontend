@@ -18,6 +18,7 @@ export interface Channel {
   numberOfUsers: number
   createdAt: string
   updatedAt: string
+  invitePending: boolean
 }
 
 export interface ChannelUser {
