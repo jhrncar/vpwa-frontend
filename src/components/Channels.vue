@@ -266,14 +266,14 @@ export default defineComponent({
       await nextTick()
       window.scrollTo(0, document.body.scrollHeight)
     },
-    leaveChannel (): void {
-      this.$store.dispatch('channels/leave', this.confirmChannel)
+    async leaveChannel () {
+      await this.$store.dispatch('channels/leave', this.confirmChannel)
     },
     async createChannel () {
       this.v$.$touch()
       const isFormCorrect = await this.v$.$validate()
       if (isFormCorrect) {
-        this.$store.dispatch('channels/createChannel', {
+        await this.$store.dispatch('channels/createChannel', {
           name: this.channelName,
           type: this.channelType
         }).then(() => {

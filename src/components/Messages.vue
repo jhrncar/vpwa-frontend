@@ -166,10 +166,10 @@ export default defineComponent({
 
   setup () {
     const $q = useQuasar()
-    function alert () {
+    function alert (title: string, message: string) {
       $q.dialog({
-        title: 'Error',
-        message: 'Error during cancellation process.'
+        title,
+        message
       })
     }
     return { alert }
@@ -226,6 +226,13 @@ export default defineComponent({
         this.showUsers = true
       } else if (this.message === '/cancel') {
         this.activeChannel.adminId === this.$store.state.auth.user?.id ? this.confirmDelete = true : this.confirmLeave = true
+      } else if (this.message.startsWith('/kick')) {
+        const username = this.message.substring(6)
+        if (!this.$store.state.channels.users[this.activeChannel.name].find(u => u.username === username)) {
+          this.alert('Error', 'User does not exist.')
+        } else {
+          await this.$store.dispatch('channels/kickUser', { channel: this.activeChannel.name, username }).then(() => this.alert('Success', 'Kick was registered.')).catch(() => this.alert('Error', 'Cannot kick the same user twice.'))
+        }
       } else if (this.message === '/invite') {
         await this.$store.dispatch('channels/invite', 'jakubtest2')
       } else {

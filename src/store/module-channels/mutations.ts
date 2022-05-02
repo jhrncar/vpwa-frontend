@@ -12,10 +12,28 @@ const mutation: MutationTree<ChannelsStateInterface> = {
     state.loading = false
     state.messages[channel] = messages
     state.users[channel] = users
+    state.users[channel].sort((a, b) => {
+      if (a.status === UserStatus.ONLINE) {
+        return -1
+      }
+      if (b.status === UserStatus.ONLINE) {
+        return 1
+      }
+      if (a.status === UserStatus.DND) {
+        return -1
+      }
+      if (b.status === UserStatus.DND) {
+        return 1
+      }
+      return a.fullname.toLowerCase() > b.fullname.toLowerCase() ? 1 : -1
+    })
   },
   LOADING_FINISHED (state, { channel, messages }: {channel: string, messages: SerializedMessage[]}) {
     state.loading = false
     state.messages[channel].push(...messages)
+  },
+  LOADING_END (state) {
+    state.loading = false
   },
   LOADING_ERROR (state, error) {
     state.loading = false
