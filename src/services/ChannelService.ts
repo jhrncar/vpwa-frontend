@@ -49,8 +49,7 @@ class ChannelSocketManager extends SocketManager {
   }
 
   public leaveChannel (): Promise<void> {
-    const channel = this.namespace.split('/').pop() as string
-    return this.emitAsync('leaveChannel', channel)
+    return this.emitAsync('leaveChannel')
   }
 
   public kickUser (username: string): Promise<void> {

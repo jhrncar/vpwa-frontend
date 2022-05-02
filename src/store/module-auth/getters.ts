@@ -8,6 +8,9 @@ const getters: GetterTree<AuthStateInterface, StateInterface> = {
   },
   joinedChannels (context) {
     return context.user?.channels
+  },
+  channelInvites (context) {
+    return context.user?.channelInvites
   }
 }
 

@@ -18,8 +18,15 @@ const mutation: MutationTree<AuthStateInterface> = {
   ADD_CHANNEL (state, channel: Channel) {
     state.user?.channels.push(channel)
   },
+  ADD_INVITE (state, invitedTo: Channel) {
+    invitedTo.invitePending = true
+    state.user?.channelInvites.push(invitedTo)
+  },
   REMOVE_CHANNEL (state, name: string) {
     state.user?.channels.splice(state.user?.channels.findIndex(c => c.name === name), 1)
+  },
+  REMOVE_INVITE (state, invite: Channel) {
+    state.user?.channelInvites.splice(state.user?.channelInvites.findIndex(c => c.name === invite.name), 1)
   },
   UPDATE_STATUS (state, status: UserStatus) {
     if (state.user) state.user.status = status

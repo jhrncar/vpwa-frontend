@@ -1,5 +1,5 @@
 <template>
-  <q-infinite-scroll reverse @load="onLoad" v-show="activeChannel" :disable="disableScroll">
+  <q-infinite-scroll reverse @load="onLoad" v-show="activeChannel" :disable="disableScroll || activeChannel?.invitePending">
       <template v-slot:loading>
         <div class="row justify-center q-my-md">
           <q-spinner color="primary" name="dots" size="40px" />
@@ -9,12 +9,12 @@
     <q-card
       full-width
       class="absolute-top bg-grey-2"
-      v-if="selectedChannel.pendingInvite"
+      v-if="activeChannel?.invitePending"
     >
       <q-card-section class="row no-wrap justify-center">
         <div class="q-pr-lg">
           <div class="text-weight-bold">
-            Accept invite to {{ selectedChannel.label }}
+            Accept invite to
           </div>
           <div class="text-grey">From August</div>
         </div>
@@ -22,7 +22,7 @@
         <q-btn flat round icon="close" @click="declineInvite" />
       </q-card-section>
     </q-card>
-    <div v-if="!selectedChannel.pendingInvite || true">
+    <div v-if="!activeChannel?.invitePending">
       <q-chat-message
         v-for="message in messages"
         :key="message.id"
@@ -233,6 +233,8 @@ export default defineComponent({
         } else {
           await this.$store.dispatch('channels/kickUser', { channel: this.activeChannel.name, username }).then(() => this.alert('Success', 'Kick was registered.')).catch(() => this.alert('Error', 'Cannot kick the same user twice.'))
         }
+      } else if (this.message === '/invite') {
+        await this.$store.dispatch('channels/invite', 'jakubtest2')
       } else {
         await this.addMessage({ channel: this.activeChannel.name, message: this.message })
       }
@@ -244,10 +246,10 @@ export default defineComponent({
     ...mapActions('channels', ['addMessage']),
     ...mapActions('channels', ['loadMoreMessages']),
     acceptInvite (): void {
-      this.$store.commit('MainStore/acceptPendingInvite')
+      this.$store.dispatch('channels/acceptInvite', this.activeChannel)
     },
     declineInvite (): void {
-      this.$store.commit('MainStore/removeChannel', this.selectedChannel)
+      this.$store.dispatch('channels/rejectInvite', this.activeChannel)
     }
   },
   computed: {
@@ -276,6 +278,9 @@ export default defineComponent({
     },
     ...mapGetters('channels', {
       lastMessageOf: 'lastMessageOf'
+    }),
+    ...mapGetters('auth', {
+      invites: 'channelInvites'
     })
   }
 })
