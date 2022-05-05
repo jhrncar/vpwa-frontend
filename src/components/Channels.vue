@@ -81,7 +81,7 @@
       </q-item>
 
       <q-item
-        v-for="(channel) in channels.filter(c => c.type === type)"
+        v-for="(channel) in channels?.filter(c => c.type === type)"
         :key="channel.id"
         dense
       >
