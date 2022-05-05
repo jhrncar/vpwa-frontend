@@ -30,7 +30,7 @@ const mutation: MutationTree<ChannelsStateInterface> = {
   },
   LOADING_FINISHED (state, { channel, messages }: {channel: string, messages: SerializedMessage[]}) {
     state.loading = false
-    state.messages[channel].push(...messages)
+    state.messages[channel]?.unshift(...messages)
   },
   LOADING_END (state) {
     state.loading = false

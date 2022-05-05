@@ -1,4 +1,4 @@
-import { Channel, ChannelUser, UserStatus } from 'src/contracts'
+import { Channel, ChannelUser, User, UserStatus } from 'src/contracts'
 import { authManager } from '.'
 import { BootParams, SocketManager } from './SocketManager'
 
@@ -23,13 +23,8 @@ class ActivitySocketManager extends SocketManager {
       store.commit('channels/UPDATE_USER_STATUS', { userId: user.id, status: UserStatus.OFFLINE })
     })
 
-    this.socket.on('user:invite', (channel: Channel) => {
-      console.log('aaaaaa')
-      store.commit('auth/ADD_INVITE', channel)
-    })
-    this.socket.on('user:accept', async (channel: string) => {
-      await store.dispatch('auth/check')
-      store.commit('channels/SET_ACTIVE', null)
+    this.socket.on('user:invite', (channel: Channel, from: User) => {
+      store.commit('auth/ADD_INVITE', { invitedTo: channel, invitedBy: from })
     })
 
     authManager.onChange((token) => {
@@ -49,11 +44,11 @@ class ActivitySocketManager extends SocketManager {
     this.emitAsync('notifyStatus', status)
   }
 
-  public inviteUser (username: string, channelName: string) {
-    this.emitAsync('inviteUser', username, channelName)
+  public inviteUser (username: string, channelName: string): Promise<unknown> {
+    return this.emitAsync('inviteUser', username, channelName)
   }
 
-  public acceptInvite (channel: Channel): Promise<unknown> {
+  public acceptInvite (channel: Channel): Promise<Channel> {
     return this.emitAsync('acceptInvite', channel.name)
   }
 

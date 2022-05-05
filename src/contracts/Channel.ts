@@ -19,6 +19,7 @@ export interface Channel {
   createdAt: string
   updatedAt: string
   invitePending: boolean
+  invitedBy: string
 }
 
 export interface ChannelUser {

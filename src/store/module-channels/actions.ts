@@ -1,7 +1,7 @@
 import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
 import { ChannelsStateInterface } from './state'
-import { channelService } from 'src/services'
+import { activityService, channelService } from 'src/services'
 import { RawMessage, CreateChannelData, Channel, SerializedMessage, UserStatus, User } from 'src/contracts'
 
 const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
@@ -90,6 +90,21 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
       commit('LOADING_ERROR', err)
       throw err
     }
+  },
+  async invite ({ commit }, username: string): Promise<unknown> {
+    return activityService.inviteUser(username, this.state.channels.active?.name || '')
+  },
+  async acceptInvite ({ commit, dispatch, state }, channel: Channel) {
+    commit('auth/REMOVE_INVITE', channel, { root: true })
+    const newChannel = await activityService.acceptInvite(channel)
+    commit('auth/ADD_CHANNEL', newChannel, { root: true })
+    await dispatch('join', { channel: newChannel.name, user: this.state.auth.user })
+    commit('SET_ACTIVE', channel)
+  },
+  async rejectInvite ({ commit, dispatch }, channel: Channel) {
+    commit('auth/REMOVE_INVITE', channel, { root: true })
+    activityService.rejectInvite(channel)
+    commit('SET_ACTIVE', null)
   }
 }
 

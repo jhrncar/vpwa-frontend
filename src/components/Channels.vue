@@ -303,7 +303,6 @@ export default defineComponent({
       invites: 'channelInvites'
     }),
     activeChannel () {
-      window.scrollTo(0, document.body.scrollHeight)
       return this.$store.state.channels.active
     },
     selectedChannel: {

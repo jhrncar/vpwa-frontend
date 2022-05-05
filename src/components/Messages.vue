@@ -11,12 +11,9 @@
       class="absolute-top bg-grey-2"
       v-if="activeChannel?.invitePending"
     >
-      <q-card-section class="row no-wrap justify-center">
-        <div class="q-pr-lg">
-          <div class="text-weight-bold">
-            Accept invite to
-          </div>
-          <div class="text-grey">From August</div>
+      <q-card-section class="row no-wrap justify-center" style="align-items:center">
+        <div class="q-pr-lg text-weight-bold text-body1">
+            Accept invite to {{activeChannel?.name}}?
         </div>
         <q-btn flat round icon="check" @click="acceptInvite" />
         <q-btn flat round icon="close" @click="declineInvite" />
@@ -233,8 +230,16 @@ export default defineComponent({
         } else {
           await this.$store.dispatch('channels/kickUser', { channel: this.activeChannel.name, username }).then(() => this.alert('Success', 'Kick was registered.')).catch(() => this.alert('Error', 'Cannot kick the same user twice.'))
         }
-      } else if (this.message === '/invite') {
-        await this.$store.dispatch('channels/invite', 'jakubtest2')
+      } else if (this.message.startsWith('/invite')) {
+        if (this.activeChannel.type === 'private' && this.activeChannel.adminId !== this.$store.state.auth.user?.id) {
+          this.alert('Error', 'You are not the admin of this channel.')
+        }
+        const username = this.message.substring(8)
+        this.$store.dispatch('channels/invite', username).then(() => this.alert('Success', 'Invitation sent.')).catch(() => this.alert('Error', 'Invite failed.'))
+      } else if (this.message === '/revoke') {
+        // await this.$store.dispatch('channels/revoke', 'jakubtest2')
+      } else if (this.message === '/quit') {
+        // await this.$store.dispatch('channels/quit', 'jakubtest2');
       } else {
         await this.addMessage({ channel: this.activeChannel.name, message: this.message })
       }
@@ -271,7 +276,7 @@ export default defineComponent({
       return this.$store.getters['channels/currentMessages']
     },
     numberOfMessages (): number {
-      return this.messages.length
+      return this.messages?.length
     },
     users (): ChannelUser[] {
       return this.$store.getters['channels/currentUsers']
