@@ -273,14 +273,17 @@ export default defineComponent({
       this.v$.$touch()
       const isFormCorrect = await this.v$.$validate()
       if (isFormCorrect) {
-        await this.$store.dispatch('channels/createChannel', {
-          name: this.channelName,
+        await this.$store.dispatch('channels/joinCommand', {
+          channelName: this.channelName,
           type: this.channelType
-        }).then(() => {
+        }).then((response) => {
+          console.log(response, 'res')
           this.prompt = false
           this.channelName = ''
           this.channelType = ChannelType.PUBLIC
-        }).catch(error => { if (error.response.status === 422) this.alert() })
+        }).catch(() => {
+          console.log('Error')
+        })
       }
     },
     getErrorMessage (id: string): string {

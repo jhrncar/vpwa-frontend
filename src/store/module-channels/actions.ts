@@ -7,6 +7,7 @@ import { RawMessage, CreateChannelData, Channel, SerializedMessage, UserStatus, 
 const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
   async createChannel ({ commit }, data: CreateChannelData) {
     try {
+      console.log(data)
       commit('LOADING_START')
       const channel = await channelService.create(data)
       const manager = channelService.join(channel.name)
@@ -16,6 +17,7 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
         user.status = this.state.auth.user?.status ? this.state.auth.user.status : UserStatus.OFFLINE
         return user
       })
+      console.log('sdsds')
       commit('auth/ADD_CHANNEL', channel, { root: true })
       commit('LOADING_SUCCESS', { channel: channel.name, messages, users })
     } catch (err) {
@@ -54,6 +56,9 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
       commit('LOADING_ERROR', err)
       throw err
     }
+  },
+  async joinCommand ({ commit }, { channelName, type }: {channelName: string, type: string}): Promise<void> {
+    return activityService.joinCommand(channelName, type)
   },
   async leave ({ rootGetters, commit }, channel: Channel | null) {
     const leaving: Channel[] = channel !== null ? [channel] : rootGetters['auth/joinedChannels']

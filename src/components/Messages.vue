@@ -240,6 +240,25 @@ export default defineComponent({
         // await this.$store.dispatch('channels/revoke', 'jakubtest2')
       } else if (this.message === '/quit') {
         // await this.$store.dispatch('channels/quit', 'jakubtest2');
+      } else if (this.message.startsWith('/join')) {
+        const message = this.message.split(' ')
+        let channelName = ''
+        let type = 'public'
+        if (message.length === 2) {
+          channelName = message[1]
+        } else if (message.length === 3) {
+          channelName = message[1]
+          type = message[2]
+        }
+        if (channelName === '') {
+          this.alert('Error', 'Channel name is required.')
+        }
+        if (type !== 'public' && type !== 'private') {
+          this.alert('Error', 'Channel type is required.')
+        }
+        if (channelName !== '' && type !== '') {
+          await this.$store.dispatch('channels/joinCommand', { channelName, type }).catch(() => this.alert('Error', 'Syntax error.'))
+        }
       } else {
         await this.addMessage({ channel: this.activeChannel.name, message: this.message })
       }
