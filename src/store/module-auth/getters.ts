@@ -6,6 +6,9 @@ const getters: GetterTree<AuthStateInterface, StateInterface> = {
   isAuthenticated (context) {
     return context.user !== null
   },
+  status (context) {
+    return context.user?.status
+  },
   joinedChannels (context) {
     return context.user?.channels
   },

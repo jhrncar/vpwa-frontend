@@ -62,7 +62,7 @@
         placeholder="Message..."
         autofocus
         ref="commandLine"
-        :disable="loading"
+        :disable="loading || currentUser?.status === 'offline'"
         @keydown.enter.prevent="send"
       >
         <template v-slot:append>
@@ -75,7 +75,7 @@
         </template>
       </q-input>
       <div class="column flex-center q-pl-md">
-        <q-btn round dense flat color="grey-7" type="submit" icon="send" :disable="loading"/>
+        <q-btn round dense flat color="grey-7" type="submit" icon="send" :disable="loading || currentUser?.status === 'offline'"/>
       </div>
     </q-form>
   </q-infinite-scroll>
@@ -206,7 +206,7 @@ export default defineComponent({
       })
     },
     isMine (message: SerializedMessage): boolean {
-      return message.author.id === this.currentUser
+      return message.author.id === this.currentUser?.id
     },
     async leaveOrDelete () {
       await this.$store.dispatch('channels/leave', this.activeChannel)
@@ -270,7 +270,7 @@ export default defineComponent({
       return this.$store.state.channels.active
     },
     currentUser () {
-      return this.$store.state.auth.user?.id
+      return this.$store.state.auth.user
     },
     messages (): SerializedMessage[] {
       return this.$store.getters['channels/currentMessages']

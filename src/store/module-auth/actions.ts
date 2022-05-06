@@ -68,7 +68,17 @@ const actions: ActionTree<AuthStateInterface, StateInterface> = {
       throw err
     }
   },
-  async updateStatus ({ state, commit }, status: UserStatus) {
+  async updateStatus ({ state, commit, dispatch }, status: UserStatus) {
+    if (state.user?.status === UserStatus.OFFLINE) {
+      for (const channel of state.user.channels) {
+        await dispatch('channels/join', { channel: channel.name, user: state.user }, { root: true }).catch(() => {
+          // user is joined in channel
+        })
+      }
+    }
+    if (status === UserStatus.OFFLINE) {
+      await dispatch('channels/leave', null, { root: true })
+    }
     commit('UPDATE_STATUS', status)
     commit('channels/UPDATE_USER_STATUS', { userId: state.user?.id, status }, { root: true })
     activityService.notifyStatus(status)

@@ -5,19 +5,25 @@ import { activityService, channelService } from 'src/services'
 import { RawMessage, CreateChannelData, Channel, SerializedMessage, UserStatus, User } from 'src/contracts'
 
 const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
-  async createChannel ({ commit }, data: CreateChannelData) {
+  async createChannel ({ rootGetters, commit }, data: CreateChannelData) {
     try {
       commit('LOADING_START')
       const channel = await channelService.create(data)
-      const manager = channelService.join(channel.name)
-      const messages = await manager.loadMessages()
-      const users = await manager.loadUsers()
-      users.map(user => {
-        user.status = this.state.auth.user?.status ? this.state.auth.user.status : UserStatus.OFFLINE
-        return user
-      })
-      commit('auth/ADD_CHANNEL', channel, { root: true })
-      commit('LOADING_SUCCESS', { channel: channel.name, messages, users })
+      const status = rootGetters['auth/status']
+      if (status !== UserStatus.OFFLINE) {
+        const manager = channelService.join(channel.name)
+        const messages = await manager.loadMessages()
+        const users = await manager.loadUsers()
+        users.map(user => {
+          user.status = this.state.auth.user?.status ? this.state.auth.user.status : UserStatus.OFFLINE
+          return user
+        })
+        commit('auth/ADD_CHANNEL', channel, { root: true })
+        commit('LOADING_SUCCESS', { channel: channel.name, messages, users })
+      } else {
+        commit('auth/ADD_CHANNEL', channel, { root: true })
+        commit('LOADING_END')
+      }
     } catch (err) {
       commit('LOADING_ERROR', err)
       throw err
@@ -94,11 +100,13 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
   async invite ({ commit }, username: string): Promise<unknown> {
     return activityService.inviteUser(username, this.state.channels.active?.name || '')
   },
-  async acceptInvite ({ commit, dispatch, state }, channel: Channel) {
+  async acceptInvite ({ rootGetters, commit, dispatch, state }, channel: Channel) {
     commit('auth/REMOVE_INVITE', channel, { root: true })
     const newChannel = await activityService.acceptInvite(channel)
     commit('auth/ADD_CHANNEL', newChannel, { root: true })
     await dispatch('join', { channel: newChannel.name, user: this.state.auth.user })
+    activityService.notifyStatus(rootGetters['auth/status'])
+    activityService.getStatus()
     commit('SET_ACTIVE', channel)
   },
   async rejectInvite ({ commit, dispatch }, channel: Channel) {
