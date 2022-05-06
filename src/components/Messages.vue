@@ -257,7 +257,7 @@ export default defineComponent({
           this.alert('Error', 'Channel type is required.')
         }
         if (channelName !== '' && type !== '') {
-          await this.$store.dispatch('channels/joinCommand', { channelName, type }).catch(() => this.alert('Error', 'Syntax error.'))
+          await this.$store.dispatch('channels/joinCommand', { channelName, type }).catch(() => this.alert('Error', 'Channel is private or Syntax error.'))
         }
       } else {
         await this.addMessage({ channel: this.activeChannel.name, message: this.message })

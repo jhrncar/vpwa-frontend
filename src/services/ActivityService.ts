@@ -27,14 +27,6 @@ class ActivitySocketManager extends SocketManager {
       store.commit('auth/ADD_INVITE', { invitedTo: channel, invitedBy: from })
     })
 
-    this.socket.on('user:create', (channel: string, type: string) => {
-      console.log(channel, type, 'created')
-      store.dispatch('channels/createChannel', {
-        name: channel,
-        type: type === 'public' ? ChannelType.PUBLIC : ChannelType.PRIVATE
-      })
-    })
-
     authManager.onChange((token) => {
       if (token) {
         this.socket.connect()
@@ -48,8 +40,7 @@ class ActivitySocketManager extends SocketManager {
     this.emitAsync('getStatus')
   }
 
-  public joinCommand (channel: string, type: string): Promise<void> {
-    console.log(channel, type, 'left FE')
+  public joinCommand (channel: string, type: string): Promise<Channel> {
     return this.emitAsync('joinCommand', channel, type)
   }
 

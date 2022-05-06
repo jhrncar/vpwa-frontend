@@ -5,32 +5,6 @@ import { activityService, channelService } from 'src/services'
 import { RawMessage, CreateChannelData, Channel, SerializedMessage, UserStatus, User } from 'src/contracts'
 
 const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
-  async createChannel ({ rootGetters, commit }, data: CreateChannelData) {
-    try {
-      console.log(data)
-      commit('LOADING_START')
-      const channel = await channelService.create(data)
-      const status = rootGetters['auth/status']
-      if (status !== UserStatus.OFFLINE) {
-        const manager = channelService.join(channel.name)
-        const messages = await manager.loadMessages()
-        const users = await manager.loadUsers()
-        users.map(user => {
-          user.status = this.state.auth.user?.status ? this.state.auth.user.status : UserStatus.OFFLINE
-          return user
-        })
-        console.log('sdsds')
-        commit('auth/ADD_CHANNEL', channel, { root: true })
-        commit('LOADING_SUCCESS', { channel: channel.name, messages, users })
-      } else {
-        commit('auth/ADD_CHANNEL', channel, { root: true })
-        commit('LOADING_END')
-      }
-    } catch (err) {
-      commit('LOADING_ERROR', err)
-      throw err
-    }
-  },
   async refreshChannel ({ commit }, channel: string) {
     try {
       commit('LOADING_START')
@@ -63,8 +37,37 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
       throw err
     }
   },
-  async joinCommand ({ commit }, { channelName, type }: {channelName: string, type: string}): Promise<void> {
-    return activityService.joinCommand(channelName, type)
+  async joinCommand ({ commit, rootGetters }, { channelName, type }: {channelName: string, type: string}) {
+    try {
+      commit('LOADING_START')
+      const channel = await activityService.joinCommand(channelName, type).catch(err => {
+        throw err
+      })
+      if (channel === null) {
+        throw new Error('Public channel not found')
+      }
+      const status = rootGetters['auth/status']
+      if (status !== UserStatus.OFFLINE) {
+        const manager = channelService.join(channel.name)
+        const messages = await manager.loadMessages()
+        const users = await manager.loadUsers()
+        users.map(user => {
+          user.status = this.state.auth.user?.status ? this.state.auth.user.status : UserStatus.OFFLINE
+          return user
+        })
+        commit('auth/ADD_CHANNEL', channel, { root: true })
+        commit('LOADING_SUCCESS', { channel: channel.name, messages, users })
+        activityService.notifyStatus(rootGetters['auth/status'])
+        activityService.getStatus()
+        commit('SET_ACTIVE', channel)
+      } else {
+        commit('auth/ADD_CHANNEL', channel, { root: true })
+        commit('LOADING_END')
+      }
+    } catch (err) {
+      commit('LOADING_ERROR', err)
+      throw err
+    }
   },
   async leave ({ rootGetters, commit }, channel: Channel | null) {
     const leaving: Channel[] = channel !== null ? [channel] : rootGetters['auth/joinedChannels']
