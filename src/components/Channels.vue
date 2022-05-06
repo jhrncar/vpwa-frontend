@@ -55,30 +55,32 @@
         >{{ type.charAt(0).toUpperCase() + type.slice(1) }}
       </q-toolbar-title>
 
-      <q-item
-        v-for="(channel) in invites"
-        :key="channel.id"
-        dense
-      >
-        <q-btn
-          v-if="channel.type === type"
+      <div v-if="userStatus !== 'offline'">
+        <q-item
+          v-for="(channel) in invites"
+          :key="channel.id"
           dense
-          class="full-width q-px-md bg-dark text-white"
-          :class="{
-            'bg-secondary': activeChannel === channel ? true : false,
-            'text-dark': activeChannel === channel  ? false : true,
-          }"
-          unelevated
-          no-caps
-          align="left"
-          @click="setActiveChannel(channel)"
         >
-          <div v-if="true">
-            <q-icon name="fiber_new" size="sm" class="q-pr-sm" />
-          </div>
-          <div class="ellipsis"># {{channel.name}}</div>
-        </q-btn>
-      </q-item>
+          <q-btn
+            v-if="channel.type === type"
+            dense
+            class="full-width q-px-md bg-dark text-white"
+            :class="{
+              'bg-secondary': activeChannel === channel ? true : false,
+              'text-dark': activeChannel === channel  ? false : true,
+            }"
+            unelevated
+            no-caps
+            align="left"
+            @click="setActiveChannel(channel)"
+          >
+            <div v-if="true">
+              <q-icon name="fiber_new" size="sm" class="q-pr-sm" />
+            </div>
+            <div class="ellipsis"># {{channel.name}}</div>
+          </q-btn>
+        </q-item>
+      </div>
 
       <q-item
         v-for="(channel) in channels?.filter(c => c.type === type)"
@@ -303,7 +305,8 @@ export default defineComponent({
   computed: {
     ...mapGetters('auth', {
       channels: 'joinedChannels',
-      invites: 'channelInvites'
+      invites: 'channelInvites',
+      userStatus: 'status'
     }),
     activeChannel () {
       return this.$store.state.channels.active

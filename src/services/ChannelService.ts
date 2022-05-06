@@ -14,7 +14,12 @@ class ChannelSocketManager extends SocketManager {
     })
 
     this.socket.on('user', (user: ChannelUser) => {
-      store.commit('channels/NEW_USER', { channel, user })
+      if (!store.state.channels.users[channel].find(u => u.id === user.id)) {
+        store.commit('channels/NEW_USER', { channel, user })
+        // if (store.state.auth.user) {
+        //   activityService.notifyStatus(store.state.auth.user.status)
+        // }
+      }
     })
 
     this.socket.on('channel:delete', () => {
