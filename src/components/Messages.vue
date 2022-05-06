@@ -230,17 +230,20 @@ export default defineComponent({
         } else {
           await this.$store.dispatch('channels/kickUser', { channel: this.activeChannel.name, username }).then(() => this.alert('Success', 'Kick was registered.')).catch(() => this.alert('Error', 'Cannot kick the same user twice.'))
         }
-      } else if (this.message.startsWith('/invite')) {
+      } else if (this.message.startsWith('/invite')) { // TODO pardon funkcionalita, nemozes invitunut bannuteho ak niesi admin
         if (this.activeChannel.type === 'private' && this.activeChannel.adminId !== this.$store.state.auth.user?.id) {
           this.alert('Error', 'You are not the admin of this channel.')
         }
         const username = this.message.substring(8)
         this.$store.dispatch('channels/invite', username).then(() => this.alert('Success', 'Invitation sent.')).catch(() => this.alert('Error', 'Invite failed.'))
-      } else if (this.message === '/revoke') {
-        // await this.$store.dispatch('channels/revoke', 'jakubtest2')
+      } else if (this.message.startsWith('/revoke')) {
+        if (this.activeChannel.type === 'private' && this.activeChannel.adminId === this.$store.state.auth.user?.id) {
+          const username = this.message.substring(8)
+          this.$store.dispatch('channels/revoke', username).then(() => this.alert('Success', 'Revoke was registered.')).catch(() => this.alert('Error', 'Revoke failed.'))
+        }
       } else if (this.message === '/quit') {
         // await this.$store.dispatch('channels/quit', 'jakubtest2');
-      } else if (this.message.startsWith('/join')) {
+      } else if (this.message.startsWith('/join')) { // TODO neda sa joinut kanal ak som zabanovany
         const message = this.message.split(' ')
         let channelName = ''
         let type = 'public'
@@ -277,14 +280,6 @@ export default defineComponent({
     }
   },
   computed: {
-    selectedChannel: { // TODO reduntantne
-      get (): Channel {
-        return this.$store.state.MainStore.selectedChannel
-      },
-      set (val: Channel) {
-        void this.$store.dispatch('MainStore/setSelectedChannel', val)
-      }
-    },
     activeChannel () {
       return this.$store.state.channels.active
     },

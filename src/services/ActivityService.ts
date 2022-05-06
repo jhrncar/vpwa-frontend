@@ -27,6 +27,11 @@ class ActivitySocketManager extends SocketManager {
       store.commit('auth/ADD_INVITE', { invitedTo: channel, invitedBy: from })
     })
 
+    this.socket.on('user:revoke', (channel: Channel) => {
+      console.log(channel)
+      store.dispatch('channels/recievedRevoke', channel)
+    })
+
     authManager.onChange((token) => {
       if (token) {
         this.socket.connect()
@@ -58,6 +63,10 @@ class ActivitySocketManager extends SocketManager {
 
   public rejectInvite (channel: Channel) {
     this.emitAsync('rejectInvite', channel.name)
+  }
+
+  public revoke (username: string, channelName: string): Promise<Channel> {
+    return this.emitAsync('revoke', channelName, username)
   }
 }
 

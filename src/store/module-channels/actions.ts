@@ -105,6 +105,44 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
       throw err
     }
   },
+
+  async revoke ({ commit, state }, username: string) {
+    try {
+      commit('LOADING_START')
+      const channel = await activityService.revoke(username, state.active?.name || '').catch(err => {
+        throw err
+      })
+      if (channel === null) {
+        throw new Error('Command reserved for admins')
+      }
+      commit('LOADING_END')
+    } catch (err) {
+      commit('LOADING_ERROR', err)
+      throw err
+    }
+  },
+
+  async recievedRevoke ({ commit, state }, channel: Channel) {
+    if (channel) {
+      let k = null
+      for (const c of this.state.auth.user?.channelInvites || []) {
+        if (c.name === channel.name) {
+          commit('auth/REMOVE_INVITE', channel, { root: true })
+          k = c
+          break
+        }
+      }
+      if (k === null) {
+        commit('auth/REMOVE_CHANNEL', channel.name, { root: true })
+        channelService.leave(channel.name)
+        commit('CLEAR_CHANNEL', channel.name)
+        commit('SET_ACTIVE', null)
+      }
+    }
+    if (state.active?.name === channel.name) {
+      commit('SET_ACTIVE', null)
+    }
+  },
   async invite ({ commit }, username: string): Promise<unknown> {
     return activityService.inviteUser(username, this.state.channels.active?.name || '')
   },

@@ -14,7 +14,7 @@ class ChannelSocketManager extends SocketManager {
     })
 
     this.socket.on('user', (user: ChannelUser) => {
-      if (!store.state.channels.users[channel].find(u => u.id === user.id)) {
+      if (!store.state.channels.users[channel]?.find(u => u.id === user.id)) {
         store.commit('channels/NEW_USER', { channel, user })
         // if (store.state.auth.user) {
         //   activityService.notifyStatus(store.state.auth.user.status)
@@ -23,7 +23,7 @@ class ChannelSocketManager extends SocketManager {
     })
 
     this.socket.on('channel:delete', () => {
-      const ch = store.state.auth.user?.channels.find(c => c.name === channel)
+      const ch = store.state.auth.user?.channels?.find(c => c.name === channel)
       store.dispatch('channels/leave', ch, { root: true })
     })
 
@@ -33,7 +33,7 @@ class ChannelSocketManager extends SocketManager {
 
     this.socket.on('user:kick', (id: number) => {
       if (store.state.auth.user?.id === id) {
-        const ch = store.state.auth.user?.channels.find(c => c.name === channel)
+        const ch = store.state.auth.user?.channels?.find(c => c.name === channel)
         store.dispatch('channels/leave', ch, { root: true })
       } else {
         store.commit('channels/REMOVE_USER', { channel, userId: id })
