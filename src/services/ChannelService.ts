@@ -11,7 +11,7 @@ class ChannelSocketManager extends SocketManager {
     const channel = this.namespace.split('/').pop() as string
 
     this.socket.on('message', (message: SerializedMessage) => {
-      if (store.state.auth.user?.status !== UserStatus.DND) {
+      if (store.state.auth.user?.status === UserStatus.ONLINE) {
         if (Notification.permission === 'granted') {
           if (!AppVisibility.appVisible) {
             const notification = new Notification(message.author.username, {
