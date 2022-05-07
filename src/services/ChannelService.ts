@@ -49,6 +49,15 @@ class ChannelSocketManager extends SocketManager {
         store.commit('channels/REMOVE_USER', { channel, userId: id })
       }
     })
+
+    this.socket.on('user:revoke', (id: number) => {
+      if (store.state.auth.user?.id === id) {
+        const ch = store.state.auth.user?.channels?.find(c => c.name === channel)
+        store.dispatch('channels/leave', ch, { root: true })
+      } else {
+        store.commit('channels/REMOVE_USER', { channel, userId: id })
+      }
+    })
   }
 
   public addMessage (message: RawMessage): Promise<SerializedMessage> {
@@ -69,6 +78,10 @@ class ChannelSocketManager extends SocketManager {
 
   public kickUser (username: string): Promise<void> {
     return this.emitAsync('kickUser', username)
+  }
+
+  public revoke (username: string): Promise<void> {
+    return this.emitAsync('revoke', username)
   }
 }
 

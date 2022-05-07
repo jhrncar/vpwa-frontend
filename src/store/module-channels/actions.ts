@@ -108,15 +108,10 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
     }
   },
 
-  async revoke ({ commit, state }, username: string) {
+  async revoke ({ commit }, { channel, username }: {channel: string, username: string}) {
     try {
       commit('LOADING_START')
-      const channel = await activityService.revoke(username, state.active?.name || '').catch(err => {
-        throw err
-      })
-      if (channel === null) {
-        throw new Error('Command reserved for admins')
-      }
+      await channelService.in(channel)?.revoke(username)
       commit('LOADING_END')
     } catch (err) {
       commit('LOADING_ERROR', err)
