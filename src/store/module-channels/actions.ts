@@ -72,7 +72,6 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
   },
   async leave ({ rootGetters, commit }, channel: Channel | null) {
     const leaving: Channel[] = channel !== null ? [channel] : rootGetters['auth/joinedChannels']
-
     if (channel) {
       channelService.in(channel.name)?.leaveChannel()
       commit('auth/REMOVE_CHANNEL', channel.name, { root: true })

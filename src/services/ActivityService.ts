@@ -26,6 +26,11 @@ class ActivitySocketManager extends SocketManager {
       }
     })
 
+    this.socket.on('user:delete', (channel: Channel) => {
+      store.dispatch('channels/leave', channel)
+      // store.commit('channels/SET_ACTIVE', channel)
+    })
+
     authManager.onChange((token) => {
       if (token) {
         this.socket.connect()
