@@ -242,8 +242,12 @@ export default defineComponent({
           this.$store.dispatch('channels/revoke', username).then(() => this.alert('Success', 'Revoke was registered.')).catch(() => this.alert('Error', 'Revoke failed.'))
         }
       } else if (this.message === '/quit') {
-        // await this.$store.dispatch('channels/quit', 'jakubtest2');
-      } else if (this.message.startsWith('/join')) { // TODO neda sa joinut kanal ak som zabanovany
+        if (this.activeChannel.adminId === this.$store.state.auth.user?.id) {
+          this.confirmDelete = true
+        } else {
+          this.alert('Error', 'You are not the admin of this channel.')
+        }
+      } else if (this.message.startsWith('/join')) { // TODO neda sa joinut kanal ak som zabanovany, ak joinem kanal, acceptne to pozvanku
         const message = this.message.split(' ')
         let channelName = ''
         let type = 'public'
