@@ -57,7 +57,7 @@
 
       <div v-if="userStatus !== 'offline'">
         <q-item
-          v-for="(channel) in invites"
+          v-for="(channel) in invites?.filter(c => c.type === type)"
           :key="channel.id"
           dense
         >

@@ -150,7 +150,7 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
     await dispatch('join', { channel: newChannel.name, user: this.state.auth.user })
     activityService.notifyStatus(rootGetters['auth/status'])
     activityService.getStatus()
-    commit('SET_ACTIVE', channel)
+    commit('SET_ACTIVE', newChannel)
   },
   async rejectInvite ({ commit }, channel: Channel) {
     commit('auth/REMOVE_INVITE', channel, { root: true })
