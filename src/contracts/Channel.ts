@@ -5,11 +5,6 @@ export enum ChannelType {
   PRIVATE = 'private'
 }
 
-export interface CreateChannelData {
-  name: string
-  type: ChannelType
-}
-
 export interface Channel {
   id: number
   adminId: number | null

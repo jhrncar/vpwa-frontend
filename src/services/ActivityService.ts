@@ -1,12 +1,9 @@
-import { Channel, ChannelType, ChannelUser, User, UserStatus } from 'src/contracts'
+import { Channel, ChannelUser, User, UserStatus } from 'src/contracts'
 import { authManager } from '.'
 import { BootParams, SocketManager } from './SocketManager'
 
 class ActivitySocketManager extends SocketManager {
   public subscribe ({ store }: BootParams): void {
-    // this.socket.on('user:list', (onlineUsers: ChannelUser[]) => {
-    //   console.log('Online users list', onlineUsers)
-    // })
     this.socket.on('user:status:notify', (room: string) => {
       this.emitAsync('notifyStatus', store.state.auth.user?.status, room)
     })
@@ -28,7 +25,6 @@ class ActivitySocketManager extends SocketManager {
     })
 
     this.socket.on('user:revoke', (channel: Channel) => {
-      console.log(channel)
       store.dispatch('channels/recievedRevoke', channel)
     })
 

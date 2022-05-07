@@ -1,7 +1,7 @@
 import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
 import { AuthStateInterface } from './state'
-import { authService, authManager, activityService, channelService } from 'src/services'
+import { authService, authManager, activityService } from 'src/services'
 import { LoginCredentials, RegisterData, Channel, UserStatus } from 'src/contracts'
 
 const actions: ActionTree<AuthStateInterface, StateInterface> = {
@@ -16,7 +16,6 @@ const actions: ActionTree<AuthStateInterface, StateInterface> = {
       }
       if (user?.id !== state.user?.id && user?.channelInvites) {
         for (const channel of user.channelInvites) {
-          console.log(channel, true)
           channel.invitePending = true
         }
       }

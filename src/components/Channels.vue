@@ -197,9 +197,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick, ref } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { mapGetters, mapMutations } from 'vuex'
-import { Channel as Chanel } from './models'
 import { useQuasar } from 'quasar'
 import useVuelidate from '@vuelidate/core'
 import {
@@ -262,12 +261,6 @@ export default defineComponent({
     ...mapMutations('channels', {
       setActiveChannel: 'SET_ACTIVE'
     }),
-    async handleSelect (selected: Chanel) {
-      this.selectedChannel = selected
-      if (this.$q.screen.lt.md) this.$emit('closeDrawer') // TODO implementovat aj v novej verzii
-      await nextTick()
-      window.scrollTo(0, document.body.scrollHeight)
-    },
     async leaveChannel () {
       await this.$store.dispatch('channels/leave', this.confirmChannel)
     },
@@ -278,13 +271,12 @@ export default defineComponent({
         await this.$store.dispatch('channels/joinCommand', {
           channelName: this.channelName,
           type: this.channelType
-        }).then((response) => {
-          console.log(response, 'res')
+        }).then(() => {
           this.prompt = false
           this.channelName = ''
           this.channelType = ChannelType.PUBLIC
         }).catch(() => {
-          console.log('Error')
+          this.alert()
         })
       }
     },
@@ -310,15 +302,6 @@ export default defineComponent({
     }),
     activeChannel () {
       return this.$store.state.channels.active
-    },
-    selectedChannel: {
-      get (): Chanel {
-        return this.$store.state.MainStore.selectedChannel
-      },
-
-      set (value: Chanel) {
-        void this.$store.dispatch('MainStore/setSelectedChannel', value)
-      }
     }
   }
 })

@@ -5,8 +5,6 @@ import {
   Store as VuexStore,
   useStore as vuexUseStore
 } from 'vuex'
-import MainStore from './MainStore'
-import { MainStateInterface } from './MainStore/state'
 import auth from './module-auth'
 import type { AuthStateInterface } from './module-auth/state'
 import { ChannelsStateInterface } from './module-channels/state'
@@ -29,7 +27,6 @@ export interface StateInterface {
   // example: ExampleStateInterface;
   // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
   auth: AuthStateInterface;
-  MainStore: MainStateInterface;
   channels: ChannelsStateInterface
 }
 
@@ -47,7 +44,6 @@ export const storeKey: InjectionKey<VuexStore<StateInterface>> =
 export default store(function (/* { ssrContext } */) {
   const Store = createStore<StateInterface>({
     modules: {
-      MainStore,
       auth,
       channels
     },

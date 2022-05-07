@@ -16,7 +16,6 @@ const mutation: MutationTree<AuthStateInterface> = {
     state.errors = errors
   },
   ADD_CHANNEL (state, channel: Channel) {
-    console.log('pushed')
     state.user?.channels.push(channel)
   },
   ADD_INVITE (state, { invitedTo, invitedBy }: {invitedTo: Channel, invitedBy: User}) {

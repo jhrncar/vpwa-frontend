@@ -1,4 +1,4 @@
-import { RawMessage, SerializedMessage, Channel, CreateChannelData, ChannelUser } from 'src/contracts'
+import { RawMessage, SerializedMessage, ChannelUser, UserStatus } from 'src/contracts'
 import { BootParams, SocketManager } from './SocketManager'
 import { api } from 'src/boot/axios'
 import { AppVisibility } from 'quasar'
@@ -11,15 +11,17 @@ class ChannelSocketManager extends SocketManager {
     const channel = this.namespace.split('/').pop() as string
 
     this.socket.on('message', (message: SerializedMessage) => {
-      if (Notification.permission === 'granted') {
-        if (!AppVisibility.appVisible) {
-          const notification = new Notification(message.author.username, {
-            body: 'New message in ' + channel + '\n' + message.content,
-            icon: 'favicon.ico'
-          })
+      if (store.state.auth.user?.status !== UserStatus.DND) {
+        if (Notification.permission === 'granted') {
+          if (!AppVisibility.appVisible) {
+            const notification = new Notification(message.author.username, {
+              body: 'New message in ' + channel + '\n' + message.content,
+              icon: 'favicon.ico'
+            })
+          }
+        } else if (Notification.permission === 'default') {
+          Notification.requestPermission()
         }
-      } else if (Notification.permission === 'default') {
-        Notification.requestPermission()
       }
       store.commit('channels/NEW_MESSAGE', { channel, message })
     })
@@ -27,9 +29,6 @@ class ChannelSocketManager extends SocketManager {
     this.socket.on('user', (user: ChannelUser) => {
       if (!store.state.channels.users[channel]?.find(u => u.id === user.id)) {
         store.commit('channels/NEW_USER', { channel, user })
-        // if (store.state.auth.user) {
-        //   activityService.notifyStatus(store.state.auth.user.status)
-        // }
       }
     })
 
@@ -75,12 +74,6 @@ class ChannelSocketManager extends SocketManager {
 
 class ChannelService {
   private channels: Map<string, ChannelSocketManager> = new Map()
-
-  async create (data: CreateChannelData): Promise<Channel> {
-    return await api.post<Channel>('channel/create', data)
-      .then(response => response.data)
-      .catch(error => Promise.reject(error))
-  }
 
   async getUsers (name: string): Promise<ChannelUser[]> {
     return await api.get<ChannelUser[]>(`channel/users/${name}`)

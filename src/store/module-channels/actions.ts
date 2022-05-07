@@ -2,7 +2,7 @@ import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
 import { ChannelsStateInterface } from './state'
 import { activityService, channelService } from 'src/services'
-import { RawMessage, CreateChannelData, Channel, SerializedMessage, UserStatus, User } from 'src/contracts'
+import { RawMessage, Channel, SerializedMessage, UserStatus, User } from 'src/contracts'
 
 const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
   async refreshChannel ({ commit }, channel: string) {
@@ -57,8 +57,10 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
         })
         commit('auth/ADD_CHANNEL', channel, { root: true })
         commit('LOADING_SUCCESS', { channel: channel.name, messages, users })
-        activityService.notifyStatus(rootGetters['auth/status'])
-        activityService.getStatus()
+        if (users.length !== 1) {
+          activityService.notifyStatus(rootGetters['auth/status'])
+          activityService.getStatus()
+        }
         commit('SET_ACTIVE', channel)
       } else {
         commit('auth/ADD_CHANNEL', channel, { root: true })
@@ -143,10 +145,10 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
       commit('SET_ACTIVE', null)
     }
   },
-  async invite ({ commit }, username: string): Promise<unknown> {
+  async invite (_, username: string): Promise<unknown> {
     return activityService.inviteUser(username, this.state.channels.active?.name || '')
   },
-  async acceptInvite ({ rootGetters, commit, dispatch, state }, channel: Channel) {
+  async acceptInvite ({ rootGetters, commit, dispatch }, channel: Channel) {
     commit('auth/REMOVE_INVITE', channel, { root: true })
     const newChannel = await activityService.acceptInvite(channel)
     commit('auth/ADD_CHANNEL', newChannel, { root: true })
@@ -155,7 +157,7 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
     activityService.getStatus()
     commit('SET_ACTIVE', channel)
   },
-  async rejectInvite ({ commit, dispatch }, channel: Channel) {
+  async rejectInvite ({ commit }, channel: Channel) {
     commit('auth/REMOVE_INVITE', channel, { root: true })
     activityService.rejectInvite(channel)
     commit('SET_ACTIVE', null)

@@ -152,8 +152,7 @@
 
 <script lang="ts">
 import { defineComponent, nextTick, ref } from 'vue'
-import { Channel } from './models'
-import { ChannelUser, SerializedMessage } from 'src/contracts'
+import { ChannelType, ChannelUser, SerializedMessage } from 'src/contracts'
 import { mapActions, mapGetters } from 'vuex'
 import { api } from 'src/boot/axios'
 import { useQuasar } from 'quasar'
@@ -223,23 +222,38 @@ export default defineComponent({
         this.showUsers = true
       } else if (this.message === '/cancel') {
         this.activeChannel.adminId === this.$store.state.auth.user?.id ? this.confirmDelete = true : this.confirmLeave = true
-      } else if (this.message.startsWith('/kick')) {
+      } else if (this.message.startsWith('/kick') && this.activeChannel.type === ChannelType.PUBLIC) {
         const username = this.message.substring(6)
-        if (!this.$store.state.channels.users[this.activeChannel.name].find(u => u.username === username)) {
+        const user = this.$store.state.channels.users[this.activeChannel.name].find(u => u.username === username)
+        if (this.$store.state.auth.user?.username === username) {
+          this.alert('Error', 'Cannot kick yourself.')
+        } else if (!user) {
           this.alert('Error', 'User does not exist.')
+        } else if (user.id === this.activeChannel.adminId) {
+          this.alert('Error', 'Cannot kick the admin.')
         } else {
           await this.$store.dispatch('channels/kickUser', { channel: this.activeChannel.name, username }).then(() => this.alert('Success', 'Kick was registered.')).catch(() => this.alert('Error', 'Cannot kick the same user twice.'))
         }
       } else if (this.message.startsWith('/invite')) { // TODO pardon funkcionalita, nemozes invitunut bannuteho ak niesi admin
-        if (this.activeChannel.type === 'private' && this.activeChannel.adminId !== this.$store.state.auth.user?.id) {
+        if (this.activeChannel.type === ChannelType.PRIVATE && this.activeChannel.adminId !== this.$store.state.auth.user?.id) {
           this.alert('Error', 'You are not the admin of this channel.')
-        }
-        const username = this.message.substring(8)
-        this.$store.dispatch('channels/invite', username).then(() => this.alert('Success', 'Invitation sent.')).catch(() => this.alert('Error', 'Invite failed.'))
-      } else if (this.message.startsWith('/revoke')) {
-        if (this.activeChannel.type === 'private' && this.activeChannel.adminId === this.$store.state.auth.user?.id) {
+        } else {
           const username = this.message.substring(8)
-          this.$store.dispatch('channels/revoke', username).then(() => this.alert('Success', 'Revoke was registered.')).catch(() => this.alert('Error', 'Revoke failed.'))
+          this.$store.dispatch('channels/invite', username).then(() => this.alert('Success', 'Invitation sent.')).catch(() => this.alert('Error', 'Invite failed.'))
+        }
+      } else if (this.message.startsWith('/revoke') && this.activeChannel.type === ChannelType.PRIVATE) {
+        if (this.activeChannel.adminId === this.$store.state.auth.user?.id) {
+          const username = this.message.substring(8)
+          const user = this.$store.state.channels.users[this.activeChannel.name].find(u => u.username === username)
+          if (this.$store.state.auth.user?.username === username) {
+            this.alert('Error', 'Cannot revoke yourself.')
+          } else if (!user) {
+            this.alert('Error', 'User does not exist.')
+          } else {
+            this.$store.dispatch('channels/revoke', username).then(() => this.alert('Success', 'User was revoked.')).catch(() => this.alert('Error', 'Revoke failed.'))
+          }
+        } else {
+          this.alert('Error', 'You are not the admin of this channel.')
         }
       } else if (this.message === '/quit') {
         if (this.activeChannel.adminId === this.$store.state.auth.user?.id) {
@@ -257,14 +271,12 @@ export default defineComponent({
           channelName = message[1]
           type = message[2]
         }
-        if (channelName === '') {
-          this.alert('Error', 'Channel name is required.')
-        }
-        if (type !== 'public' && type !== 'private') {
-          this.alert('Error', 'Channel type is required.')
-        }
-        if (channelName !== '' && type !== '') {
-          await this.$store.dispatch('channels/joinCommand', { channelName, type }).catch(() => this.alert('Error', 'Channel is private or Syntax error.'))
+        if (channelName.length < 4 || channelName.length > 30) {
+          this.alert('Error', 'Channel name must be 4-30 characters long.')
+        } else if (type !== 'public' && type !== 'private') {
+          this.alert('Error', 'Invalid channel type.')
+        } else {
+          await this.$store.dispatch('channels/joinCommand', { channelName, type }).catch(() => this.alert('Error', 'Channel is private or already exists.'))
         }
       } else {
         await this.addMessage({ channel: this.activeChannel.name, message: this.message })
