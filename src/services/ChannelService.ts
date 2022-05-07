@@ -1,6 +1,7 @@
 import { RawMessage, SerializedMessage, Channel, CreateChannelData, ChannelUser } from 'src/contracts'
 import { BootParams, SocketManager } from './SocketManager'
 import { api } from 'src/boot/axios'
+import { AppVisibility } from 'quasar'
 
 // creating instance of this class automatically connects to given socket.io namespace
 // subscribe is called with boot params, so you can use it to dispatch actions for socket events
@@ -10,6 +11,16 @@ class ChannelSocketManager extends SocketManager {
     const channel = this.namespace.split('/').pop() as string
 
     this.socket.on('message', (message: SerializedMessage) => {
+      if (Notification.permission === 'granted') {
+        if (!AppVisibility.appVisible) {
+          const notification = new Notification(message.author.username, {
+            body: 'New message in ' + channel + '\n' + message.content,
+            icon: 'favicon.ico'
+          })
+        }
+      } else if (Notification.permission === 'default') {
+        Notification.requestPermission()
+      }
       store.commit('channels/NEW_MESSAGE', { channel, message })
     })
 
