@@ -239,7 +239,7 @@ export default defineComponent({
           this.alert('Error', 'You are not the admin of this channel.')
         } else {
           const username = this.message.substring(8)
-          this.$store.dispatch('channels/invite', username).then(() => this.alert('Success', 'Invitation sent.')).catch(() => this.alert('Error', 'Invite already sent.'))
+          this.$store.dispatch('channels/invite', username).then(() => this.alert('Success', 'Invitation sent.')).catch(() => this.alert('Error', 'Invite failed.'))
         }
       } else if (this.message.startsWith('/revoke') && this.activeChannel.type === ChannelType.PRIVATE) {
         if (this.activeChannel.adminId === this.$store.state.auth.user?.id) {
@@ -275,8 +275,13 @@ export default defineComponent({
           this.alert('Error', 'Channel name must be 4-30 characters long.')
         } else if (type !== 'public' && type !== 'private') {
           this.alert('Error', 'Invalid channel type.')
+        } else if (this.$store.state.auth.user?.channels.find(ch => ch.name === channelName)) {
+          this.alert('Error', 'You are already joined in this channel.')
         } else {
-          await this.$store.dispatch('channels/joinCommand', { channelName, type }).catch(() => this.alert('Error', 'Channel is private or already exists.'))
+          await this.$store.dispatch('channels/joinCommand', { channelName, type }).catch((err) => {
+            this.alert('Error',
+              err)
+          })
         }
       } else {
         await this.addMessage({ channel: this.activeChannel.name, message: this.message })

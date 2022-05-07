@@ -40,20 +40,19 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
   async joinCommand ({ commit, rootGetters }, { channelName, type }: {channelName: string, type: string}) {
     try {
       commit('LOADING_START')
-      const channel = await activityService.joinCommand(channelName, type).catch(err => {
-        throw err
-      })
-      if (channel === null) {
-        throw new Error('Public channel not found')
-      }
+      const channel = await activityService.joinCommand(channelName, type)
       const status = rootGetters['auth/status']
       if (status !== UserStatus.OFFLINE) {
         const manager = channelService.join(channel.name)
         const messages = await manager.loadMessages()
         const users = await manager.loadUsers()
-        users.map(user => {
-          user.status = this.state.auth.user?.status ? this.state.auth.user.status : UserStatus.OFFLINE
-          return user
+        users.map(u => {
+          if (u.id === this.state.auth.user?.id) {
+            u.status = this.state.auth.user?.status
+          } else {
+            u.status = UserStatus.OFFLINE
+          }
+          return u
         })
         commit('auth/ADD_CHANNEL', channel, { root: true })
         commit('LOADING_SUCCESS', { channel: channel.name, messages, users })
