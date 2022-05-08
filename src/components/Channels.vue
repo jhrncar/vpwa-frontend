@@ -203,7 +203,8 @@ import useVuelidate from '@vuelidate/core'
 import {
   minLength,
   maxLength,
-  required
+  required,
+  alpha
 } from '@vuelidate/validators'
 import { Channel, ChannelType } from '../contracts'
 
@@ -251,6 +252,7 @@ export default defineComponent({
     return {
       channelName: {
         required,
+        alpha,
         minLength: minLength(4),
         maxLength: maxLength(30)
       }

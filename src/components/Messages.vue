@@ -1,10 +1,22 @@
 <template>
-  <q-infinite-scroll reverse @load="onLoad" v-show="activeChannel" :disable="disableScroll || activeChannel?.invitePending">
+  <q-infinite-scroll reverse @load="onLoad" :disable="disableScroll || activeChannel?.invitePending">
       <template v-slot:loading>
         <div class="row justify-center q-my-md">
           <q-spinner color="primary" name="dots" size="40px" />
         </div>
       </template>
+
+    <q-card
+      full-width
+      class="absolute-top bg-grey-2"
+      v-if="!activeChannel"
+    >
+      <q-card-section class="row no-wrap justify-center" style="align-items:center">
+        <div class="q-pr-lg text-weight-bold text-body1">
+            Join or create a channel!
+        </div>
+      </q-card-section>
+    </q-card>
 
     <q-card
       full-width
@@ -67,6 +79,13 @@
         :disable="loading || currentUser?.status === 'offline' || activeChannel?.invitePending"
         @keydown.enter.prevent="send"
       >
+        <template v-slot:prepend>
+          <q-icon
+            name="help"
+            @click="showCommands = true"
+            class="cursor-pointer"
+          />
+        </template>
         <template v-slot:append>
           <q-icon
             v-if="message !== ''"
@@ -101,6 +120,82 @@
             <q-item-label lines="1">{{ user.fullname }}</q-item-label>
             </div>
             <q-item-label caption lines="1">{{ user.username }}</q-item-label>
+          </q-item-section>
+        </q-item>
+      </q-list>
+    </div>
+  </q-dialog>
+
+  <q-dialog v-model="showCommands">
+    <div class="bg-white" style="width: 300px">
+      <q-toolbar class="bg-primary text-white shadow-2">
+        <q-toolbar-title>Commands</q-toolbar-title>
+      </q-toolbar>
+      <q-list class="bg-white" style="max-height: 50vh; overflow: auto">
+        <q-item class="q-my-sm column" clickable v-ripple>
+          <q-item-section>
+            <q-item-label>/join channelName [private]</q-item-label>
+            <q-item-label caption>
+              Create or join a channel.
+            </q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item class="q-my-sm column" clickable v-ripple>
+          <q-item-section>
+            <q-item-label>/invite username</q-item-label>
+            <q-item-label caption>
+              Invite user to the active channel.
+            </q-item-label>
+            <q-item-label caption>
+              ! Admin only command in private channels.
+            </q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item class="q-my-sm column" clickable v-ripple>
+          <q-item-section>
+            <q-item-label>/revoke username</q-item-label>
+            <q-item-label caption>
+              Ban user from the active channel.
+            </q-item-label>
+            <q-item-label caption>
+              ! Admin and private channels only command.
+            </q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item class="q-my-sm column" clickable v-ripple>
+          <q-item-section>
+            <q-item-label>/kick username</q-item-label>
+            <q-item-label caption>
+              Admin - ban user from the active channel.
+            </q-item-label>
+            <q-item-label caption>
+              Member - kick user from the active channel (banned after 3 kicks).
+            </q-item-label>
+            <q-item-label caption>
+              ! Public channels only command.
+            </q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item class="q-my-sm column" clickable v-ripple>
+          <q-item-section>
+            <q-item-label>/quit</q-item-label>
+            <q-item-label caption>
+              Delete the active channel.
+            </q-item-label>
+            <q-item-label caption>
+              ! Admin only command.
+            </q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item class="q-my-sm column" clickable v-ripple>
+          <q-item-section>
+            <q-item-label>/cancel</q-item-label>
+            <q-item-label caption>
+              Admin - delete and leave the active channel.
+            </q-item-label>
+            <q-item-label caption>
+              Member - leave the active channel.
+            </q-item-label>
           </q-item-section>
         </q-item>
       </q-list>
@@ -180,6 +275,7 @@ export default defineComponent({
       message: '',
       loading: false,
       showUsers: false,
+      showCommands: false,
       disableScroll: false,
       confirmLeave: ref(false),
       confirmDelete: ref(false),
@@ -249,16 +345,16 @@ export default defineComponent({
       this.confirmLeave = false
     },
     async send () {
-      if (this.message === '' || !this.activeChannel) {
+      if (this.message === '') {
         return
       }
       this.loading = true
-      if (this.message === '/list') {
+      if (this.message === '/list' && this.activeChannel) {
         await this.$store.dispatch('channels/refreshChannel', this.activeChannel.name)
         this.showUsers = true
-      } else if (this.message === '/cancel') {
+      } else if (this.message === '/cancel' && this.activeChannel) {
         this.activeChannel.adminId === this.$store.state.auth.user?.id ? this.confirmDelete = true : this.confirmLeave = true
-      } else if (this.message.startsWith('/kick') && this.activeChannel.type === ChannelType.PUBLIC) {
+      } else if (this.message.startsWith('/kick') && this.activeChannel?.type === ChannelType.PUBLIC) {
         const username = this.message.substring(6)
         const user = this.$store.state.channels.users[this.activeChannel.name].find(u => u.username === username)
         if (this.$store.state.auth.user?.username === username) {
@@ -270,14 +366,16 @@ export default defineComponent({
         } else {
           await this.$store.dispatch('channels/kickUser', { channel: this.activeChannel.name, username }).then(() => this.alert('Success', 'Kick was registered.')).catch(() => this.alert('Error', 'Cannot kick the same user twice.'))
         }
-      } else if (this.message.startsWith('/invite')) { // TODO pardon funkcionalita, nemozes invitunut bannuteho ak niesi admin
+      } else if (this.message.startsWith('/invite') && this.activeChannel) {
+        const username = this.message.substring(8)
         if (this.activeChannel.type === ChannelType.PRIVATE && this.activeChannel.adminId !== this.$store.state.auth.user?.id) {
           this.alert('Error', 'You are not the admin of this channel.')
+        } else if (this.$store.state.auth.user?.username === username) {
+          this.alert('Error', 'Cannot revoke yourself.')
         } else {
-          const username = this.message.substring(8)
           this.$store.dispatch('channels/invite', username).then(() => this.alert('Success', 'Invitation sent.')).catch(() => this.alert('Error', 'Invite failed.'))
         }
-      } else if (this.message.startsWith('/revoke') && this.activeChannel.type === ChannelType.PRIVATE) {
+      } else if (this.message.startsWith('/revoke') && this.activeChannel?.type === ChannelType.PRIVATE) {
         if (this.activeChannel.adminId === this.$store.state.auth.user?.id) {
           const username = this.message.substring(8)
           const user = this.$store.state.channels.users[this.activeChannel.name].find(u => u.username === username)
@@ -291,7 +389,7 @@ export default defineComponent({
         } else {
           this.alert('Error', 'You are not the admin of this channel.')
         }
-      } else if (this.message === '/quit') {
+      } else if (this.message === '/quit' && this.activeChannel) {
         if (this.activeChannel.adminId === this.$store.state.auth.user?.id) {
           this.confirmDelete = true
         } else {
@@ -307,8 +405,9 @@ export default defineComponent({
           channelName = message[1]
           type = message[2]
         }
-        if (channelName.length < 4 || channelName.length > 30) {
-          this.alert('Error', 'Channel name must be 4-30 characters long.')
+        if (channelName.length < 4 || channelName.length > 30 || !/^[a-zA-Z]*$/.test(channelName)) {
+          console.log(channelName)
+          this.alert('Error', 'Channel name must be 4-30 characters long and contain alphabetical characters only.')
         } else if (type !== 'public' && type !== 'private') {
           this.alert('Error', 'Invalid channel type.')
         } else if (this.$store.state.auth.user?.channels.find(ch => ch.name === channelName)) {
@@ -319,7 +418,7 @@ export default defineComponent({
               err)
           })
         }
-      } else {
+      } else if (this.activeChannel) {
         await this.addMessage({ channel: this.activeChannel.name, message: this.message })
       }
       this.message = ''

@@ -40,7 +40,14 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
   async joinCommand ({ commit, rootGetters }, { channelName, type }: {channelName: string, type: string}) {
     try {
       commit('LOADING_START')
-      const channel = await activityService.joinCommand(channelName, type)
+      let channel = {} as Channel
+      const channelInvite = this.state.auth.user?.channelInvites.find(ch => ch.name === channelName)
+      if (channelInvite) {
+        channel = await activityService.acceptInvite(channelInvite)
+        commit('auth/REMOVE_INVITE', channelInvite, { root: true })
+      } else {
+        channel = await activityService.joinCommand(channelName, type)
+      }
       const status = rootGetters['auth/status']
       if (status !== UserStatus.OFFLINE) {
         const manager = channelService.join(channel.name)
@@ -73,7 +80,7 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
   async leave ({ rootGetters, commit }, channel: Channel | null) {
     const leaving: Channel[] = channel !== null ? [channel] : rootGetters['auth/joinedChannels']
     if (channel) {
-      channelService.in(channel.name)?.leaveChannel()
+      await channelService.in(channel.name)?.leaveChannel()
       commit('auth/REMOVE_CHANNEL', channel.name, { root: true })
     }
 

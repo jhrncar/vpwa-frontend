@@ -90,7 +90,8 @@ import {
   required,
   email,
   sameAs,
-  helpers
+  helpers,
+  alpha
 } from '@vuelidate/validators'
 import { RouteLocationRaw } from 'vue-router'
 import { useQuasar } from 'quasar'
@@ -123,6 +124,7 @@ export default defineComponent({
     return {
       username: {
         required,
+        alpha,
         minLength: minLength(6),
         maxLength: maxLength(30)
       },
