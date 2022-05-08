@@ -59,8 +59,8 @@ class ActivitySocketManager extends SocketManager {
     return this.emitAsync('acceptInvite', channel.name)
   }
 
-  public rejectInvite (channel: Channel) {
-    this.emitAsync('rejectInvite', channel.name)
+  public rejectInvite (channel: Channel): Promise<unknown> {
+    return this.emitAsync('rejectInvite', channel.name)
   }
 }
 

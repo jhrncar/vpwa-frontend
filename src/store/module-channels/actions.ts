@@ -149,18 +149,28 @@ const actions: ActionTree<ChannelsStateInterface, StateInterface> = {
     return activityService.inviteUser(username, this.state.channels.active?.name || '')
   },
   async acceptInvite ({ rootGetters, commit, dispatch }, channel: Channel) {
-    commit('auth/REMOVE_INVITE', channel, { root: true })
-    const newChannel = await activityService.acceptInvite(channel)
-    commit('auth/ADD_CHANNEL', newChannel, { root: true })
-    await dispatch('join', { channel: newChannel.name, user: this.state.auth.user })
-    activityService.notifyStatus(rootGetters['auth/status'])
-    activityService.getStatus()
-    commit('SET_ACTIVE', newChannel)
+    // eslint-disable-next-line no-useless-catch
+    try {
+      commit('auth/REMOVE_INVITE', channel, { root: true })
+      const newChannel = await activityService.acceptInvite(channel)
+      commit('auth/ADD_CHANNEL', newChannel, { root: true })
+      await dispatch('join', { channel: newChannel.name, user: this.state.auth.user })
+      activityService.notifyStatus(rootGetters['auth/status'])
+      activityService.getStatus()
+      commit('SET_ACTIVE', newChannel)
+    } catch (err) {
+      commit('SET_ACTIVE', null)
+      throw err
+    }
   },
   async rejectInvite ({ commit }, channel: Channel) {
-    commit('auth/REMOVE_INVITE', channel, { root: true })
-    activityService.rejectInvite(channel)
-    commit('SET_ACTIVE', null)
+    try {
+      commit('auth/REMOVE_INVITE', channel, { root: true })
+      await activityService.rejectInvite(channel)
+      commit('SET_ACTIVE', null)
+    } catch (err) {
+      commit('SET_ACTIVE', null)
+    }
   }
 }
 

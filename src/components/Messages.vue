@@ -428,11 +428,11 @@ export default defineComponent({
     ...mapActions('auth', ['logout']),
     ...mapActions('channels', ['addMessage']),
     ...mapActions('channels', ['loadMoreMessages']),
-    acceptInvite (): void {
-      this.$store.dispatch('channels/acceptInvite', this.activeChannel)
+    async acceptInvite () {
+      await this.$store.dispatch('channels/acceptInvite', this.activeChannel).catch(() => this.alert('Error', 'Channel got deleted.'))
     },
-    declineInvite (): void {
-      this.$store.dispatch('channels/rejectInvite', this.activeChannel)
+    async declineInvite () {
+      this.$store.dispatch('channels/rejectInvite', this.activeChannel).catch(() => this.alert('Error', 'Channel got deleted.'))
     }
   },
   computed: {
