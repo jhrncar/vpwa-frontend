@@ -1,4 +1,4 @@
-import { Channel, ChannelUser, User, UserStatus } from 'src/contracts'
+import { Channel, ChannelUser, UserStatus } from 'src/contracts'
 import { authManager } from '.'
 import { BootParams, SocketManager } from './SocketManager'
 
@@ -20,7 +20,7 @@ class ActivitySocketManager extends SocketManager {
       store.commit('channels/UPDATE_USER_STATUS', { userId: user.id, status: UserStatus.OFFLINE })
     })
 
-    this.socket.on('user:invite', (channel: Channel, from: User) => {
+    this.socket.on('user:invite', (channel: Channel, from: ChannelUser) => {
       if (!store.state.auth.user?.channelInvites.find(c => c.id === channel.id)) {
         store.commit('auth/ADD_INVITE', { invitedTo: channel, invitedBy: from })
       }
@@ -28,7 +28,6 @@ class ActivitySocketManager extends SocketManager {
 
     this.socket.on('user:delete', (channel: Channel) => {
       store.dispatch('channels/leave', channel)
-      // store.commit('channels/SET_ACTIVE', channel)
     })
 
     authManager.onChange((token) => {

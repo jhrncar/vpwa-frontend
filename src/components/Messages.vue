@@ -13,7 +13,7 @@
     >
       <q-card-section class="row no-wrap justify-center" style="align-items:center">
         <div class="q-pr-lg text-weight-bold text-body1">
-            Accept invite to {{activeChannel?.name}}?
+            Accept invite to #{{activeChannel?.name}}{{activeChannel?.invitedBy ? ' from ' + activeChannel.invitedBy.username : null}}?
         </div>
         <q-btn flat round icon="check" @click="acceptInvite" />
         <q-btn flat round icon="close" @click="declineInvite" />
@@ -24,6 +24,7 @@
         v-for="message in messages"
         :key="message.id"
         :text="[message.content]"
+        :stamp="getMessageStamp(message.createdAt)"
         :sent="isMine(message)"
         :bg-color="isMine(message) ? '' : 'dark'"
         :text-color="isMine(message) ? 'dark' : 'white'"
@@ -32,6 +33,7 @@
       >
 
         <template #name>
+          <q-icon v-if="activeChannel?.adminId === message.author.id" name="fa-solid fa-crown" color="orange" class="q-pr-sm"/>
           <span :class="isMine(message) ? 'text-primary' : 'text-dark'">{{
             message.author.username
           }}</span>
@@ -46,7 +48,7 @@
                 : 'q-message-avatar--received bg-dark'
             "
           >
-            {{ message.author.username.charAt(0) }}
+            {{ message.author.username.charAt(0).toUpperCase() }}
           </q-avatar>
         </template>
       </q-chat-message>
@@ -62,7 +64,7 @@
         placeholder="Message..."
         autofocus
         ref="commandLine"
-        :disable="loading || currentUser?.status === 'offline'"
+        :disable="loading || currentUser?.status === 'offline' || activeChannel?.invitePending"
         @keydown.enter.prevent="send"
       >
         <template v-slot:append>
@@ -89,12 +91,15 @@
         <q-item v-for="user in users" :key="user.id" class="q-my-sm" clickable v-ripple>
           <q-item-section avatar>
             <q-avatar color="primary" text-color="white">
-              {{ user.username.charAt(0) }}
+              {{ user.username.charAt(0).toUpperCase() }}
             </q-avatar>
           </q-item-section>
 
           <q-item-section>
+            <div class="row">
+            <q-icon v-if="activeChannel?.adminId === user.id" name="fa-solid fa-crown" color="orange" class="q-pr-sm"/>
             <q-item-label lines="1">{{ user.fullname }}</q-item-label>
+            </div>
             <q-item-label caption lines="1">{{ user.username }}</q-item-label>
           </q-item-section>
         </q-item>
@@ -177,10 +182,41 @@ export default defineComponent({
       showUsers: false,
       disableScroll: false,
       confirmLeave: ref(false),
-      confirmDelete: ref(false)
+      confirmDelete: ref(false),
+      currentTime: 0
     }
   },
+  created () {
+    setInterval(() => {
+      this.currentTime = Math.floor(new Date().getTime() / 1000)
+    }, 1000)
+  },
   methods: {
+    getMessageStamp (createdAt: string): string {
+      const messageTime = Math.floor(new Date(createdAt).getTime() / 1000)
+      let diff = this.currentTime - messageTime
+      if (diff < 60) {
+        return 'Less than 1 minute ago'
+      }
+      diff = Math.floor(diff / 60)
+      if (diff < 60) {
+        return diff === 1 ? diff.toString() + ' minute ago' : diff.toString() + ' minutes ago'
+      }
+      diff = Math.floor(diff / 60)
+      if (diff < 24) {
+        return diff === 1 ? diff.toString() + ' hour ago' : diff.toString() + ' hours ago'
+      }
+      diff = Math.floor(diff / 24)
+      if (diff < 30) {
+        return diff === 1 ? diff.toString() + ' day ago' : diff.toString() + ' days ago'
+      }
+      diff = Math.floor(diff / 30)
+      if (diff < 12) {
+        return diff === 1 ? diff.toString() + ' month ago' : diff.toString() + ' months ago'
+      }
+      diff = Math.floor(diff / 12)
+      return diff === 1 ? diff.toString() + ' year ago' : diff.toString() + ' years ago'
+    },
     // eslint-disable-next-line @typescript-eslint/ban-types
     async onLoad (index: number, done: Function) {
       if (this.activeChannel === null) {

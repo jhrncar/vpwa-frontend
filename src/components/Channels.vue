@@ -111,7 +111,6 @@
             <div class="q-pa-sm bg-grey-2">
               <q-list dense style="min-width: 125px">
                 <q-item
-                  v-if="channel.adminId !== $store.state.auth.user.id"
                   clickable
                   v-close-popup
                   class="text-negative"

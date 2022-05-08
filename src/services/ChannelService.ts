@@ -14,7 +14,7 @@ class ChannelSocketManager extends SocketManager {
       if (store.state.auth.user?.status === UserStatus.ONLINE) {
         if (Notification.permission === 'granted') {
           if (!AppVisibility.appVisible) {
-            const notification = new Notification(message.author.username, {
+            void new Notification(message.author.username, {
               body: 'New message in ' + channel + '\n' + message.content,
               icon: 'favicon.ico'
             })

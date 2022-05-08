@@ -8,7 +8,7 @@ class AuthService {
       'auth/me',
       { dontTriggerLogout } as AxiosRequestConfig
     )
-      .then((response) => { response.data.status = UserStatus.ONLINE; return response.data })
+      .then((response) => { console.log(response.data); response.data.status = UserStatus.ONLINE; return response.data })
       .catch((error: AxiosError) => {
         if (error.response?.status === 401) {
           return null

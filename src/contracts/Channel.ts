@@ -5,18 +5,6 @@ export enum ChannelType {
   PRIVATE = 'private'
 }
 
-export interface Channel {
-  id: number
-  adminId: number | null
-  name: string
-  type: ChannelType
-  numberOfUsers: number
-  createdAt: string
-  updatedAt: string
-  invitePending: boolean
-  invitedBy: string
-}
-
 export interface ChannelUser {
   id: number
   username: string
@@ -25,4 +13,16 @@ export interface ChannelUser {
   status: UserStatus
   createdAt: string
   updatedAt: string
+}
+
+export interface Channel {
+  id: number
+  adminId: number | null
+  name: string
+  type: ChannelType
+  numberOfUsers: number
+  createdAt: string
+  updatedAt: string
+  invitePending?: boolean
+  invitedBy?: ChannelUser
 }

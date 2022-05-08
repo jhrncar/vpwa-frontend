@@ -10,11 +10,14 @@
         class="q-pr-md"
       />
       <q-item-section>
+        <div class="row">
+        <q-icon v-if="activeChannel?.adminId === user.id" name="fa-solid fa-crown" color="orange" class="q-pr-sm"/>
         <q-item-label
           class="text-white text-subtitle1"
           style="word-wrap: break-word"
           >{{ user.fullname }}</q-item-label
         >
+        </div>
         <q-item-label caption lines="1" class="text-dark text-">{{
           user.username
         }}</q-item-label>
@@ -36,6 +39,9 @@ export default defineComponent({
   computed: {
     users (): ChannelUser[] {
       return this.$store.getters['channels/currentUsers']
+    },
+    activeChannel () {
+      return this.$store.state.channels.active
     }
   },
   methods: {
