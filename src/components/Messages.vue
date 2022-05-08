@@ -371,9 +371,9 @@ export default defineComponent({
         if (this.activeChannel.type === ChannelType.PRIVATE && this.activeChannel.adminId !== this.$store.state.auth.user?.id) {
           this.alert('Error', 'You are not the admin of this channel.')
         } else if (this.$store.state.auth.user?.username === username) {
-          this.alert('Error', 'Cannot revoke yourself.')
+          this.alert('Error', 'Cannot invite yourself.')
         } else {
-          this.$store.dispatch('channels/invite', username).then(() => this.alert('Success', 'Invitation sent.')).catch(() => this.alert('Error', 'Invite failed.'))
+          this.$store.dispatch('channels/invite', username).then(() => this.alert('Success', 'Invitation sent.')).catch(() => this.alert('Error', 'User is banned from this channel.'))
         }
       } else if (this.message.startsWith('/revoke') && this.activeChannel?.type === ChannelType.PRIVATE) {
         if (this.activeChannel.adminId === this.$store.state.auth.user?.id) {
